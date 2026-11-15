@@ -37,3 +37,6 @@ __screenshots__/
 
 # Vite
 *.timestamp-*-*.mjs
+
+# Official assets fetched from the private bucket (ADR 0005). Never commit these.
+/src/asset-layer/official/
