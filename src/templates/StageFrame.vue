@@ -6,15 +6,16 @@ import { fitStage, type StageFit } from "./stage";
 /** A template's fixed-size stage, scaled to fit the window without distortion. */
 const props = defineProps<{ width: number; height: number }>();
 
-const fit = ref<StageFit>({ scale: 1, x: 0, y: 0 });
+const fitToWindow = (): StageFit =>
+  fitStage({ width: window.innerWidth, height: window.innerHeight }, props);
+
+// Fitted before the first paint, so the stage never flashes at full size.
+const fit = ref(fitToWindow());
 const refit = () => {
-  fit.value = fitStage({ width: window.innerWidth, height: window.innerHeight }, props);
+  fit.value = fitToWindow();
 };
 
-onMounted(() => {
-  refit();
-  window.addEventListener("resize", refit);
-});
+onMounted(() => window.addEventListener("resize", refit));
 onBeforeUnmount(() => window.removeEventListener("resize", refit));
 </script>
 

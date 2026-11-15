@@ -15,10 +15,10 @@ export function slotLabel(name: string): string[] {
   if (words[0] === "Mii" && words.length > 1) return ["Mii", words.slice(1).join(" ")];
   if (name.length < TWO_LINES_FROM || words.length < 2) return [words.join(" ")];
 
+  const longest = (lines: string[]) => Math.max(...lines.map((line) => line.length));
   let best: string[] = [];
   for (let split = 1; split < words.length; split++) {
     const lines = [words.slice(0, split).join(" "), words.slice(split).join(" ")];
-    const longest = (candidate: string[]) => Math.max(...candidate.map((line) => line.length));
     if (best.length === 0 || longest(lines) < longest(best)) best = lines;
   }
   return best;

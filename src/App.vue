@@ -2,13 +2,14 @@
 import { officialRosters } from "./official";
 import { screenRoster } from "./templates/screen";
 import StageFrame from "./templates/StageFrame.vue";
+import { ULTIMATE_STAGE } from "./templates/ultimate/grid";
 import UltimateScreen from "./templates/ultimate/UltimateScreen.vue";
 
 const roster = screenRoster(officialRosters.ultimate, "ultimate");
 </script>
 
 <template>
-  <StageFrame :width="1920" :height="1080">
+  <StageFrame :width="ULTIMATE_STAGE.width" :height="ULTIMATE_STAGE.height">
     <UltimateScreen :roster="roster" />
   </StageFrame>
 </template>

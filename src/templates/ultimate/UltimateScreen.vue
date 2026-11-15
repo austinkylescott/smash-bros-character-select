@@ -2,7 +2,7 @@
 import { computed, nextTick, onMounted, ref, watch } from "vue";
 
 import type { ScreenRoster } from "../screen";
-import { ultimateGrid } from "./grid";
+import { type GridSlot, ultimateGrid } from "./grid";
 import { slotLabel } from "./label";
 import UltimatePanels from "./UltimatePanels.vue";
 import UltimateTopBar from "./UltimateTopBar.vue";
@@ -86,7 +86,7 @@ watch(() => props.roster, squeezeLabels);
       <li v-if="randomBox" class="slot random" :style="boxStyle(randomBox)" aria-label="Random">
         <span class="random-face">
           <span v-if="randomBox.width > 200" class="question ult-outlined" data-text="?">?</span>
-          <span class="coin"><span class="ult-outlined" data-text="CPU">CPU</span></span>
+          <span class="cpu-token"><span class="ult-outlined" data-text="CPU">CPU</span></span>
         </span>
       </li>
     </ol>
@@ -192,7 +192,7 @@ watch(() => props.roster, squeezeLabels);
   --stroke-color: #3c3c3c;
 }
 
-.coin {
+.cpu-token {
   grid-area: 1 / 1;
   display: grid;
   place-items: center;

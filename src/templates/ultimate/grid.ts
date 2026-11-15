@@ -3,6 +3,9 @@
  * between the top bar and the player panels, in 1920x1080 stage pixels.
  */
 
+/** Ultimate's stage, in pixels. Everything in the template is laid out on it. */
+export const ULTIMATE_STAGE = { width: 1920, height: 1080 } as const;
+
 /** The band the grid fills. */
 const AREA = { x: 24, y: 84, width: 1872, height: 576 } as const;
 /** Slots never grow wider than the starter screen's, where nine slots share two rows. */
