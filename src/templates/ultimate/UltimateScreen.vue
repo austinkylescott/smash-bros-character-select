@@ -2,26 +2,11 @@
 // Rubik stands in for Rodin, the typeface Ultimate's menus use.
 import "@fontsource/rubik/800.css";
 import "@fontsource/rubik/900.css";
-import { computed, nextTick, onMounted, ref, shallowRef, watch } from "vue";
+import { computed, nextTick, onMounted, ref, watch } from "vue";
 
-import { type Box, type Direction, neighbour } from "../../selection/navigate";
-import {
-  addPanel,
-  choose,
-  cycleKind,
-  drop,
-  grab,
-  isReady,
-  type Pick,
-  press,
-  RANDOM,
-  release,
-  removePanel,
-  type Selection,
-  type SelectionRules,
-  startSelection,
-} from "../../selection/selection";
-import { useHand } from "../../selection/useHand";
+import type { Box } from "../../selection/navigate";
+import { type Pick, RANDOM, type SelectionRules } from "../../selection/selection";
+import { useSelectionControls } from "../../selection/useSelectionControls";
 import type { ScreenRoster } from "../screen";
 import { ULTIMATE_STAGE, ultimateGrid } from "./grid";
 import { slotLabel } from "./label";
@@ -40,12 +25,6 @@ defineEmits<{ back: [] }>();
 /** Ultimate starts with Player 1 and a CPU, and seats up to eight. */
 const RULES: SelectionRules = { minPanels: 2, maxPanels: 8, startingPanels: ["human", "cpu"] };
 
-const selection = shallowRef(startSelection(RULES));
-const update = (change: (current: Selection) => Selection) => {
-  selection.value = change(selection.value);
-};
-const ready = computed(() => isReady(selection.value));
-
 const grid = computed(() =>
   ultimateGrid(props.roster.fighters.length + (props.roster.randomSlot ? 1 : 0)),
 );
@@ -61,23 +40,29 @@ const fighterSlots = computed(() =>
 const randomIndex = computed(() => (props.roster.randomSlot ? props.roster.fighters.length : -1));
 const randomBox = computed(() => grid.value.slots[randomIndex.value]);
 
-/** What each slot picks, in slot order. */
+/** What each slot picks, in slot order: the fighters, then Ultimate's random slot. */
 const slotPicks = computed<Pick[]>(() => [
   ...props.roster.fighters.map(({ id }): Pick => ({ fighter: id })),
   ...(props.roster.randomSlot ? [RANDOM] : []),
 ]);
 const fightersById = computed(() => new Map(props.roster.fighters.map((f) => [f.id, f])));
 
-/** The slot a pick sits on, or -1 when it is not on this screen. */
-function slotOf(pick: Pick): number {
-  if (pick === RANDOM) return randomIndex.value;
-  return props.roster.fighters.findIndex(({ id }) => id === pick.fighter);
-}
+/** Where a panel's token waits in it, on the glove, with this many panels on screen. */
+const tokenHome = (panel: number, panelCount: number) =>
+  ultimateTokenHome(ultimatePanels(panelCount)[panel]!);
 
-const centre = (box: Box) => ({ x: box.x + box.width / 2, y: box.y + box.height / 2 });
+const root = ref<HTMLElement | null>(null);
+const controls = useSelectionControls({
+  root,
+  stageWidth: ULTIMATE_STAGE.width,
+  rules: RULES,
+  slots: () => grid.value.slots,
+  picks: () => slotPicks.value,
+  homeOf: (panel, current) => tokenHome(panel, current.panels.length),
+});
+const { selection, ready, hand, focused } = controls;
 
-const panelBoxes = computed(() => ultimatePanels(selection.value.panels.length));
-const homeOf = (index: number) => ultimateTokenHome(panelBoxes.value[index]!);
+const homeOf = (index: number) => tokenHome(index, selection.value.panels.length);
 
 const look = (index: number) => {
   const { kind } = selection.value.panels[index]!;
@@ -86,8 +71,8 @@ const look = (index: number) => {
 
 interface Token {
   readonly index: number;
-  /** What the token sits on, or null while it waits in its panel. */
-  readonly pick: Pick | null;
+  /** The slot the token sits on, or -1 while it waits in its panel. */
+  readonly slot: number;
   readonly colour: string;
   readonly tag: string;
   /** Its centre, in stage pixels. */
@@ -103,7 +88,7 @@ interface Token {
 const tokens = computed<Token[]>(() => {
   const { panels, held } = selection.value;
   const slotOfPanel = panels.map((panel, index) =>
-    panel.kind === "off" || held === index || !panel.pick ? -1 : slotOf(panel.pick),
+    panel.kind === "off" || held === index || !panel.pick ? -1 : controls.slotOf(panel.pick),
   );
   const sharing = (slot: number) => slotOfPanel.filter((other) => other === slot).length;
   const placed = new Map<number, number>();
@@ -112,8 +97,7 @@ const tokens = computed<Token[]>(() => {
     if (panel.kind === "off" || held === index) return [];
     const slot = slotOfPanel[index]!;
     const box = grid.value.slots[slot];
-    if (!panel.pick || !box)
-      return [{ index, pick: null, size: 64, ...homeOf(index), ...look(index) }];
+    if (!box) return [{ index, slot: -1, size: 64, ...homeOf(index), ...look(index) }];
 
     const size = Math.min(64, box.height * 0.72);
     const count = sharing(slot);
@@ -124,7 +108,7 @@ const tokens = computed<Token[]>(() => {
     return [
       {
         index,
-        pick: panel.pick,
+        slot,
         size,
         x: first + order * step,
         y: box.y + box.height * 0.45,
@@ -135,18 +119,15 @@ const tokens = computed<Token[]>(() => {
 });
 
 const tokenLabel = (token: Token) => {
-  const where = token.pick
-    ? token.pick === RANDOM
+  const pick = slotPicks.value[token.slot];
+  const where = !pick
+    ? "in its panel"
+    : pick === RANDOM
       ? "on Random"
-      : `on ${fightersById.value.get(token.pick.fighter)?.name}`
-    : "in its panel";
+      : `on ${fightersById.value.get(pick.fighter)?.name}`;
   return `Player ${token.index + 1}'s token, ${where}`;
 };
 
-// The hand. It starts in the first human's panel, holding their token, as in Ultimate.
-const root = ref<HTMLElement | null>(null);
-const firstHuman = selection.value.panels.findIndex((panel) => panel.kind === "human");
-const hand = useHand(root, ULTIMATE_STAGE.width, homeOf(Math.max(0, firstHuman)));
 const owner = computed(() => {
   const index = selection.value.panels.findIndex((panel) => panel.kind === "human");
   return index === -1 ? undefined : look(index);
@@ -154,70 +135,6 @@ const owner = computed(() => {
 const heldLook = computed(() =>
   selection.value.held === null ? undefined : look(selection.value.held),
 );
-
-/** The pick under a dropped token: a slot, or a token sitting on one. */
-function pickUnder(target: Element | null): Pick | undefined {
-  const slot = target?.closest<HTMLElement>("[data-slot]");
-  return slot ? slotPicks.value[Number(slot.dataset.slot)] : undefined;
-}
-
-// Mouse and touch: press a token to pick it up, then drag it to a fighter or tap one.
-function pressToken(token: Token, event: PointerEvent) {
-  if (event.button !== 0) return;
-  event.preventDefault();
-  update((current) => press(current, token.index));
-  if (selection.value.held !== token.index) return;
-  hand.drag(event, (target) => {
-    const pick = pickUnder(target);
-    if (pick) update((current) => drop(current, pick));
-  });
-}
-
-function chooseSlot(index: number) {
-  update((current) => choose(current, slotPicks.value[index]!));
-}
-
-// Keyboard: arrows move between slots, Enter picks, Escape lets go of a held token.
-const focused = ref(0);
-watch(
-  () => slotPicks.value.length,
-  (count) => (focused.value = Math.min(focused.value, count - 1)),
-);
-
-function focusSlot(index: number) {
-  focused.value = index;
-  root.value?.querySelector<HTMLElement>(`[data-slot="${index}"]`)?.focus();
-  hand.moveTo(centre(grid.value.slots[index]!));
-}
-
-const ARROWS: Record<string, Direction> = {
-  ArrowUp: "up",
-  ArrowDown: "down",
-  ArrowLeft: "left",
-  ArrowRight: "right",
-};
-function onGridKey(event: KeyboardEvent) {
-  const direction = ARROWS[event.key];
-  if (!direction) return;
-  event.preventDefault();
-  focusSlot(neighbour(grid.value.slots, focused.value, direction));
-}
-
-function onSlotFocus(index: number, event: FocusEvent) {
-  focused.value = index;
-  if ((event.target as HTMLElement).matches(":focus-visible"))
-    hand.moveTo(centre(grid.value.slots[index]!));
-}
-
-function keyToken(token: Token) {
-  update((current) => press(current, token.index));
-  const slot = token.pick ? slotOf(token.pick) : -1;
-  focusSlot(slot === -1 ? focused.value : slot);
-}
-
-function onKey(event: KeyboardEvent) {
-  if (event.key === "Escape") update(release);
-}
 
 // Ultimate squeezes a name sideways rather than shrink it when it is too wide for its slot.
 const labels = ref<HTMLElement[]>([]);
@@ -254,12 +171,12 @@ const boxStyle = ({ x, y, width, height }: Box) => ({
     @pointermove="hand.follow"
     @pointerdown="hand.follow"
     @pointerleave="hand.leave"
-    @keydown="onKey"
+    @keydown="controls.onKey"
   >
     <div class="backdrop" />
     <UltimateTopBar @back="$emit('back')" />
 
-    <ol class="grid" aria-label="Fighters" @keydown="onGridKey">
+    <ol class="grid" aria-label="Fighters" @keydown="controls.onGridKey">
       <li
         v-for="({ fighter, lines, box }, index) in fighterSlots"
         :key="fighter.id"
@@ -272,8 +189,8 @@ const boxStyle = ({ x, y, width, height }: Box) => ({
           :data-slot="index"
           :tabindex="index === focused ? 0 : -1"
           :aria-label="fighter.name"
-          @click="chooseSlot(index)"
-          @focus="onSlotFocus(index, $event)"
+          @click="controls.chooseSlot(index)"
+          @focus="controls.onSlotFocus(index, $event)"
         >
           <img class="portrait" :src="fighter.portrait" alt="" draggable="false" />
           <span ref="labels" class="label" aria-hidden="true">
@@ -290,8 +207,8 @@ const boxStyle = ({ x, y, width, height }: Box) => ({
           :data-slot="randomIndex"
           :tabindex="randomIndex === focused ? 0 : -1"
           aria-label="Random"
-          @click="chooseSlot(randomIndex)"
-          @focus="onSlotFocus(randomIndex, $event)"
+          @click="controls.chooseSlot(randomIndex)"
+          @focus="controls.onSlotFocus(randomIndex, $event)"
         >
           <span class="random-face">
             <span v-if="randomBox.width > 200" class="question ult-outlined" data-text="?">?</span>
@@ -303,9 +220,9 @@ const boxStyle = ({ x, y, width, height }: Box) => ({
     <UltimatePanels
       :selection="selection"
       :fighters="fightersById"
-      @add="update(addPanel)"
-      @remove="update(removePanel)"
-      @cycle="(index) => update((current) => cycleKind(current, index))"
+      @add="controls.addPanel"
+      @remove="controls.removePanel"
+      @cycle="controls.cycleKind"
     />
 
     <Transition name="banner">
@@ -318,12 +235,12 @@ const boxStyle = ({ x, y, width, height }: Box) => ({
         :key="token.index"
         type="button"
         class="token"
-        :data-slot="token.pick ? slotOf(token.pick) : undefined"
+        :data-on-slot="token.slot === -1 ? undefined : token.slot"
         :aria-label="tokenLabel(token)"
         :style="{ left: `${token.x - token.size / 2}px`, top: `${token.y - token.size / 2}px` }"
-        @pointerdown="pressToken(token, $event)"
-        @keydown.enter.prevent="keyToken(token)"
-        @keydown.space.prevent="keyToken(token)"
+        @pointerdown="controls.pressToken(token.index, $event)"
+        @keydown.enter.prevent="controls.keyToken(token.index)"
+        @keydown.space.prevent="controls.keyToken(token.index)"
       >
         <UltimateToken :colour="token.colour" :tag="token.tag" :size="token.size" />
       </button>
