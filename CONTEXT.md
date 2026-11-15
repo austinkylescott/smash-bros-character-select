@@ -33,16 +33,20 @@ A read-only roster matching the fighters and order of a real Smash game.
 _Avoid_: Default roster, real roster
 
 **Template**:
-The visual style, layout rules and behaviour of one Smash game's character select screen. Any roster can be shown in any template.
+The visual style, layout rules and behaviour of one Smash game's character select screen. There are six: Smash 64, Melee, Brawl, Smash for 3DS, Smash for Wii U and Ultimate. Any roster can be shown in any template.
 _Avoid_: Theme, skin, style
 
 **Screen**:
 A roster rendered in a template.
 _Avoid_: Scene, board, page
 
-**Smash 4**:
-The template covering Super Smash Bros. for Wii U and 3DS, based on the Wii U screen.
-_Avoid_: Wii U template, 3DS template, Sm4sh
+**Smash for Wii U**:
+The template based on the Wii U game's screen: a band of named portraits above the player panels.
+_Avoid_: Smash 4, Sm4sh
+
+**Smash for 3DS**:
+The template based on the 3DS game's screen: a grid of unnamed portraits and separate player cards, shown as the handheld's two displays stacked.
+_Avoid_: Smash 4, Sm4sh
 
 **Portrait**:
 The image of a fighter. Official fighters have one per game they appeared in and fall back to the nearest game that has them; other fighters have one source image cropped for the slot and for the player panel.
