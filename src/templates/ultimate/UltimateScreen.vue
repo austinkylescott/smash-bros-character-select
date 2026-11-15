@@ -1,4 +1,7 @@
 <script setup lang="ts">
+// Rubik stands in for Rodin, the typeface Ultimate's menus use.
+import "@fontsource/rubik/800.css";
+import "@fontsource/rubik/900.css";
 import { computed, nextTick, onMounted, ref, watch } from "vue";
 
 import type { ScreenRoster } from "../screen";
@@ -98,7 +101,7 @@ watch(() => props.roster, squeezeLabels);
 <style scoped>
 .ultimate {
   --ult-font:
-    "FOT-Rodin Pro", "Rodin Pro", "Arial Black", "Inter", "Helvetica Neue", Arial, sans-serif;
+    "FOT-Rodin Pro", "Rodin Pro", "Rubik", "Arial Black", "Helvetica Neue", Arial, sans-serif;
   position: absolute;
   inset: 0;
   overflow: hidden;
