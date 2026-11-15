@@ -13,6 +13,7 @@ import {
   grab,
   isReady,
   type Pick,
+  press,
   RANDOM,
   release,
   removePanel,
@@ -24,7 +25,7 @@ import { useHand } from "../../selection/useHand";
 import type { ScreenRoster } from "../screen";
 import { ULTIMATE_STAGE, ultimateGrid } from "./grid";
 import { slotLabel } from "./label";
-import { ultimatePanels } from "./panels";
+import { ultimatePanels, ultimateTokenHome } from "./panels";
 import { playerColour, playerTag } from "./players";
 import UltimateBanner from "./UltimateBanner.vue";
 import UltimateHand from "./UltimateHand.vue";
@@ -76,11 +77,7 @@ function slotOf(pick: Pick): number {
 const centre = (box: Box) => ({ x: box.x + box.width / 2, y: box.y + box.height / 2 });
 
 const panelBoxes = computed(() => ultimatePanels(selection.value.panels.length));
-/** Where a token waits in its panel when it is neither held nor on a slot: on the glove. */
-function homeOf(index: number) {
-  const box = panelBoxes.value[index]!;
-  return { x: box.x + 10 + (box.width - 20) * 0.66, y: box.y + 140 };
-}
+const homeOf = (index: number) => ultimateTokenHome(panelBoxes.value[index]!);
 
 const look = (index: number) => {
   const { kind } = selection.value.panels[index]!;
@@ -158,6 +155,7 @@ const heldLook = computed(() =>
   selection.value.held === null ? undefined : look(selection.value.held),
 );
 
+/** The pick under a dropped token: a slot, or a token sitting on one. */
 function pickUnder(target: Element | null): Pick | undefined {
   const slot = target?.closest<HTMLElement>("[data-slot]");
   return slot ? slotPicks.value[Number(slot.dataset.slot)] : undefined;
@@ -167,12 +165,8 @@ function pickUnder(target: Element | null): Pick | undefined {
 function pressToken(token: Token, event: PointerEvent) {
   if (event.button !== 0) return;
   event.preventDefault();
-  const { pick } = token;
-  if (selection.value.held !== null && pick) {
-    update((current) => choose(current, pick));
-    return;
-  }
-  update((current) => grab(current, token.index));
+  update((current) => press(current, token.index));
+  if (selection.value.held !== token.index) return;
   hand.drag(event, (target) => {
     const pick = pickUnder(target);
     if (pick) update((current) => drop(current, pick));
@@ -216,10 +210,8 @@ function onSlotFocus(index: number, event: FocusEvent) {
 }
 
 function keyToken(token: Token) {
-  const { pick } = token;
-  if (selection.value.held !== null && pick) update((current) => choose(current, pick));
-  else update((current) => grab(current, token.index));
-  const slot = pick ? slotOf(pick) : -1;
+  update((current) => press(current, token.index));
+  const slot = token.pick ? slotOf(token.pick) : -1;
   focusSlot(slot === -1 ? focused.value : slot);
 }
 
@@ -326,6 +318,7 @@ const boxStyle = ({ x, y, width, height }: Box) => ({
         :key="token.index"
         type="button"
         class="token"
+        :data-slot="token.pick ? slotOf(token.pick) : undefined"
         :aria-label="tokenLabel(token)"
         :style="{ left: `${token.x - token.size / 2}px`, top: `${token.y - token.size / 2}px` }"
         @pointerdown="pressToken(token, $event)"

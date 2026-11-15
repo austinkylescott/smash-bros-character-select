@@ -15,3 +15,8 @@ export function ultimatePanels(count: number): Box[] {
     height: BAND.height,
   }));
 }
+
+/** Where a token waits in its panel when it is neither held nor on a slot: on the panel's glove. */
+export function ultimateTokenHome(panel: Box) {
+  return { x: panel.x + 10 + (panel.width - 20) * 0.66, y: panel.y + 140 };
+}

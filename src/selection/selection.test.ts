@@ -7,6 +7,7 @@ import {
   drop,
   grab,
   isReady,
+  press,
   RANDOM,
   release,
   removePanel,
@@ -162,5 +163,27 @@ describe("selection", () => {
 
     expect(alone.panels[1]!.kind).toBe("human");
     expect(isReady(cycleKind(cycleKind(alone, 1), 1))).toBe(false);
+  });
+
+  it("presses a token with an empty hand to pick it up", () => {
+    const picked = drop(startSelection(ultimate), { fighter: "mario" });
+
+    expect(press(picked, 1).held).toBe(1);
+  });
+
+  it("presses a token on a fighter while holding one to drop the held token on that fighter", () => {
+    const selection = press(startSelection(ultimate), 1);
+
+    expect(selection.held).toBeNull();
+    expect(selection.panels[0]!.pick).toBe(RANDOM);
+    expect(selection.panels[1]!.pick).toBe(RANDOM);
+  });
+
+  it("presses a token waiting in its panel while holding one to swap them", () => {
+    const twoHumans = startSelection({ ...ultimate, startingPanels: ["human", "human"] });
+    const selection = press(twoHumans, 1);
+
+    expect(selection.held).toBe(1);
+    expect(selection.panels[0]!.pick).toBeNull();
   });
 });

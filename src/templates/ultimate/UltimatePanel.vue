@@ -66,7 +66,7 @@ watch(
       '--s': scale,
     }"
   >
-    <div class="face">
+    <div class="backing">
       <img
         v-if="fighter && panel.kind !== 'off'"
         class="portrait"
@@ -108,7 +108,7 @@ watch(
   background: #141414;
 }
 
-.face {
+.backing {
   position: absolute;
   inset: 10px 10px 0;
   overflow: hidden;
@@ -123,13 +123,13 @@ watch(
     );
 }
 
-.cpu .face {
+.cpu .backing {
   background:
     linear-gradient(118deg, transparent 0 46%, rgb(0 0 0 / 14%) 46% 52%, transparent 52%),
     linear-gradient(118deg, #f2f2f2 0 22%, #c8c8c8 22% 60%, #a8a8a8 60%);
 }
 
-.off .face {
+.off .backing {
   background: linear-gradient(118deg, #3a3a3a 0 30%, #2c2c2c 30%);
 }
 

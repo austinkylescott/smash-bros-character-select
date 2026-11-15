@@ -1,5 +1,5 @@
 <script setup lang="ts">
-/** A player's token: a coin in their colour with their tag, as Ultimate draws it. */
+/** A player's token, round, in their colour and with their tag, as Ultimate draws it. */
 defineProps<{ colour: string; tag: string; size: number }>();
 </script>
 

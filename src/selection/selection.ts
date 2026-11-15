@@ -125,3 +125,14 @@ export function cycleKind(selection: Selection, index: number): Selection {
     panels: withPanel(selection, index, next),
   };
 }
+
+/**
+ * What pressing a player's token does, by click, tap or Enter. With a token in the hand, pressing
+ * one that sits on a fighter drops the held token on that fighter too, since the press lands on
+ * it; otherwise the hand picks the pressed token up.
+ */
+export function press(selection: Selection, index: number): Selection {
+  const pick = selection.panels[index]?.pick;
+  if (selection.held !== null && pick) return drop(selection, pick);
+  return grab(selection, index);
+}
