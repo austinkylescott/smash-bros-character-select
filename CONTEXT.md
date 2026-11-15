@@ -13,8 +13,20 @@ Any media property (game, anime, film, TV, comic) whose cast can be brought in a
 _Avoid_: Series, universe, category
 
 **Roster**:
-An ordered collection of fighters that a user creates, saves and shares. A roster is independent of any template.
+An ordered collection of 1 to 120 distinct fighters, with a name, that a user creates, saves and shares. A roster may mix franchises and is independent of any template, though it names a default one.
 _Avoid_: List, tier list, lineup
+
+**Pool**:
+The holding tray of fighters pulled from a franchise, from which a user picks fighters into a roster.
+_Avoid_: Tray, bank, unranked, cast list
+
+**Shared Roster**:
+A frozen copy of a roster published at a link. Later edits to the original do not change it.
+_Avoid_: Snapshot, published list, public roster
+
+**Remix**:
+To copy a shared roster into one's own rosters for editing.
+_Avoid_: Fork, clone, duplicate
 
 **Official Roster**:
 A read-only roster matching the fighters and order of a real Smash game.
