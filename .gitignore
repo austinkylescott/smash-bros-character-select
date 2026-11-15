@@ -37,11 +37,8 @@ __screenshots__/
 
 # Vite
 *.timestamp-*-*.mjs
-<<<<<<< HEAD
 .vercel
 .env*
-=======
 
 # Official assets fetched from the private bucket (ADR 0005). Never commit these.
 /src/asset-layer/official/
->>>>>>> 33741b0b0d2d7e6ba2e12ebd3d3a0f3bf5df7c32
