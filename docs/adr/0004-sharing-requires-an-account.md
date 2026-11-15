@@ -1,0 +1,3 @@
+# Sharing requires an account; everything else does not
+
+Viewing screens, creating rosters, saving them in the browser and remixing shared rosters all work without an account. Publishing a shared roster or saving to the server requires signing in (Discord or Google only, no passwords), because sharing makes the site host user-chosen images and anonymous uploads are the main abuse route. On sign-in, rosters saved in the browser move into the account. Moderation before the gallery is deliberately minimal: upload format and size limits, a per-account cap on shared rosters, a report link, and admin deletion and suspension.
