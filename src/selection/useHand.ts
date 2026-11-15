@@ -36,7 +36,8 @@ function swallowTrailingClick() {
   setTimeout(stop, CLICK_DELAY);
 }
 
-export function useHand(root: Ref<HTMLElement | null>, stageWidth: number, start: Point) {
+/** `stageWidth` is read on every pointer event, so the stage may change size under the hand. */
+export function useHand(root: Ref<HTMLElement | null>, stageWidth: () => number, start: Point) {
   const position = ref<Point>(start);
   const input = ref<HandInput>("mouse");
   /**
@@ -46,7 +47,7 @@ export function useHand(root: Ref<HTMLElement | null>, stageWidth: number, start
   const inside = ref(true);
   function toStage(event: { clientX: number; clientY: number }): Point {
     const rect = root.value!.getBoundingClientRect();
-    const scale = rect.width / stageWidth;
+    const scale = rect.width / stageWidth();
     return { x: (event.clientX - rect.left) / scale, y: (event.clientY - rect.top) / scale };
   }
 

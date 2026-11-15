@@ -3,6 +3,9 @@ export interface Size {
   readonly height: number;
 }
 
+/** Which way a viewport is held. A square one counts as landscape. */
+export type Orientation = "landscape" | "portrait";
+
 export interface StageFit {
   /** One scale for both axes, so the stage is never stretched. */
   readonly scale: number;
@@ -20,3 +23,7 @@ export function fitStage(viewport: Size, stage: Size): StageFit {
     y: (viewport.height - stage.height * scale) / 2,
   };
 }
+
+/** Whether a viewport is taller than it is wide. */
+export const orientationOf = (viewport: Size): Orientation =>
+  viewport.height > viewport.width ? "portrait" : "landscape";

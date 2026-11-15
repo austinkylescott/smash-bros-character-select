@@ -29,8 +29,8 @@ import { type Point, useHand } from "./useHand";
 export interface SelectionLayout {
   /** The screen's root element, which the hand moves over. */
   readonly root: Ref<HTMLElement | null>;
-  /** The width of the template's stage, in its own pixels. */
-  readonly stageWidth: number;
+  /** The width of the template's stage, in its own pixels. A template may swap stages. */
+  readonly stageWidth: () => number;
   readonly rules: SelectionRules;
   /** Each slot's box on the stage, in slot order. */
   readonly slots: () => readonly Box[];
@@ -65,12 +65,16 @@ export function useSelectionControls(layout: SelectionLayout) {
   const slotOf = (pick: Pick) => picks().findIndex((slot) => samePick(slot, pick));
 
   // The hand starts on the first human's token, in their panel, as Ultimate's does.
-  const firstHuman = selection.value.panels.findIndex((panel) => panel.kind === "human");
-  const hand = useHand(
-    root,
-    layout.stageWidth,
-    layout.homeOf(Math.max(0, firstHuman), selection.value),
-  );
+  const firstHumansToken = () => {
+    const firstHuman = selection.value.panels.findIndex((panel) => panel.kind === "human");
+    return layout.homeOf(Math.max(0, firstHuman), selection.value);
+  };
+  const hand = useHand(root, layout.stageWidth, firstHumansToken());
+
+  /** Puts the hand back on the first human's token, for when the stage it was on is swapped. */
+  function rehome() {
+    hand.position.value = firstHumansToken();
+  }
 
   /** The pick under a dropped token: a slot, or a token sitting on one. */
   function pickUnder(target: Element | null): Pick | undefined {
@@ -145,6 +149,7 @@ export function useSelectionControls(layout: SelectionLayout) {
     onGridKey,
     onSlotFocus,
     onKey,
+    rehome,
     addPanel: () => update(addPanel),
     removePanel: () => update(removePanel),
     cycleKind: (panel: number) => update((current) => cycleKind(current, panel)),

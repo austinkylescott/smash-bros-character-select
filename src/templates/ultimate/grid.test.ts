@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vite-plus/test";
 
+import { fitStage } from "../stage";
 import { ultimateGrid } from "./grid";
+import { ULTIMATE_PORTRAIT } from "./layout";
 
 // Expected positions are measured from the reference screenshots in docs/references/ultimate/,
 // scaled to the 1920x1080 stage. Measurements are good to a couple of pixels.
@@ -82,4 +84,34 @@ describe("Ultimate fighter grid", () => {
   it("rejects an empty grid", () => {
     expect(() => ultimateGrid(0)).toThrow(/at least one slot/);
   });
+});
+
+describe("Ultimate fighter grid on a phone held upright", () => {
+  // The smallest phone the portrait layout supports: 360px wide, 16:9.
+  const phone = fitStage({ width: 360, height: 640 }, ULTIMATE_PORTRAIT.stage);
+
+  it("keeps every slot of the full roster big enough to tap at 360px wide", () => {
+    const { slots } = ultimateGrid(87, ULTIMATE_PORTRAIT);
+
+    expect(slots).toHaveLength(87);
+    for (const slot of slots) {
+      // In CSS pixels on the phone. 24px is WCAG's minimum target size.
+      expect(slot.width * phone.scale).toBeGreaterThanOrEqual(40);
+      expect(slot.height * phone.scale).toBeGreaterThanOrEqual(28);
+    }
+  });
+
+  it.each([1, 9, 75, 87, 121])(
+    "fits %i slots across the stage, above the player panels",
+    (count) => {
+      const { slots } = ultimateGrid(count, ULTIMATE_PORTRAIT);
+
+      for (const slot of slots) {
+        expect(slot.x).toBeGreaterThanOrEqual(0);
+        expect(slot.x + slot.width).toBeLessThanOrEqual(ULTIMATE_PORTRAIT.stage.width + 1e-9);
+        expect(slot.y).toBeGreaterThanOrEqual(84);
+        expect(slot.y + slot.height).toBeLessThanOrEqual(ULTIMATE_PORTRAIT.floorTop + 1e-9);
+      }
+    },
+  );
 });
