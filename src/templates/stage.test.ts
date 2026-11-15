@@ -21,8 +21,8 @@ describe("fitting a template's stage to the viewport", () => {
 });
 
 describe("which way a viewport is held", () => {
-  it("is portrait for a phone held upright", () => {
-    expect(orientationOf({ width: 360, height: 640 })).toBe("portrait");
+  it("is upright for a phone held upright", () => {
+    expect(orientationOf({ width: 360, height: 640 })).toBe("upright");
   });
 
   it("is landscape for a phone turned on its side, or a desktop window", () => {

@@ -4,7 +4,7 @@ import { computed } from "vue";
 
 import { RANDOM, type Selection } from "../../selection/selection";
 import type { ScreenFighter } from "../screen";
-import type { UltimateLayout } from "./layout";
+import { TAB, type UltimateLayout } from "./layout";
 import { ultimatePanels } from "./panels";
 import UltimatePanel from "./UltimatePanel.vue";
 
@@ -43,7 +43,12 @@ const fighterOf = (index: number) => {
   <button
     type="button"
     class="tab add"
-    :style="{ left: `${layout.tabs.x}px`, top: `${layout.tabs.addTop}px` }"
+    :style="{
+      left: `${layout.tabs.x}px`,
+      top: `${layout.tabs.addTop}px`,
+      width: `${TAB.width}px`,
+      height: `${TAB.addHeight}px`,
+    }"
     aria-label="Add a player"
     :disabled="!canAdd"
     @click="$emit('add')"
@@ -59,7 +64,12 @@ const fighterOf = (index: number) => {
   <button
     type="button"
     class="tab remove"
-    :style="{ left: `${layout.tabs.x}px`, top: `${layout.tabs.removeTop}px` }"
+    :style="{
+      left: `${layout.tabs.x}px`,
+      top: `${layout.tabs.removeTop}px`,
+      width: `${TAB.width}px`,
+      height: `${TAB.removeHeight}px`,
+    }"
     aria-label="Remove a player"
     :disabled="!canRemove"
     @click="$emit('remove')"
@@ -92,7 +102,6 @@ const fighterOf = (index: number) => {
 
 .tab {
   position: absolute;
-  width: 62px;
   padding: 6px;
   border: 0;
   background: #141414;
@@ -105,7 +114,6 @@ const fighterOf = (index: number) => {
 }
 
 .add {
-  height: 130px;
   clip-path: polygon(0 0, 100% 22%, 100% 100%, 0 100%);
 }
 
@@ -113,10 +121,6 @@ const fighterOf = (index: number) => {
   background: #f5f5f5;
   fill: #f08a1c;
   clip-path: polygon(0 0, 100% 20%, 100% 100%, 0 100%);
-}
-
-.remove {
-  height: 136px;
 }
 
 .remove svg {

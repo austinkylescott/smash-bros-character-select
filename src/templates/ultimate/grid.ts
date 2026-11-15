@@ -43,14 +43,14 @@ export function ultimateGrid(
   slotCount: number,
   layout: UltimateLayout = ULTIMATE_LANDSCAPE,
 ): UltimateGrid {
-  const band = layout.gridArea;
+  const { gridArea } = layout;
   if (!Number.isInteger(slotCount) || slotCount < 1)
     throw new Error(`A grid needs at least one slot, not ${slotCount}.`);
 
   let columns = 1;
-  let best = slotSize(slotCount, 1, band);
+  let best = slotSize(slotCount, 1, gridArea);
   for (let candidate = 2; candidate <= slotCount; candidate++) {
-    const size = slotSize(slotCount, candidate, band);
+    const size = slotSize(slotCount, candidate, gridArea);
     const area = size.width * size.height;
     const bestArea = best.width * best.height;
     const sameArea = Math.abs(area - bestArea) <= 1e-6;
@@ -61,12 +61,12 @@ export function ultimateGrid(
   }
 
   const { rows, width, height } = best;
-  const top = band.y + (band.height - rows * height) / 2;
+  const top = gridArea.y + (gridArea.height - rows * height) / 2;
   const slots: GridSlot[] = [];
   for (let index = 0; index < slotCount; index++) {
     const row = Math.floor(index / columns);
     const inRow = Math.min(columns, slotCount - row * columns);
-    const left = band.x + (band.width - inRow * width) / 2;
+    const left = gridArea.x + (gridArea.width - inRow * width) / 2;
     slots.push({ x: left + (index % columns) * width, y: top + row * height, width, height });
   }
   return { columns, slots };

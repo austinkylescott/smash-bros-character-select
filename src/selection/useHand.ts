@@ -63,18 +63,32 @@ export function useHand(root: Ref<HTMLElement | null>, stageWidth: () => number,
     input.value = "keyboard";
   }
 
+  let stopDragging: (() => void) | undefined;
+  /**
+   * Stops following a drag without dropping, so the token stays held. For when the stage is
+   * swapped mid-drag: where the press began means nothing on the new stage.
+   */
+  function cancelDrag() {
+    stopDragging?.();
+  }
+
   /**
    * Follows a press that has just picked up a token. If it is dragged and let go, `onDrop` is
    * given the element under the pointer; a press let go where it started does nothing.
    */
   function drag(event: PointerEvent, onDrop: (target: Element | null) => void) {
+    cancelDrag();
     follow(event);
     const from = toStage(event);
     const move = (moved: PointerEvent) => follow(moved);
-    const end = (ended: PointerEvent) => {
+    const stop = () => {
       window.removeEventListener("pointermove", move);
       window.removeEventListener("pointerup", end);
       window.removeEventListener("pointercancel", end);
+      stopDragging = undefined;
+    };
+    const end = (ended: PointerEvent) => {
+      stop();
       swallowTrailingClick();
       const to = toStage(ended);
       if (
@@ -87,6 +101,7 @@ export function useHand(root: Ref<HTMLElement | null>, stageWidth: () => number,
     window.addEventListener("pointermove", move);
     window.addEventListener("pointerup", end);
     window.addEventListener("pointercancel", end);
+    stopDragging = stop;
   }
 
   return {
@@ -97,5 +112,6 @@ export function useHand(root: Ref<HTMLElement | null>, stageWidth: () => number,
     leave: () => (inside.value = false),
     moveTo,
     drag,
+    cancelDrag,
   };
 }

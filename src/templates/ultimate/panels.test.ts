@@ -1,7 +1,7 @@
-import type { Box } from "../../selection/navigate";
 import { describe, expect, it } from "vite-plus/test";
 
-import { ULTIMATE_PORTRAIT } from "./layout";
+import type { Box } from "../../selection/navigate";
+import { ULTIMATE_UPRIGHT } from "./layout";
 import { ultimatePanels } from "./panels";
 
 // Measured from docs/references/ultimate/, scaled to the 1920x1080 stage.
@@ -42,7 +42,7 @@ describe("Ultimate player panels on a phone held upright", () => {
     a.x < b.x + b.width && b.x < a.x + a.width && a.y < b.y + b.height && b.y < a.y + a.height;
 
   it("gives each of two players a panel as wide as on Ultimate's own screen, one above the other", () => {
-    const [p1, p2] = ultimatePanels(2, ULTIMATE_PORTRAIT);
+    const [p1, p2] = ultimatePanels(2, ULTIMATE_UPRIGHT);
 
     expect(p1!.width).toBeGreaterThanOrEqual(909);
     expect(p2!.x).toBe(p1!.x);
@@ -52,8 +52,8 @@ describe("Ultimate player panels on a phone held upright", () => {
   it.each([2, 3, 4, 5, 6, 7, 8])(
     "stacks %i panels under the grid, inside the stage and clear of the tabs",
     (count) => {
-      const panels = ultimatePanels(count, ULTIMATE_PORTRAIT);
-      const { stage, floorTop, tabs } = ULTIMATE_PORTRAIT;
+      const panels = ultimatePanels(count, ULTIMATE_UPRIGHT);
+      const { stage, floorTop, tabs } = ULTIMATE_UPRIGHT;
 
       expect(panels).toHaveLength(count);
       for (const [index, panel] of panels.entries()) {

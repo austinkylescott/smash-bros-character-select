@@ -1,8 +1,6 @@
 /** Ultimate's player panels: how 2 to 8 share the band below the grid, in stage pixels. */
 import type { Box } from "../../selection/navigate";
-import { ULTIMATE_LANDSCAPE, type UltimateLayout } from "./layout";
-
-const GAP = 8;
+import { PANEL_GAP as GAP, ULTIMATE_LANDSCAPE, type UltimateLayout } from "./layout";
 
 /**
  * One box per panel, all the same size, filling the layout's band in rows: left to right, then

@@ -65,15 +65,22 @@ export function useSelectionControls(layout: SelectionLayout) {
   const slotOf = (pick: Pick) => picks().findIndex((slot) => samePick(slot, pick));
 
   // The hand starts on the first human's token, in their panel, as Ultimate's does.
-  const firstHumansToken = () => {
-    const firstHuman = selection.value.panels.findIndex((panel) => panel.kind === "human");
-    return layout.homeOf(Math.max(0, firstHuman), selection.value);
-  };
-  const hand = useHand(root, layout.stageWidth, firstHumansToken());
+  const firstHuman = selection.value.panels.findIndex((panel) => panel.kind === "human");
+  const hand = useHand(
+    root,
+    layout.stageWidth,
+    layout.homeOf(Math.max(0, firstHuman), selection.value),
+  );
 
-  /** Puts the hand back on the first human's token, for when the stage it was on is swapped. */
+  /**
+   * For when the stage is swapped: lets go of any drag, keeping the token held, and puts the hand
+   * on the held token's panel, or the first human's.
+   */
   function rehome() {
-    hand.position.value = firstHumansToken();
+    hand.cancelDrag();
+    const { panels, held } = selection.value;
+    const panel = held ?? panels.findIndex((each) => each.kind === "human");
+    hand.position.value = layout.homeOf(Math.max(0, panel), selection.value);
   }
 
   /** The pick under a dropped token: a slot, or a token sitting on one. */
