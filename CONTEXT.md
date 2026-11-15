@@ -27,3 +27,29 @@ _Avoid_: Theme, skin, style
 **Screen**:
 A roster rendered in a template.
 _Avoid_: Scene, board, page
+
+**Smash 4**:
+The template covering Super Smash Bros. for Wii U and 3DS, based on the Wii U screen.
+_Avoid_: Wii U template, 3DS template, Sm4sh
+
+**Portrait**:
+The image of a fighter. Official fighters have one per game they appeared in and fall back to the nearest game that has them; other fighters have one source image cropped for the slot and for the player panel.
+_Avoid_: Face, icon, mugshot, render
+
+**Random Slot**:
+A special slot that picks a fighter at random. Any roster can switch it on or off; it is not a fighter.
+_Avoid_: Random fighter, mystery slot
+
+## Selection
+
+**Hand**:
+The on-screen cursor that picks up and drops tokens.
+_Avoid_: Cursor, pointer, hand selector
+
+**Token**:
+A player's chip, dropped on a fighter to select it for that player.
+_Avoid_: Chip, coin, marker
+
+**Player Panel**:
+The area showing one player's selected fighter. Each template allows as many as its game did, added and removed with that game's own controls.
+_Avoid_: Player slot, player card, player box
