@@ -6,10 +6,13 @@ import { ULTIMATE_STAGE } from "./templates/ultimate/grid";
 import UltimateScreen from "./templates/ultimate/UltimateScreen.vue";
 
 const roster = screenRoster(officialRosters.ultimate, "ultimate");
+
+/** Back leaves the screen for wherever the visitor came from. */
+const back = () => history.back();
 </script>
 
 <template>
   <StageFrame :width="ULTIMATE_STAGE.width" :height="ULTIMATE_STAGE.height">
-    <UltimateScreen :roster="roster" />
+    <UltimateScreen :roster="roster" @back="back" />
   </StageFrame>
 </template>

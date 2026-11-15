@@ -1,10 +1,11 @@
 <script setup lang="ts">
-/** Ultimate's top bar: back and info tabs, and the rules bar. Drawn only; nothing here responds. */
+/** Ultimate's top bar: back and info tabs, and the rules bar. Only Back responds. */
+defineEmits<{ back: [] }>();
 </script>
 
 <template>
-  <div class="top-bar" aria-hidden="true">
-    <svg class="shapes" viewBox="0 0 1920 84" preserveAspectRatio="none">
+  <div class="top-bar">
+    <svg class="shapes" aria-hidden="true" viewBox="0 0 1920 84" preserveAspectRatio="none">
       <defs>
         <linearGradient id="ult-sky" x1="0" x2="1">
           <stop offset="0" stop-color="#fff6c8" />
@@ -38,7 +39,8 @@
     </svg>
 
     <!-- Back: a curled arrow. -->
-    <svg class="icon back" viewBox="0 0 64 56">
+    <button type="button" class="back-button" aria-label="Back" @click="$emit('back')" />
+    <svg class="icon back" viewBox="0 0 64 56" aria-hidden="true">
       <path
         d="M22 6 4 22l18 16V28h14c8 0 13 5 13 11s-5 11-13 11h-8v6h8c12 0 20-8 20-17S48 22 36 22H22z"
         fill="#e2858a"
@@ -48,7 +50,7 @@
       />
     </svg>
     <!-- Info: a closed book. -->
-    <svg class="icon book" viewBox="0 0 44 48">
+    <svg class="icon book" viewBox="0 0 44 48" aria-hidden="true">
       <rect
         x="2"
         y="4"
@@ -62,7 +64,7 @@
       <rect x="2" y="4" width="40" height="8" fill="#f1b4b7" />
     </svg>
 
-    <span class="rules">Solo Battle</span>
+    <span class="rules" aria-hidden="true">Solo Battle</span>
   </div>
 </template>
 
@@ -82,6 +84,26 @@
 
 .icon {
   position: absolute;
+  pointer-events: none;
+}
+
+/* Covers the back tab, up to the dark stripe that divides it from the info tab. */
+.back-button {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 150px;
+  height: 72px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  clip-path: polygon(0 0, 100% 0, 75% 100%, 0 100%);
+}
+
+.back-button:hover,
+.back-button:focus-visible {
+  background: rgb(255 255 255 / 18%);
+  outline: none;
 }
 
 .back {
