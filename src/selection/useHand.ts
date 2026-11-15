@@ -36,7 +36,8 @@ function swallowTrailingClick() {
   setTimeout(stop, CLICK_DELAY);
 }
 
-export function useHand(root: Ref<HTMLElement | null>, stageWidth: number, start: Point) {
+/** `stageWidth` is read on every pointer event, so the stage may change size under the hand. */
+export function useHand(root: Ref<HTMLElement | null>, stageWidth: () => number, start: Point) {
   const position = ref<Point>(start);
   const input = ref<HandInput>("mouse");
   /**
@@ -46,7 +47,7 @@ export function useHand(root: Ref<HTMLElement | null>, stageWidth: number, start
   const inside = ref(true);
   function toStage(event: { clientX: number; clientY: number }): Point {
     const rect = root.value!.getBoundingClientRect();
-    const scale = rect.width / stageWidth;
+    const scale = rect.width / stageWidth();
     return { x: (event.clientX - rect.left) / scale, y: (event.clientY - rect.top) / scale };
   }
 
@@ -62,18 +63,32 @@ export function useHand(root: Ref<HTMLElement | null>, stageWidth: number, start
     input.value = "keyboard";
   }
 
+  let stopDragging: (() => void) | undefined;
+  /**
+   * Stops following a drag without dropping, so the token stays held. For when the stage is
+   * swapped mid-drag: where the press began means nothing on the new stage.
+   */
+  function cancelDrag() {
+    stopDragging?.();
+  }
+
   /**
    * Follows a press that has just picked up a token. If it is dragged and let go, `onDrop` is
    * given the element under the pointer; a press let go where it started does nothing.
    */
   function drag(event: PointerEvent, onDrop: (target: Element | null) => void) {
+    cancelDrag();
     follow(event);
     const from = toStage(event);
     const move = (moved: PointerEvent) => follow(moved);
-    const end = (ended: PointerEvent) => {
+    const stop = () => {
       window.removeEventListener("pointermove", move);
       window.removeEventListener("pointerup", end);
       window.removeEventListener("pointercancel", end);
+      stopDragging = undefined;
+    };
+    const end = (ended: PointerEvent) => {
+      stop();
       swallowTrailingClick();
       const to = toStage(ended);
       if (
@@ -86,6 +101,7 @@ export function useHand(root: Ref<HTMLElement | null>, stageWidth: number, start
     window.addEventListener("pointermove", move);
     window.addEventListener("pointerup", end);
     window.addEventListener("pointercancel", end);
+    stopDragging = stop;
   }
 
   return {
@@ -96,5 +112,6 @@ export function useHand(root: Ref<HTMLElement | null>, stageWidth: number, start
     leave: () => (inside.value = false),
     moveTo,
     drag,
+    cancelDrag,
   };
 }

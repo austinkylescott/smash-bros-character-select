@@ -2,6 +2,12 @@
 /** Ultimate's "Ready to Fight!" banner. Pressing it gives a flourish; there is no battle to start. */
 import { ref } from "vue";
 
+/** Where it crosses the stage, and how much it is scaled down to fit a narrow one. */
+defineProps<{ stageWidth: number; top: number; scale: number }>();
+
+/** The band's own width. It overhangs the stage either side, centred on it. */
+const WIDTH = 2160;
+
 const flourish = ref(false);
 function press() {
   flourish.value = false;
@@ -15,6 +21,7 @@ function press() {
     class="banner"
     :class="{ flourish }"
     data-banner
+    :style="{ left: `${(stageWidth - WIDTH) / 2}px`, top: `${top}px`, '--scale': scale }"
     @click="press"
     @animationend="flourish = false"
   >
@@ -29,15 +36,13 @@ function press() {
 <style scoped>
 .banner {
   position: absolute;
-  left: -120px;
-  top: 300px;
   width: 2160px;
   height: 240px;
   padding: 0;
   border: 0;
   background: transparent;
   font: inherit;
-  transform: rotate(-6deg);
+  transform: rotate(-6deg) scale(var(--scale));
   animation: slide-in 0.28s cubic-bezier(0.2, 0.9, 0.3, 1.2);
 }
 
@@ -121,13 +126,13 @@ function press() {
 
 @keyframes slide-in {
   from {
-    transform: rotate(-6deg) translateX(-110%);
+    transform: rotate(-6deg) scale(var(--scale)) translateX(-110%);
   }
 }
 
 @keyframes flourish {
   30% {
-    transform: rotate(-6deg) scale(1.08);
+    transform: rotate(-6deg) scale(calc(var(--scale) * 1.08));
   }
 }
 

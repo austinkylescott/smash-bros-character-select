@@ -1,22 +1,14 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref } from "vue";
+import { computed } from "vue";
 
-import { fitStage, type StageFit } from "./stage";
+import { fitStage } from "./stage";
+import { useViewport } from "./useViewport";
 
 /** A template's fixed-size stage, scaled to fit the window without distortion. */
 const props = defineProps<{ width: number; height: number }>();
 
-const fitToWindow = (): StageFit =>
-  fitStage({ width: window.innerWidth, height: window.innerHeight }, props);
-
-// Fitted before the first paint, so the stage never flashes at full size.
-const fit = ref(fitToWindow());
-const refit = () => {
-  fit.value = fitToWindow();
-};
-
-onMounted(() => window.addEventListener("resize", refit));
-onBeforeUnmount(() => window.removeEventListener("resize", refit));
+const viewport = useViewport();
+const fit = computed(() => fitStage(viewport.value, props));
 </script>
 
 <template>

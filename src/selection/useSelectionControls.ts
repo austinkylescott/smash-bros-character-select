@@ -29,8 +29,8 @@ import { type Point, useHand } from "./useHand";
 export interface SelectionLayout {
   /** The screen's root element, which the hand moves over. */
   readonly root: Ref<HTMLElement | null>;
-  /** The width of the template's stage, in its own pixels. */
-  readonly stageWidth: number;
+  /** The width of the template's stage, in its own pixels. A template may swap stages. */
+  readonly stageWidth: () => number;
   readonly rules: SelectionRules;
   /** Each slot's box on the stage, in slot order. */
   readonly slots: () => readonly Box[];
@@ -71,6 +71,17 @@ export function useSelectionControls(layout: SelectionLayout) {
     layout.stageWidth,
     layout.homeOf(Math.max(0, firstHuman), selection.value),
   );
+
+  /**
+   * For when the stage is swapped: lets go of any drag, keeping the token held, and puts the hand
+   * on the held token's panel, or the first human's.
+   */
+  function rehome() {
+    hand.cancelDrag();
+    const { panels, held } = selection.value;
+    const panel = held ?? panels.findIndex((each) => each.kind === "human");
+    hand.position.value = layout.homeOf(Math.max(0, panel), selection.value);
+  }
 
   /** The pick under a dropped token: a slot, or a token sitting on one. */
   function pickUnder(target: Element | null): Pick | undefined {
@@ -145,6 +156,7 @@ export function useSelectionControls(layout: SelectionLayout) {
     onGridKey,
     onSlotFocus,
     onKey,
+    rehome,
     addPanel: () => update(addPanel),
     removePanel: () => update(removePanel),
     cycleKind: (panel: number) => update((current) => cycleKind(current, panel)),

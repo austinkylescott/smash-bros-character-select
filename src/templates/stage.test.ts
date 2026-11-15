@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vite-plus/test";
 
-import { fitStage } from "./stage";
+import { fitStage, orientationOf } from "./stage";
 
 const HD = { width: 1920, height: 1080 };
 
@@ -17,5 +17,20 @@ describe("fitting a template's stage to the viewport", () => {
   it("pillarboxes a landscape phone that is wider than 16:9", () => {
     // 432 / 1080 = 0.4, so the stage is 768x432, with 16px either side.
     expect(fitStage({ width: 800, height: 432 }, HD)).toEqual({ scale: 0.4, x: 16, y: 0 });
+  });
+});
+
+describe("which way a viewport is held", () => {
+  it("is upright for a phone held upright", () => {
+    expect(orientationOf({ width: 360, height: 640 })).toBe("upright");
+  });
+
+  it("is landscape for a phone turned on its side, or a desktop window", () => {
+    expect(orientationOf({ width: 640, height: 360 })).toBe("landscape");
+    expect(orientationOf({ width: 1440, height: 900 })).toBe("landscape");
+  });
+
+  it("counts a square viewport as landscape", () => {
+    expect(orientationOf({ width: 800, height: 800 })).toBe("landscape");
   });
 });

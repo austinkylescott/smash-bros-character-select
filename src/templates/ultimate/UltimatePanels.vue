@@ -1,19 +1,21 @@
 <script setup lang="ts">
-/** Ultimate's player panels, 2 to 8 across the bottom, with the "+" and "-" tabs that add and remove them. */
+/** Ultimate's player panels, 2 to 8 below the grid, with the "+" and "-" tabs that add and remove them. */
 import { computed } from "vue";
 
 import { RANDOM, type Selection } from "../../selection/selection";
 import type { ScreenFighter } from "../screen";
+import { TAB, type UltimateLayout } from "./layout";
 import { ultimatePanels } from "./panels";
 import UltimatePanel from "./UltimatePanel.vue";
 
 const props = defineProps<{
   selection: Selection;
   fighters: ReadonlyMap<string, ScreenFighter>;
+  layout: UltimateLayout;
 }>();
 defineEmits<{ add: []; remove: []; cycle: [index: number] }>();
 
-const boxes = computed(() => ultimatePanels(props.selection.panels.length));
+const boxes = computed(() => ultimatePanels(props.selection.panels.length, props.layout));
 const canAdd = computed(() => props.selection.panels.length < props.selection.rules.maxPanels);
 const canRemove = computed(() => props.selection.panels.length > props.selection.rules.minPanels);
 
@@ -24,7 +26,7 @@ const fighterOf = (index: number) => {
 </script>
 
 <template>
-  <div class="floor" aria-hidden="true">
+  <div class="floor" aria-hidden="true" :style="{ top: `${layout.floorTop}px` }">
     <div class="seam" />
   </div>
 
@@ -41,6 +43,12 @@ const fighterOf = (index: number) => {
   <button
     type="button"
     class="tab add"
+    :style="{
+      left: `${layout.tabs.x}px`,
+      top: `${layout.tabs.addTop}px`,
+      width: `${TAB.width}px`,
+      height: `${TAB.addHeight}px`,
+    }"
     aria-label="Add a player"
     :disabled="!canAdd"
     @click="$emit('add')"
@@ -56,6 +64,12 @@ const fighterOf = (index: number) => {
   <button
     type="button"
     class="tab remove"
+    :style="{
+      left: `${layout.tabs.x}px`,
+      top: `${layout.tabs.removeTop}px`,
+      width: `${TAB.width}px`,
+      height: `${TAB.removeHeight}px`,
+    }"
     aria-label="Remove a player"
     :disabled="!canRemove"
     @click="$emit('remove')"
@@ -73,7 +87,7 @@ const fighterOf = (index: number) => {
 <style scoped>
 .floor {
   position: absolute;
-  inset: 662px 0 0;
+  inset: auto 0 0;
   background:
     linear-gradient(115deg, transparent 0 52%, rgb(255 255 255 / 18%) 52% 70%, transparent 70%),
     linear-gradient(90deg, #4b2bb0, #2f6fd8 28%, #5fd0ea 55%, #d9f4f6 80%, #fff);
@@ -88,8 +102,6 @@ const fighterOf = (index: number) => {
 
 .tab {
   position: absolute;
-  left: 1844px;
-  width: 62px;
   padding: 6px;
   border: 0;
   background: #141414;
@@ -102,8 +114,6 @@ const fighterOf = (index: number) => {
 }
 
 .add {
-  top: 806px;
-  height: 130px;
   clip-path: polygon(0 0, 100% 22%, 100% 100%, 0 100%);
 }
 
@@ -111,11 +121,6 @@ const fighterOf = (index: number) => {
   background: #f5f5f5;
   fill: #f08a1c;
   clip-path: polygon(0 0, 100% 20%, 100% 100%, 0 100%);
-}
-
-.remove {
-  top: 944px;
-  height: 136px;
 }
 
 .remove svg {

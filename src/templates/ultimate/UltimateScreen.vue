@@ -8,8 +8,9 @@ import type { Box } from "../../selection/navigate";
 import { type Pick, RANDOM, type SelectionRules } from "../../selection/selection";
 import { useSelectionControls } from "../../selection/useSelectionControls";
 import type { ScreenRoster } from "../screen";
-import { ULTIMATE_STAGE, ultimateGrid } from "./grid";
+import { ultimateGrid } from "./grid";
 import { slotLabel } from "./label";
+import type { UltimateLayout } from "./layout";
 import { ultimatePanels, ultimateTokenHome } from "./panels";
 import { playerColour, playerTag } from "./players";
 import UltimateBanner from "./UltimateBanner.vue";
@@ -18,15 +19,18 @@ import UltimatePanels from "./UltimatePanels.vue";
 import UltimateToken from "./UltimateToken.vue";
 import UltimateTopBar from "./UltimateTopBar.vue";
 
-/** The Ultimate template: renders any roster as Ultimate's character select screen. */
-const props = defineProps<{ roster: ScreenRoster }>();
+/**
+ * The Ultimate template: renders any roster as Ultimate's character select screen, on whichever
+ * stage the layout gives. Swapping the layout keeps every pick.
+ */
+const props = defineProps<{ roster: ScreenRoster; layout: UltimateLayout }>();
 defineEmits<{ back: [] }>();
 
 /** Ultimate starts with Player 1 and a CPU, and seats up to eight. */
 const RULES: SelectionRules = { minPanels: 2, maxPanels: 8, startingPanels: ["human", "cpu"] };
 
 const grid = computed(() =>
-  ultimateGrid(props.roster.fighters.length + (props.roster.randomSlot ? 1 : 0)),
+  ultimateGrid(props.roster.fighters.length + (props.roster.randomSlot ? 1 : 0), props.layout),
 );
 
 const fighterSlots = computed(() =>
@@ -49,12 +53,12 @@ const fightersById = computed(() => new Map(props.roster.fighters.map((f) => [f.
 
 /** Where a panel's token waits in it, on the glove, with this many panels on screen. */
 const tokenHome = (panel: number, panelCount: number) =>
-  ultimateTokenHome(ultimatePanels(panelCount)[panel]!);
+  ultimateTokenHome(ultimatePanels(panelCount, props.layout)[panel]!);
 
 const root = ref<HTMLElement | null>(null);
 const controls = useSelectionControls({
   root,
-  stageWidth: ULTIMATE_STAGE.width,
+  stageWidth: () => props.layout.stage.width,
   rules: RULES,
   slots: () => grid.value.slots,
   picks: () => slotPicks.value,
@@ -153,7 +157,8 @@ onMounted(() => {
   void squeezeLabels();
   void document.fonts?.ready.then(squeezeLabels);
 });
-watch(() => props.roster, squeezeLabels);
+watch(grid, squeezeLabels);
+watch(() => props.layout, controls.rehome);
 
 const boxStyle = ({ x, y, width, height }: Box) => ({
   left: `${x}px`,
@@ -173,8 +178,8 @@ const boxStyle = ({ x, y, width, height }: Box) => ({
     @pointerleave="hand.leave"
     @keydown="controls.onKey"
   >
-    <div class="backdrop" />
-    <UltimateTopBar @back="$emit('back')" />
+    <div class="backdrop" :style="{ height: `${layout.floorTop}px` }" />
+    <UltimateTopBar :width="layout.stage.width" @back="$emit('back')" />
 
     <ol class="grid" aria-label="Fighters" @keydown="controls.onGridKey">
       <li
@@ -220,13 +225,14 @@ const boxStyle = ({ x, y, width, height }: Box) => ({
     <UltimatePanels
       :selection="selection"
       :fighters="fightersById"
+      :layout="layout"
       @add="controls.addPanel"
       @remove="controls.removePanel"
       @cycle="controls.cycleKind"
     />
 
     <Transition name="banner">
-      <UltimateBanner v-if="ready" />
+      <UltimateBanner v-if="ready" :stage-width="layout.stage.width" v-bind="layout.banner" />
     </Transition>
 
     <div class="tokens">
@@ -301,7 +307,7 @@ const boxStyle = ({ x, y, width, height }: Box) => ({
 
 .backdrop {
   position: absolute;
-  inset: 0 0 400px;
+  inset: 0 0 auto;
   background:
     repeating-linear-gradient(
       115deg,

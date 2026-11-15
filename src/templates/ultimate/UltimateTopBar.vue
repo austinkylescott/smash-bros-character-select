@@ -1,11 +1,15 @@
 <script setup lang="ts">
-/** Ultimate's top bar: back and info tabs, and the rules bar. Only Back responds. */
+/**
+ * Ultimate's top bar: back and info tabs, and the rules bar. Only Back responds. The sky and red
+ * band run on to the right edge of however wide a stage it is on.
+ */
+defineProps<{ width: number }>();
 defineEmits<{ back: [] }>();
 </script>
 
 <template>
   <div class="top-bar">
-    <svg class="shapes" aria-hidden="true" viewBox="0 0 1920 84" preserveAspectRatio="none">
+    <svg class="shapes" aria-hidden="true" :viewBox="`0 0 ${width} 84`" preserveAspectRatio="none">
       <defs>
         <linearGradient id="ult-sky" x1="0" x2="1">
           <stop offset="0" stop-color="#fff6c8" />
@@ -23,8 +27,8 @@ defineEmits<{ back: [] }>();
       </defs>
 
       <!-- The bright sky and red band to the right of the rules bar. -->
-      <polygon points="960,0 1920,0 1920,8 980,26" fill="url(#ult-sky)" />
-      <polygon points="980,26 1920,8 1920,44 972,46" fill="url(#ult-red)" />
+      <polygon :points="`960,0 ${width},0 ${width},8 980,26`" fill="url(#ult-sky)" />
+      <polygon :points="`980,26 ${width},8 ${width},44 972,46`" fill="url(#ult-red)" />
 
       <!-- Back and info tabs. -->
       <polygon points="0,0 312,0 286,72 0,72" fill="url(#ult-red)" />

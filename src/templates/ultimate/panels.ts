@@ -1,18 +1,22 @@
 /** Ultimate's player panels: how 2 to 8 share the band below the grid, in stage pixels. */
 import type { Box } from "../../selection/navigate";
+import { PANEL_GAP as GAP, ULTIMATE_LANDSCAPE, type UltimateLayout } from "./layout";
 
-/** The band the panels fill, left of the add and remove tabs. */
-const BAND = { x: 14, y: 694, width: 1826, height: 386 } as const;
-const GAP = 8;
-
-/** One box per panel, left to right, all the same width. */
-export function ultimatePanels(count: number): Box[] {
-  const width = (BAND.width - GAP * (count - 1)) / count;
+/**
+ * One box per panel, all the same size, filling the layout's band in rows: left to right, then
+ * top to bottom.
+ */
+export function ultimatePanels(count: number, layout: UltimateLayout = ULTIMATE_LANDSCAPE): Box[] {
+  const band = layout.panelBand;
+  const columns = layout.panelColumns(count);
+  const rows = Math.ceil(count / columns);
+  const width = (band.width - GAP * (columns - 1)) / columns;
+  const height = (band.height - GAP * (rows - 1)) / rows;
   return Array.from({ length: count }, (_, index) => ({
-    x: BAND.x + index * (width + GAP),
-    y: BAND.y,
+    x: band.x + (index % columns) * (width + GAP),
+    y: band.y + Math.floor(index / columns) * (height + GAP),
     width,
-    height: BAND.height,
+    height,
   }));
 }
 

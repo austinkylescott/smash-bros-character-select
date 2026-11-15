@@ -1,13 +1,10 @@
 /**
  * Ultimate's fighter grid: how any number of slots, from 1 to 121, reflows into the band
- * between the top bar and the player panels, in 1920x1080 stage pixels.
+ * between the top bar and the player panels, in stage pixels.
  */
+import type { Box } from "../../selection/navigate";
+import { ULTIMATE_LANDSCAPE, type UltimateLayout } from "./layout";
 
-/** Ultimate's stage, in pixels. Everything in the template is laid out on it. */
-export const ULTIMATE_STAGE = { width: 1920, height: 1080 } as const;
-
-/** The band the grid fills. */
-const AREA = { x: 24, y: 84, width: 1872, height: 576 } as const;
 /** Slots never grow wider than the starter screen's, where nine slots share two rows. */
 const MAX_SLOT_WIDTH = 302;
 /** Slot width over height. Few slots are squarer, many are wider. */
@@ -28,10 +25,10 @@ export interface UltimateGrid {
 }
 
 /** The largest slot that fits a column count, kept within Ultimate's proportions. */
-function slotSize(slotCount: number, columns: number) {
+function slotSize(slotCount: number, columns: number, area: Box) {
   const rows = Math.ceil(slotCount / columns);
-  let width = Math.min(AREA.width / columns, MAX_SLOT_WIDTH);
-  let height = AREA.height / rows;
+  let width = Math.min(area.width / columns, MAX_SLOT_WIDTH);
+  let height = area.height / rows;
   if (width / height > MAX_ASPECT) width = height * MAX_ASPECT;
   if (width / height < MIN_ASPECT) height = width / MIN_ASPECT;
   return { rows, width, height };
@@ -42,14 +39,18 @@ function slotSize(slotCount: number, columns: number) {
  * fewest columns, so short rosters spread out in a line before they stack.
  * Full rows sit in the middle of the band; a short last row is centred under them.
  */
-export function ultimateGrid(slotCount: number): UltimateGrid {
+export function ultimateGrid(
+  slotCount: number,
+  layout: UltimateLayout = ULTIMATE_LANDSCAPE,
+): UltimateGrid {
+  const { gridArea } = layout;
   if (!Number.isInteger(slotCount) || slotCount < 1)
     throw new Error(`A grid needs at least one slot, not ${slotCount}.`);
 
   let columns = 1;
-  let best = slotSize(slotCount, 1);
+  let best = slotSize(slotCount, 1, gridArea);
   for (let candidate = 2; candidate <= slotCount; candidate++) {
-    const size = slotSize(slotCount, candidate);
+    const size = slotSize(slotCount, candidate, gridArea);
     const area = size.width * size.height;
     const bestArea = best.width * best.height;
     const sameArea = Math.abs(area - bestArea) <= 1e-6;
@@ -60,12 +61,12 @@ export function ultimateGrid(slotCount: number): UltimateGrid {
   }
 
   const { rows, width, height } = best;
-  const top = AREA.y + (AREA.height - rows * height) / 2;
+  const top = gridArea.y + (gridArea.height - rows * height) / 2;
   const slots: GridSlot[] = [];
   for (let index = 0; index < slotCount; index++) {
     const row = Math.floor(index / columns);
     const inRow = Math.min(columns, slotCount - row * columns);
-    const left = AREA.x + (AREA.width - inRow * width) / 2;
+    const left = gridArea.x + (gridArea.width - inRow * width) / 2;
     slots.push({ x: left + (index % columns) * width, y: top + row * height, width, height });
   }
   return { columns, slots };
