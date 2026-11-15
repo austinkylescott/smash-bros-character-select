@@ -7,6 +7,516 @@
       "path": "ultimate/portraits/mario.png"
     },
     {
+      "id": "ultimate/portrait/donkey-kong",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/donkey-kong.png"
+    },
+    {
+      "id": "ultimate/portrait/link",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/link.png"
+    },
+    {
+      "id": "ultimate/portrait/samus",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/samus.png"
+    },
+    {
+      "id": "ultimate/portrait/dark-samus",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/dark-samus.png"
+    },
+    {
+      "id": "ultimate/portrait/yoshi",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/yoshi.png"
+    },
+    {
+      "id": "ultimate/portrait/kirby",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/kirby.png"
+    },
+    {
+      "id": "ultimate/portrait/fox",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/fox.png"
+    },
+    {
+      "id": "ultimate/portrait/pikachu",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/pikachu.png"
+    },
+    {
+      "id": "ultimate/portrait/luigi",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/luigi.png"
+    },
+    {
+      "id": "ultimate/portrait/ness",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/ness.png"
+    },
+    {
+      "id": "ultimate/portrait/captain-falcon",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/captain-falcon.png"
+    },
+    {
+      "id": "ultimate/portrait/jigglypuff",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/jigglypuff.png"
+    },
+    {
+      "id": "ultimate/portrait/peach",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/peach.png"
+    },
+    {
+      "id": "ultimate/portrait/daisy",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/daisy.png"
+    },
+    {
+      "id": "ultimate/portrait/bowser",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/bowser.png"
+    },
+    {
+      "id": "ultimate/portrait/ice-climbers",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/ice-climbers.png"
+    },
+    {
+      "id": "ultimate/portrait/sheik",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/sheik.png"
+    },
+    {
+      "id": "ultimate/portrait/zelda",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/zelda.png"
+    },
+    {
+      "id": "ultimate/portrait/dr-mario",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/dr-mario.png"
+    },
+    {
+      "id": "ultimate/portrait/pichu",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/pichu.png"
+    },
+    {
+      "id": "ultimate/portrait/falco",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/falco.png"
+    },
+    {
+      "id": "ultimate/portrait/marth",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/marth.png"
+    },
+    {
+      "id": "ultimate/portrait/lucina",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/lucina.png"
+    },
+    {
+      "id": "ultimate/portrait/young-link",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/young-link.png"
+    },
+    {
+      "id": "ultimate/portrait/ganondorf",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/ganondorf.png"
+    },
+    {
+      "id": "ultimate/portrait/mewtwo",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/mewtwo.png"
+    },
+    {
+      "id": "ultimate/portrait/roy",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/roy.png"
+    },
+    {
+      "id": "ultimate/portrait/chrom",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/chrom.png"
+    },
+    {
+      "id": "ultimate/portrait/mr-game-and-watch",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/mr-game-and-watch.png"
+    },
+    {
+      "id": "ultimate/portrait/meta-knight",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/meta-knight.png"
+    },
+    {
+      "id": "ultimate/portrait/pit",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/pit.png"
+    },
+    {
+      "id": "ultimate/portrait/dark-pit",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/dark-pit.png"
+    },
+    {
+      "id": "ultimate/portrait/zero-suit-samus",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/zero-suit-samus.png"
+    },
+    {
+      "id": "ultimate/portrait/wario",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/wario.png"
+    },
+    {
+      "id": "ultimate/portrait/snake",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/snake.png"
+    },
+    {
+      "id": "ultimate/portrait/ike",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/ike.png"
+    },
+    {
+      "id": "ultimate/portrait/pokemon-trainer",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/pokemon-trainer.png"
+    },
+    {
+      "id": "ultimate/portrait/diddy-kong",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/diddy-kong.png"
+    },
+    {
+      "id": "ultimate/portrait/lucas",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/lucas.png"
+    },
+    {
+      "id": "ultimate/portrait/sonic",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/sonic.png"
+    },
+    {
+      "id": "ultimate/portrait/king-dedede",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/king-dedede.png"
+    },
+    {
+      "id": "ultimate/portrait/olimar",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/olimar.png"
+    },
+    {
+      "id": "ultimate/portrait/lucario",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/lucario.png"
+    },
+    {
+      "id": "ultimate/portrait/rob",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/rob.png"
+    },
+    {
+      "id": "ultimate/portrait/toon-link",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/toon-link.png"
+    },
+    {
+      "id": "ultimate/portrait/wolf",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/wolf.png"
+    },
+    {
+      "id": "ultimate/portrait/villager",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/villager.png"
+    },
+    {
+      "id": "ultimate/portrait/mega-man",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/mega-man.png"
+    },
+    {
+      "id": "ultimate/portrait/wii-fit-trainer",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/wii-fit-trainer.png"
+    },
+    {
+      "id": "ultimate/portrait/rosalina-and-luma",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/rosalina-and-luma.png"
+    },
+    {
+      "id": "ultimate/portrait/little-mac",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/little-mac.png"
+    },
+    {
+      "id": "ultimate/portrait/greninja",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/greninja.png"
+    },
+    {
+      "id": "ultimate/portrait/palutena",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/palutena.png"
+    },
+    {
+      "id": "ultimate/portrait/pac-man",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/pac-man.png"
+    },
+    {
+      "id": "ultimate/portrait/robin",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/robin.png"
+    },
+    {
+      "id": "ultimate/portrait/shulk",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/shulk.png"
+    },
+    {
+      "id": "ultimate/portrait/bowser-jr",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/bowser-jr.png"
+    },
+    {
+      "id": "ultimate/portrait/duck-hunt",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/duck-hunt.png"
+    },
+    {
+      "id": "ultimate/portrait/ryu",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/ryu.png"
+    },
+    {
+      "id": "ultimate/portrait/ken",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/ken.png"
+    },
+    {
+      "id": "ultimate/portrait/cloud",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/cloud.png"
+    },
+    {
+      "id": "ultimate/portrait/corrin",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/corrin.png"
+    },
+    {
+      "id": "ultimate/portrait/bayonetta",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/bayonetta.png"
+    },
+    {
+      "id": "ultimate/portrait/inkling",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/inkling.png"
+    },
+    {
+      "id": "ultimate/portrait/ridley",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/ridley.png"
+    },
+    {
+      "id": "ultimate/portrait/simon",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/simon.png"
+    },
+    {
+      "id": "ultimate/portrait/richter",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/richter.png"
+    },
+    {
+      "id": "ultimate/portrait/king-k-rool",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/king-k-rool.png"
+    },
+    {
+      "id": "ultimate/portrait/isabelle",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/isabelle.png"
+    },
+    {
+      "id": "ultimate/portrait/incineroar",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/incineroar.png"
+    },
+    {
+      "id": "ultimate/portrait/piranha-plant",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/piranha-plant.png"
+    },
+    {
+      "id": "ultimate/portrait/joker",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/joker.png"
+    },
+    {
+      "id": "ultimate/portrait/hero",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/hero.png"
+    },
+    {
+      "id": "ultimate/portrait/banjo-and-kazooie",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/banjo-and-kazooie.png"
+    },
+    {
+      "id": "ultimate/portrait/terry",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/terry.png"
+    },
+    {
+      "id": "ultimate/portrait/byleth",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/byleth.png"
+    },
+    {
+      "id": "ultimate/portrait/min-min",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/min-min.png"
+    },
+    {
+      "id": "ultimate/portrait/steve",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/steve.png"
+    },
+    {
+      "id": "ultimate/portrait/sephiroth",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/sephiroth.png"
+    },
+    {
+      "id": "ultimate/portrait/pyra-mythra",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/pyra-mythra.png"
+    },
+    {
+      "id": "ultimate/portrait/kazuya",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/kazuya.png"
+    },
+    {
+      "id": "ultimate/portrait/sora",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/sora.png"
+    },
+    {
+      "id": "ultimate/portrait/mii-brawler",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/mii-brawler.png"
+    },
+    {
+      "id": "ultimate/portrait/mii-swordfighter",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/mii-swordfighter.png"
+    },
+    {
+      "id": "ultimate/portrait/mii-gunner",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/mii-gunner.png"
+    },
+    {
       "id": "ultimate/music/menu",
       "game": "ultimate",
       "kind": "music",
