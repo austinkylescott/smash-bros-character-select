@@ -40,7 +40,7 @@ if (result.status === "skipped") {
   const { fetched, missing, failed, removed } = result;
   console.log(`Fetched ${fetched.length} of ${manifest.assets.length} official assets.`);
   if (removed.length > 0)
-    console.log(["Removed, no longer in the manifest:", ...removed].join("\n  "));
+    console.log(["Removed, no longer in the manifest or the bucket:", ...removed].join("\n  "));
   if (missing.length > 0)
     console.warn(["Not in the bucket yet, placeholders will be used:", ...missing].join("\n  "));
   if (failed.length > 0) {

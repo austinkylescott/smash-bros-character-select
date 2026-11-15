@@ -10,9 +10,6 @@ import portrait from "./placeholders/portrait.svg";
 import silence from "./placeholders/silence.wav";
 import uiArt from "./placeholders/ui-art.svg";
 
-export { manifest };
-export type { AssetEntry, AssetKind, Game } from "./manifest";
-
 // Files put in `official/` by `scripts/fetch-assets.ts`. The folder is gitignored
 // and is empty on a fresh clone, where every asset resolves to a placeholder.
 const fetchedFiles = import.meta.glob<string>("./official/**/*", {

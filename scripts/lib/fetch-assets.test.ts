@@ -116,4 +116,22 @@ describe("fetching official assets", () => {
     expect(result).toMatchObject({ removed: ["brawl/portraits/removed.png"] });
     expect(await readdir(destDir)).toEqual(["melee"]);
   });
+
+  it("removes a previously fetched file the bucket no longer has", async () => {
+    await mkdir(join(destDir, "ultimate/portraits"), { recursive: true });
+    await writeFile(join(destDir, "ultimate/portraits/mario.png"), "old bytes");
+
+    const result = await fetchAssets({
+      manifest,
+      destDir,
+      token: "a-token",
+      download: bucket({ "melee/music/menu.ogg": "menu bytes" }),
+    });
+
+    expect(result).toMatchObject({
+      missing: ["ultimate/portraits/mario.png"],
+      removed: ["ultimate/portraits/mario.png"],
+    });
+    expect(await readdir(destDir)).toEqual(["melee"]);
+  });
 });

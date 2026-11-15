@@ -13,6 +13,11 @@ export interface FetchAssetsOptions {
   download: (path: string, token: string) => Promise<Uint8Array | null>;
 }
 
+interface FailedDownload {
+  path: string;
+  reason: string;
+}
+
 export type FetchAssetsResult =
   | { status: "skipped" }
   | {
@@ -22,8 +27,8 @@ export type FetchAssetsResult =
       /** Manifest paths the bucket does not have. They resolve to placeholders. */
       missing: string[];
       /** Downloads that went wrong, for example a rejected token. */
-      failed: { path: string; reason: string }[];
-      /** Files deleted from `destDir` because the manifest no longer lists them. */
+      failed: FailedDownload[];
+      /** Files deleted from `destDir` because the manifest or the bucket no longer has them. */
       removed: string[];
     };
 
@@ -37,7 +42,7 @@ export async function fetchAssets({
 
   const fetched: string[] = [];
   const missing: string[] = [];
-  const failed: { path: string; reason: string }[] = [];
+  const failed: FailedDownload[] = [];
 
   for (const { path } of manifest.assets) {
     let content: Uint8Array | null;
@@ -57,21 +62,27 @@ export async function fetchAssets({
     fetched.push(path);
   }
 
-  const removed = await removeUnlisted(destDir, new Set(manifest.assets.map(({ path }) => path)));
+  // Keep only what the manifest lists and the bucket still has (or may still have, if the
+  // download failed), so an asset withdrawn from either stops being served.
+  const removed = await removeAllExcept(
+    destDir,
+    new Set([...fetched, ...failed.map(({ path }) => path)]),
+  );
 
   return { status: "done", fetched, missing, failed, removed };
 }
 
-async function removeUnlisted(destDir: string, listed: Set<string>): Promise<string[]> {
+async function removeAllExcept(destDir: string, kept: Set<string>): Promise<string[]> {
   const entries = await readdir(destDir, { recursive: true, withFileTypes: true }).catch(() => []);
   const pathOf = (entry: { parentPath: string; name: string }) =>
     relative(destDir, join(entry.parentPath, entry.name)).split(sep).join("/");
 
   const removed: string[] = [];
   for (const entry of entries) {
-    if (entry.isDirectory() || listed.has(pathOf(entry))) continue;
-    await rm(join(destDir, pathOf(entry)));
-    removed.push(pathOf(entry));
+    const path = pathOf(entry);
+    if (entry.isDirectory() || kept.has(path)) continue;
+    await rm(join(destDir, path));
+    removed.push(path);
   }
 
   // Deepest first, so a folder emptied by the loop above goes along with its parents.
