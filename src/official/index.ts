@@ -4,7 +4,11 @@ import { FIGHTER_NAMES, ROSTER_DATA } from "./data";
 export interface OfficialFighter {
   readonly id: string;
   readonly name: string;
-  /** The games whose official roster includes this fighter, oldest first. */
+  /**
+   * The games whose official roster includes this fighter, oldest first. Taken from the
+   * reference screenshots, so DLC fighters do not list the 3DS or Wii U. Miis are one fighter in
+   * those games and three in Ultimate, so they do not share portraits.
+   */
   readonly games: readonly Game[];
 }
 
