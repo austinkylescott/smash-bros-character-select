@@ -1,0 +1,34 @@
+{
+  "assets": [
+    {
+      "id": "ultimate/portrait/mario",
+      "game": "ultimate",
+      "kind": "portrait",
+      "path": "ultimate/portraits/mario.png"
+    },
+    {
+      "id": "ultimate/music/menu",
+      "game": "ultimate",
+      "kind": "music",
+      "path": "ultimate/music/menu.ogg"
+    },
+    {
+      "id": "ultimate/sound-effect/select",
+      "game": "ultimate",
+      "kind": "sound-effect",
+      "path": "ultimate/sound-effects/select.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/mario",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/mario.ogg"
+    },
+    {
+      "id": "ultimate/ui-art/ready-to-fight",
+      "game": "ultimate",
+      "kind": "ui-art",
+      "path": "ultimate/ui-art/ready-to-fight.png"
+    }
+  ]
+}
