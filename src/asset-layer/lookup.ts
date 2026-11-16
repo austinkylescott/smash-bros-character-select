@@ -13,6 +13,18 @@ export function createAssetLookup({ manifest, fetched, placeholders }: AssetLook
   return function resolveAsset(id: string): string {
     const asset = byId.get(id);
     if (!asset) throw new Error(`Unknown asset "${id}". Add it to the manifest first.`);
-    return fetched[asset.path] ?? placeholders[asset.kind];
+    const ownFile = fetched[asset.path];
+    if (ownFile !== undefined) return ownFile;
+
+    if (asset.kind === "sound-effect" && (asset.game === "melee" || asset.game === "smash-64")) {
+      const name = asset.id.split("/").at(-1);
+      const fallback = byId.get(`ultimate/sound-effect/${name}`);
+      if (fallback?.kind === "sound-effect") {
+        const ultimateFile = fetched[fallback.path];
+        if (ultimateFile !== undefined) return ultimateFile;
+      }
+    }
+
+    return placeholders[asset.kind];
   };
 }

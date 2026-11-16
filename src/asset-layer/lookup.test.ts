@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vite-plus/test";
 
 import { createAssetLookup } from "./lookup";
-import type { Manifest } from "./manifest";
+import { manifest as officialManifest, type Manifest } from "./manifest";
 
 const manifest: Manifest = {
   assets: [
@@ -47,5 +47,70 @@ describe("asset lookup", () => {
     expect(() => resolveAsset("brawl/portrait/nobody")).toThrow(
       'Unknown asset "brawl/portrait/nobody"',
     );
+  });
+});
+
+describe("Ultimate sound-effect fallback", () => {
+  const effects = officialManifest.assets.filter(
+    (asset) =>
+      asset.kind === "sound-effect" && (asset.game === "melee" || asset.game === "smash-64"),
+  );
+
+  it.each(effects)("uses the matching Ultimate effect for missing $id", (asset) => {
+    const name = asset.id.split("/").at(-1);
+    const ultimate = officialManifest.assets.find(
+      (entry) => entry.id === `ultimate/sound-effect/${name}`,
+    )!;
+    const resolveAsset = createAssetLookup({
+      manifest: officialManifest,
+      fetched: { [ultimate.path]: `/built/ultimate-${name}.ogg` },
+      placeholders,
+    });
+
+    expect(resolveAsset(asset.id)).toBe(`/built/ultimate-${name}.ogg`);
+  });
+
+  it.each(effects)("prefers the game's own file for $id", (asset) => {
+    const name = asset.id.split("/").at(-1);
+    const ultimate = officialManifest.assets.find(
+      (entry) => entry.id === `ultimate/sound-effect/${name}`,
+    )!;
+    const resolveAsset = createAssetLookup({
+      manifest: officialManifest,
+      fetched: { [asset.path]: "/built/original.ogg", [ultimate.path]: "/built/ultimate.ogg" },
+      placeholders,
+    });
+
+    expect(resolveAsset(asset.id)).toBe("/built/original.ogg");
+  });
+
+  it("uses silence when the original and Ultimate files are both missing", () => {
+    const resolveAsset = createAssetLookup({
+      manifest: officialManifest,
+      fetched: {},
+      placeholders,
+    });
+    for (const asset of effects) {
+      expect(resolveAsset(asset.id)).toBe(placeholders["sound-effect"]);
+    }
+  });
+
+  it("does not substitute Ultimate for other games or other asset kinds", () => {
+    const ultimateFiles = Object.fromEntries(
+      officialManifest.assets
+        .filter((asset) => asset.game === "ultimate")
+        .map((asset) => [asset.path, `/built/${asset.path}`]),
+    );
+    const resolveAsset = createAssetLookup({
+      manifest: officialManifest,
+      fetched: ultimateFiles,
+      placeholders,
+    });
+
+    for (const asset of officialManifest.assets.filter(
+      (entry) => entry.game !== "ultimate" && !effects.includes(entry),
+    )) {
+      expect(resolveAsset(asset.id), asset.id).toBe(placeholders[asset.kind]);
+    }
   });
 });

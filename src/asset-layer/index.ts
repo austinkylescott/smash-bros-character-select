@@ -18,7 +18,7 @@ const fetchedFiles = import.meta.glob<string>("./official/**/*", {
   import: "default",
 });
 
-/** Resolves a manifest id to the URL of its file, or of a placeholder if it has not been fetched. */
+/** Resolves a manifest id, using Ultimate for missing Melee/64 effects, then placeholders. */
 export const resolveAsset = createAssetLookup({
   manifest,
   fetched: Object.fromEntries(
