@@ -1,7 +1,13 @@
 import { describe, expect, it } from "vite-plus/test";
 
 import { officialRosters } from "../official";
-import { addFighter, nameFighter, newRoster } from "../rosters/roster";
+import {
+  addCustomFighter,
+  addFighter,
+  cropFighter,
+  nameFighter,
+  newRoster,
+} from "../rosters/roster";
 import { availableTemplates } from "./catalogue";
 import { screenRoster } from "./screen";
 
@@ -110,5 +116,46 @@ describe("what a template is given to render for a roster a user made", () => {
       ).toEqual(["Solid Snake", "Kirby"]);
       for (const fighter of shown.fighters) expect(fighter.portrait, template).toMatch(/./);
     }
+  });
+});
+
+describe("what a template is given to render for a fighter added by name and image", () => {
+  const image = "data:image/webp;base64,AAAA";
+  const slot = { x: 0, y: 0, width: 200, height: 150 };
+  const made = cropFighter(
+    addCustomFighter(addFighter(newRoster("r1"), "kirby"), "custom-1", "Goku", {
+      image,
+      width: 400,
+      height: 200,
+    }),
+    "custom-1",
+    "slot",
+    slot,
+  );
+
+  it("gives its own image, with the crops chosen for the slot and the panel, in every template", () => {
+    for (const template of availableTemplates) {
+      const goku = screenRoster(made, template, byAssetId).fighters[1];
+
+      expect(goku, template).toEqual({
+        id: "custom-1",
+        name: "Goku",
+        portrait: image,
+        crops: {
+          width: 400,
+          height: 200,
+          slot,
+          panel: { x: 100, y: 0, width: 200, height: 200 },
+        },
+      });
+    }
+  });
+
+  it("gives official fighters beside it their portraits, with no crops", () => {
+    expect(screenRoster(made, "melee", byAssetId).fighters[0]).toEqual({
+      id: "kirby",
+      name: "Kirby",
+      portrait: "asset:melee/portrait/kirby",
+    });
   });
 });

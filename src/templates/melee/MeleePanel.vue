@@ -9,6 +9,7 @@ import { computed, nextTick, ref, watch } from "vue";
 
 import type { Box } from "../../selection/navigate";
 import { type Panel, RANDOM } from "../../selection/selection";
+import FighterPortrait from "../FighterPortrait.vue";
 import type { ScreenFighter } from "../screen";
 import { kindLabel, playerColour, playerTag } from "./players";
 
@@ -69,7 +70,7 @@ watch(
         <template v-else>
           <span class="emblem" aria-hidden="true" />
           <span class="portrait-window">
-            <img v-if="fighter" class="portrait" :src="fighter.portrait" alt="" draggable="false" />
+            <FighterPortrait v-if="fighter" class="portrait" :fighter="fighter" place="panel" />
             <span v-else-if="random" class="question" aria-hidden="true">?</span>
           </span>
           <span class="mark" aria-hidden="true">{{ mark }}</span>
@@ -178,6 +179,14 @@ watch(
   object-fit: cover;
   object-position: 50% 0;
   transform: translateX(-50%);
+}
+
+/* A fighter added by image fills the window with its panel crop. */
+.portrait.cropped {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: none;
 }
 
 .question {

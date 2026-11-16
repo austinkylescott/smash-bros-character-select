@@ -11,11 +11,18 @@ import { computed, onBeforeUnmount, onMounted, ref, shallowRef, watch } from "vu
 
 import type { Game } from "../asset-layer/manifest";
 import { officialFighter, officialFighters, officialRosters } from "../official";
+import CropEditor from "../portraits/CropEditor.vue";
+import { type UploadedImage, uploadImage } from "../portraits/upload";
 import { myRoster, newRosterId, saveRoster } from "../rosters";
 import {
+  addCustomFighter,
   addFighter,
   canAddFighter,
   copyOfOfficial,
+  type CropKind,
+  cropFighter,
+  type CustomFighter,
+  isCustomFighter,
   MAX_FIGHTERS,
   moveFighter,
   nameFighter,
@@ -24,6 +31,7 @@ import {
   type Roster,
   rosterProblems,
 } from "../rosters/roster";
+import type { Crop } from "../portraits/crop";
 import { followLink, replaceWith } from "../routes/navigation";
 import { HOME_LINK, rosterEditorLink, rosterScreenLink } from "../routes/route";
 import {
@@ -33,6 +41,7 @@ import {
   templateName,
 } from "../templates/catalogue";
 import { screenRoster } from "../templates/screen";
+import FighterPortrait from "../templates/FighterPortrait.vue";
 import TemplateScreen from "../templates/TemplateScreen.vue";
 import RosterMissing from "./RosterMissing.vue";
 
@@ -105,7 +114,13 @@ function setDefaultTemplate(template: AvailableTemplate) {
 
 /** The roster's fighters as shown: displayed names, and portraits from the previewed template. */
 const shown = computed(() => screenRoster(draft.value, previewTemplate.value).fighters);
-const ownName = (id: string) => officialFighter(id).name;
+/** A fighter as the roster holds it. */
+const inDraft = (id: string) => draft.value.fighters.find((fighter) => fighter.id === id);
+/** The name a fighter's name field falls back to: an official fighter's own, or the one given. */
+function ownName(id: string) {
+  const fighter = inDraft(id);
+  return fighter && isCustomFighter(fighter) ? fighter.name : officialFighter(id).name;
+}
 
 /**
  * The name being typed. The field shows it as typed until it is left; meanwhile the roster takes
@@ -146,6 +161,58 @@ const picks = computed(() => {
 const togglePick = (id: string, picked: boolean) =>
   edit((roster) => (picked ? removeFighter(roster, id) : addFighter(roster, id)));
 
+/** A fighter being added by name and image: the name typed, and the image once it is taken in. */
+const newName = ref("");
+const upload = shallowRef<UploadedImage>();
+/** Why the chosen file was not taken, or that it is being read. */
+const uploadProblem = ref("");
+const reading = ref(false);
+const fileInput = ref<HTMLInputElement | null>(null);
+async function chooseImage(event: Event) {
+  const file = (event.target as HTMLInputElement).files?.[0];
+  upload.value = undefined;
+  uploadProblem.value = "";
+  if (!file) return;
+  reading.value = true;
+  try {
+    upload.value = await uploadImage(file);
+  } catch (error) {
+    uploadProblem.value = error instanceof Error ? error.message : "That image could not be used.";
+    clearFile();
+  } finally {
+    reading.value = false;
+  }
+}
+const canAddOwn = computed(() => !!newName.value.trim() && !!upload.value && !full.value);
+function addOwn() {
+  if (!canAddOwn.value) return;
+  const id = `custom-${newRosterId()}`;
+  edit((roster) => addCustomFighter(roster, id, newName.value, upload.value!));
+  resetAddOwn();
+  // Its image starts centre-cropped; the crops open straight away for adjusting.
+  cropping.value = id;
+}
+/** Empties the file field, so the same file can be chosen again. */
+function clearFile() {
+  if (fileInput.value) fileInput.value.value = "";
+}
+/** Empties the form for adding a fighter by name and image. */
+function resetAddOwn() {
+  newName.value = "";
+  upload.value = undefined;
+  uploadProblem.value = "";
+  clearFile();
+}
+
+/** The fighter added by image whose crops are open for adjusting. */
+const cropping = ref<string>();
+const croppingFighter = computed((): CustomFighter | undefined => {
+  const fighter = cropping.value === undefined ? undefined : inDraft(cropping.value);
+  return fighter && isCustomFighter(fighter) ? fighter : undefined;
+});
+const recrop = (id: string, kind: CropKind, crop: Crop) =>
+  edit((roster) => cropFighter(roster, id, kind, crop));
+
 // The link may change to another roster while the editor is up, as Back and Forward do. A new
 // roster's first save changes it to that roster's own link, which is no other roster.
 watch(
@@ -157,6 +224,8 @@ watch(
     previewed.value = undefined;
     failure.value = "";
     search.value = "";
+    cropping.value = undefined;
+    resetAddOwn();
   },
 );
 </script>
@@ -222,7 +291,7 @@ watch(
             <span class="count">{{ draft.fighters.length }} / {{ MAX_FIGHTERS }}</span>
           </h2>
           <p v-if="shown.length === 0" class="hint">
-            No fighters yet. Pick some from the official fighters below.
+            No fighters yet. Pick some from the official fighters below, or add your own.
           </p>
           <ol v-else class="rows">
             <li
@@ -242,7 +311,7 @@ watch(
                 >&#x2807;</span
               >
               <span class="place">{{ index + 1 }}</span>
-              <img :src="fighter.portrait" alt="" />
+              <FighterPortrait class="thumb" :fighter="fighter" place="slot" />
               <input
                 type="text"
                 maxlength="40"
@@ -269,6 +338,17 @@ watch(
                 &darr;
               </button>
               <button
+                v-if="fighter.crops"
+                type="button"
+                class="crop-button"
+                :aria-label="`Adjust the crops of ${fighter.name}`"
+                :aria-expanded="cropping === fighter.id"
+                @click="cropping = cropping === fighter.id ? undefined : fighter.id"
+              >
+                Crop
+              </button>
+              <span v-else aria-hidden="true" />
+              <button
                 type="button"
                 :aria-label="`Remove ${fighter.name}`"
                 @click="edit((roster) => removeFighter(roster, fighter.id))"
@@ -277,6 +357,59 @@ watch(
               </button>
             </li>
           </ol>
+
+          <div v-if="croppingFighter" class="cropping" aria-live="polite">
+            <h3>Crops for {{ croppingFighter.name }}</h3>
+            <p class="hint">
+              Drag each box, or focus it and use the arrow keys, to choose what shows in the grid
+              and in the player panel.
+            </p>
+            <div class="crop-editors">
+              <CropEditor
+                label="Slot"
+                :src="croppingFighter.portrait.image"
+                :image="croppingFighter.portrait"
+                :crop="croppingFighter.portrait.slot"
+                @update:crop="recrop(croppingFighter.id, 'slot', $event)"
+              />
+              <CropEditor
+                label="Player panel"
+                :src="croppingFighter.portrait.image"
+                :image="croppingFighter.portrait"
+                :crop="croppingFighter.portrait.panel"
+                @update:crop="recrop(croppingFighter.id, 'panel', $event)"
+              />
+            </div>
+            <button type="button" @click="cropping = undefined">Done</button>
+          </div>
+        </section>
+
+        <section aria-labelledby="own-fighter">
+          <h2 id="own-fighter">Add your own fighter</h2>
+          <form class="own" @submit.prevent="addOwn">
+            <label>
+              Name
+              <input v-model="newName" type="text" maxlength="40" />
+            </label>
+            <label>
+              <span>
+                Image
+                <span class="hint">(PNG, JPEG, WebP or GIF, up to 10 MB)</span>
+              </span>
+              <input
+                ref="fileInput"
+                type="file"
+                accept="image/png,image/jpeg,image/webp,image/gif"
+                @change="chooseImage"
+              />
+            </label>
+            <p v-if="uploadProblem" class="problems" role="alert">{{ uploadProblem }}</p>
+            <p v-else-if="reading" class="hint" role="status">Reading the image&hellip;</p>
+            <p v-else-if="full" class="hint">
+              The roster is full. Remove a fighter to make room for another.
+            </p>
+            <button type="submit" :disabled="!canAddOwn">Add fighter</button>
+          </form>
         </section>
 
         <section aria-labelledby="official-fighters">
@@ -526,7 +659,7 @@ button:disabled {
 
 .rows li {
   display: grid;
-  grid-template-columns: auto 2ch 44px minmax(0, 1fr) auto auto auto;
+  grid-template-columns: auto 2ch 44px minmax(0, 1fr) auto auto auto auto;
   align-items: center;
   gap: 6px;
 }
@@ -549,7 +682,7 @@ button:disabled {
 /* A narrow window is most often a touch screen, where dragging does nothing: the arrows reorder. */
 @media (max-width: 520px) {
   .rows li {
-    grid-template-columns: 2ch 44px minmax(0, 1fr) auto auto auto;
+    grid-template-columns: 2ch 44px minmax(0, 1fr) auto auto auto auto;
   }
 
   .grip {
@@ -563,12 +696,59 @@ button:disabled {
   text-align: right;
 }
 
-.rows img {
+.rows .thumb {
+  display: block;
   width: 44px;
   height: 44px;
   border-radius: 6px;
   object-fit: cover;
   background: #222;
+}
+
+.crop-button {
+  font-size: 14px;
+}
+
+.cropping {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 12px;
+  background: #1c1c1c;
+}
+
+.cropping h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.crop-editors {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 10px;
+  align-self: stretch;
+}
+
+.own {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.own label {
+  align-self: stretch;
+}
+
+input[type="file"] {
+  min-height: 44px;
+  padding: 8px 0;
+  color: #c9c9c9;
+  font: inherit;
+  font-weight: 400;
 }
 
 .picker {

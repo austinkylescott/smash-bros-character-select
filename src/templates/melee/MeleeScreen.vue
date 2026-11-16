@@ -11,6 +11,7 @@ import type { Box } from "../../selection/navigate";
 import { type Pick, RANDOM, type SelectionRules } from "../../selection/selection";
 import { useSelectionControls } from "../../selection/useSelectionControls";
 import type { ScreenRoster } from "../screen";
+import FighterPortrait from "../FighterPortrait.vue";
 import { meleeGrid } from "./grid";
 import { meleeSlotLabel } from "./label";
 import type { MeleeLayout } from "./layout";
@@ -220,7 +221,7 @@ const boxStyle = ({ x, y, width, height }: Box) => ({
           @focus="controls.onSlotFocus(index, $event)"
         >
           <span class="face">
-            <img class="portrait" :src="fighter.portrait" alt="" draggable="false" />
+            <FighterPortrait class="portrait" :fighter="fighter" place="slot" />
             <span ref="labels" class="label" :class="{ two: lines.length > 1 }" aria-hidden="true">
               <span v-for="line in lines" :key="line" class="line">{{ line }}</span>
             </span>
@@ -413,6 +414,13 @@ const boxStyle = ({ x, y, width, height }: Box) => ({
   height: 120%;
   object-fit: cover;
   object-position: 50% 0;
+}
+
+/* A fighter added by image has no printed name to hide: its crop fills the face above the label. */
+.portrait.cropped {
+  position: absolute;
+  inset: 0 0 24%;
+  height: 76%;
 }
 
 .label {
