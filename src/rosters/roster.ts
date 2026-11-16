@@ -3,16 +3,42 @@
  * roster and leaves the old one as it was. An edit the rules forbid gives back the same roster.
  */
 import { isOfficialFighter, officialFighter, type OfficialRoster } from "../official";
+import { centreCrop, type Crop, cropFits, PANEL_ASPECT, SLOT_ASPECT } from "../portraits/crop";
+import type { UploadedImage } from "../portraits/upload";
 import { templateName } from "../templates/catalogue";
 import type { Template } from "../templates/screen";
 
-/** A fighter in a roster. */
-export interface RosterFighter {
+/** An official fighter in a roster. */
+export interface OfficialEntry {
   /** An official fighter's id. */
   readonly id: string;
   /** The name shown in place of the fighter's own, when the user has edited it. */
   readonly name?: string;
 }
+
+/** A fighter's own image, with the regions of it shown in a slot and in a player panel. */
+export interface CustomPortrait extends UploadedImage {
+  readonly slot: Crop;
+  readonly panel: Crop;
+}
+
+/** A fighter a user added by name and image, rather than an official one. */
+export interface CustomFighter {
+  /** Not an official fighter's id, so it never collides with one. */
+  readonly id: string;
+  readonly name: string;
+  readonly portrait: CustomPortrait;
+}
+
+/** A fighter in a roster: an official one, or one the user added by name and image. */
+export type RosterFighter = OfficialEntry | CustomFighter;
+
+/** Whether a fighter was added by name and image rather than being an official one. */
+export const isCustomFighter = (fighter: RosterFighter): fighter is CustomFighter =>
+  "portrait" in fighter;
+
+/** Which of a fighter's crops: the one shown in a slot or the one in a player panel. */
+export type CropKind = "slot" | "panel";
 
 /** A roster as a user makes and saves it. While being edited it may break the rules. */
 export interface Roster {
@@ -52,12 +78,50 @@ const has = (roster: Roster, fighterId: string) =>
 
 /** Whether a fighter can join: it is an official fighter, not already in, and there is room. */
 export const canAddFighter = (roster: Roster, fighterId: string): boolean =>
-  isOfficialFighter(fighterId) && !has(roster, fighterId) && roster.fighters.length < MAX_FIGHTERS;
+  isOfficialFighter(fighterId) && !has(roster, fighterId) && hasRoom(roster);
 
 /** Adds a fighter at the end. */
 export function addFighter(roster: Roster, fighterId: string): Roster {
   if (!canAddFighter(roster, fighterId)) return roster;
   return { ...roster, fighters: [...roster.fighters, { id: fighterId }] };
+}
+
+/** Whether there is room for one more fighter. */
+export const hasRoom = (roster: Roster): boolean => roster.fighters.length < MAX_FIGHTERS;
+
+/**
+ * Adds a fighter of the user's own at the end, by name and an uploaded image, which is
+ * centre-cropped for the slot and the panel. It needs a name, room, and an id no other fighter has.
+ */
+export function addCustomFighter(
+  roster: Roster,
+  id: string,
+  name: string,
+  image: UploadedImage,
+): Roster {
+  const shown = name.trim();
+  if (!shown || !hasRoom(roster) || isOfficialFighter(id) || has(roster, id)) return roster;
+  const fighter: CustomFighter = {
+    id,
+    name: shown,
+    portrait: {
+      ...image,
+      slot: centreCrop(image, SLOT_ASPECT),
+      panel: centreCrop(image, PANEL_ASPECT),
+    },
+  };
+  return { ...roster, fighters: [...roster.fighters, fighter] };
+}
+
+/** Sets one of a fighter's crops. Only fighters added by image have crops, kept inside it. */
+export function cropFighter(roster: Roster, fighterId: string, kind: CropKind, crop: Crop): Roster {
+  const fighter = roster.fighters.find((each) => each.id === fighterId);
+  if (!fighter || !isCustomFighter(fighter) || !cropFits(crop, fighter.portrait)) return roster;
+  const cropped: CustomFighter = { ...fighter, portrait: { ...fighter.portrait, [kind]: crop } };
+  return {
+    ...roster,
+    fighters: roster.fighters.map((each) => (each === fighter ? cropped : each)),
+  };
 }
 
 /** Takes a fighter out. */
@@ -78,17 +142,22 @@ export function moveFighter(roster: Roster, fighterId: string, to: number): Rost
 }
 
 /**
- * Sets the name a fighter is shown with. A blank name, or the fighter's own, gives the fighter its
- * own name back.
+ * Sets the name a fighter is shown with. For an official fighter, a blank name, or the fighter's
+ * own, gives the fighter its own name back. A fighter added by image has no other name, so a
+ * blank one leaves its name as it was.
  */
 export function nameFighter(roster: Roster, fighterId: string, name: string): Roster {
   const shown = name.trim();
-  const own = isOfficialFighter(fighterId) ? officialFighter(fighterId).name : "";
-  const named: RosterFighter =
-    shown && shown !== own ? { id: fighterId, name: shown } : { id: fighterId };
+  const renamed = (fighter: RosterFighter): RosterFighter => {
+    if (isCustomFighter(fighter)) return shown ? { ...fighter, name: shown } : fighter;
+    const own = isOfficialFighter(fighterId) ? officialFighter(fighterId).name : "";
+    return shown && shown !== own ? { id: fighterId, name: shown } : { id: fighterId };
+  };
   return {
     ...roster,
-    fighters: roster.fighters.map((fighter) => (fighter.id === fighterId ? named : fighter)),
+    fighters: roster.fighters.map((fighter) =>
+      fighter.id === fighterId ? renamed(fighter) : fighter,
+    ),
   };
 }
 

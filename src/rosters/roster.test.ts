@@ -3,9 +3,11 @@ import { describe, expect, it } from "vite-plus/test";
 import { officialRosters } from "../official";
 import { officialFighters } from "../official";
 import {
+  addCustomFighter,
   addFighter,
   canAddFighter,
   copyOfOfficial,
+  cropFighter,
   moveFighter,
   nameFighter,
   newRoster,
@@ -153,5 +155,102 @@ describe("whether a roster can be saved", () => {
     const unnamed = { ...addFighter(newRoster("r1"), "kirby"), name: "   " };
 
     expect(rosterProblems(unnamed)).toEqual(["A roster needs a name."]);
+  });
+});
+
+/** An uploaded image, already resized: wider than tall. */
+const upload = { image: "data:image/webp;base64,AAAA", width: 400, height: 200 };
+
+describe("adding a fighter of one's own, by name and image", () => {
+  it("puts the fighter at the end, with the image centre-cropped for the slot and the panel", () => {
+    const roster = addCustomFighter(trio(), "custom-1", "  Goku ", upload);
+
+    expect(ids(roster)).toEqual(["kirby", "fox", "ness", "custom-1"]);
+    expect(roster.fighters[3]).toEqual({
+      id: "custom-1",
+      name: "Goku",
+      portrait: {
+        ...upload,
+        // A 4:3 slot crop and a square panel crop, each as large as the image allows.
+        slot: { x: expect.closeTo(200 / 3), y: 0, width: expect.closeTo(800 / 3), height: 200 },
+        panel: { x: 100, y: 0, width: 200, height: 200 },
+      },
+    });
+  });
+
+  it("needs a name", () => {
+    expect(addCustomFighter(trio(), "custom-1", "  ", upload)).toEqual(trio());
+  });
+
+  it("does not take a fighter when the roster is full", () => {
+    expect(addCustomFighter(rosterOf(120), "custom-1", "Goku", upload).fighters).toHaveLength(120);
+  });
+
+  it("does not take an id already in the roster or belonging to an official fighter", () => {
+    const once = addCustomFighter(trio(), "custom-1", "Goku", upload);
+
+    expect(addCustomFighter(once, "custom-1", "Vegeta", upload)).toEqual(once);
+    expect(addCustomFighter(trio(), "mario", "Goku", upload)).toEqual(trio());
+  });
+
+  it("can be saved, mixed with official fighters", () => {
+    expect(rosterProblems(addCustomFighter(trio(), "custom-1", "Goku", upload))).toEqual([]);
+  });
+
+  it("can be moved and removed like any fighter", () => {
+    const roster = addCustomFighter(trio(), "custom-1", "Goku", upload);
+
+    expect(ids(moveFighter(roster, "custom-1", 0))).toEqual(["custom-1", "kirby", "fox", "ness"]);
+    expect(ids(removeFighter(roster, "custom-1"))).toEqual(["kirby", "fox", "ness"]);
+  });
+});
+
+describe("renaming a fighter of one's own", () => {
+  const roster = addCustomFighter(trio(), "custom-1", "Goku", upload);
+
+  it("changes the name it is shown with", () => {
+    expect(nameFighter(roster, "custom-1", "Son Goku").fighters[3]).toMatchObject({
+      name: "Son Goku",
+    });
+  });
+
+  it("keeps its name when the new one is blank, as it has no other", () => {
+    expect(nameFighter(roster, "custom-1", "  ").fighters[3]).toMatchObject({ name: "Goku" });
+  });
+});
+
+describe("re-cropping a fighter of one's own", () => {
+  const roster = addCustomFighter(trio(), "custom-1", "Goku", upload);
+  const portrait = (each: Roster) => {
+    const fighter = each.fighters[3];
+    return fighter && "portrait" in fighter ? fighter.portrait : undefined;
+  };
+
+  it("changes the slot crop and leaves the panel crop", () => {
+    const crop = { x: 0, y: 0, width: 200, height: 150 };
+    const cropped = cropFighter(roster, "custom-1", "slot", crop);
+
+    expect(portrait(cropped)?.slot).toEqual(crop);
+    expect(portrait(cropped)?.panel).toEqual(portrait(roster)?.panel);
+  });
+
+  it("changes the panel crop and leaves the slot crop", () => {
+    const crop = { x: 10, y: 20, width: 100, height: 100 };
+    const cropped = cropFighter(roster, "custom-1", "panel", crop);
+
+    expect(portrait(cropped)?.panel).toEqual(crop);
+    expect(portrait(cropped)?.slot).toEqual(portrait(roster)?.slot);
+  });
+
+  it("refuses a crop that leaves the image", () => {
+    expect(
+      cropFighter(roster, "custom-1", "panel", { x: 300, y: 0, width: 200, height: 200 }),
+    ).toBe(roster);
+  });
+
+  it("leaves official fighters alone, as they have no image to crop", () => {
+    expect(cropFighter(roster, "kirby", "slot", { x: 0, y: 0, width: 10, height: 10 })).toBe(
+      roster,
+    );
   });
 });

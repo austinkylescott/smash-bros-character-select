@@ -1,7 +1,8 @@
 /** The user's rosters, kept in the browser's storage so they outlive the page. No account needed. */
 import { GAMES } from "../asset-layer/manifest";
 import { isOfficialFighter } from "../official";
-import { type Roster, type RosterFighter, rosterProblems } from "./roster";
+import { type Crop, cropFits } from "../portraits/crop";
+import { type CustomPortrait, type Roster, type RosterFighter, rosterProblems } from "./roster";
 
 /** The part of a browser's storage the rosters are kept in. */
 export type RosterStorage = Pick<Storage, "getItem" | "setItem">;
@@ -17,10 +18,43 @@ interface Stored {
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null;
 
+/** The images the site keeps: data URLs of the formats it resizes uploads to. */
+const KEPT_IMAGE = /^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/]+=*$/;
+
+const isSize = (value: unknown) => typeof value === "number" && Number.isFinite(value) && value > 0;
+
+function cropFrom(stored: unknown): Crop | undefined {
+  if (!isRecord(stored)) return;
+  const { x, y, width, height } = stored;
+  if (typeof x !== "number" || typeof y !== "number") return;
+  if (typeof width !== "number" || typeof height !== "number") return;
+  return { x, y, width, height };
+}
+
+function portraitFrom(stored: unknown): CustomPortrait | undefined {
+  if (!isRecord(stored)) return;
+  const { image, width, height } = stored;
+  if (typeof image !== "string" || !KEPT_IMAGE.test(image)) return;
+  if (!isSize(width) || !isSize(height)) return;
+  const size = { width: width as number, height: height as number };
+  const slot = cropFrom(stored.slot);
+  const panel = cropFrom(stored.panel);
+  if (!slot || !panel || !cropFits(slot, size) || !cropFits(panel, size)) return;
+  return { image, ...size, slot, panel };
+}
+
 function fighterFrom(stored: unknown): RosterFighter | undefined {
-  if (!isRecord(stored) || typeof stored.id !== "string" || !isOfficialFighter(stored.id)) return;
-  if (stored.name === undefined) return { id: stored.id };
-  return typeof stored.name === "string" ? { id: stored.id, name: stored.name } : undefined;
+  if (!isRecord(stored) || typeof stored.id !== "string") return;
+  const { id, name } = stored;
+  if (stored.portrait !== undefined) {
+    // A fighter added by name and image.
+    const portrait = portraitFrom(stored.portrait);
+    if (isOfficialFighter(id) || typeof name !== "string" || !name.trim() || !portrait) return;
+    return { id, name, portrait };
+  }
+  if (!isOfficialFighter(id)) return;
+  if (name === undefined) return { id };
+  return typeof name === "string" ? { id, name } : undefined;
 }
 
 /** A stored roster, or nothing if it is not one that could have been saved. */
@@ -70,7 +104,16 @@ export function createRosterStore(storage: RosterStorage | undefined) {
 
   function write(rosters: readonly unknown[]) {
     if (!storage) throw new Error("This browser cannot save rosters.");
-    storage.setItem(ROSTERS_KEY, JSON.stringify({ version: 1, rosters } satisfies Stored));
+    try {
+      storage.setItem(ROSTERS_KEY, JSON.stringify({ version: 1, rosters } satisfies Stored));
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "QuotaExceededError")
+        throw new Error(
+          "This browser has no room left to save the roster. Remove some fighters added by image, or other rosters, and try again.",
+          { cause: error },
+        );
+      throw error;
+    }
   }
 
   const without = (id: string) => entries().filter((each) => idOf(each) !== id);

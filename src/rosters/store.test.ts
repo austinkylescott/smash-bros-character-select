@@ -1,6 +1,14 @@
 import { describe, expect, it } from "vite-plus/test";
 
-import { addFighter, nameFighter, newRoster, type Roster } from "./roster";
+import {
+  addCustomFighter,
+  type CustomFighter,
+  addFighter,
+  cropFighter,
+  nameFighter,
+  newRoster,
+  type Roster,
+} from "./roster";
 import { createRosterStore, type RosterStorage } from "./store";
 
 /** A browser's storage, which outlives the page. */
@@ -158,5 +166,64 @@ describe("rosters saved in the browser", () => {
     storage.items.set("rosters", JSON.stringify({ version: 2, rosters: [roster("r1", "kirby")] }));
 
     expect(createRosterStore(storage).list()).toEqual([]);
+  });
+});
+
+describe("fighters added by name and image, saved in the browser", () => {
+  const upload = { image: "data:image/webp;base64,AAAA", width: 400, height: 200 };
+  const withGoku = () =>
+    cropFighter(
+      addCustomFighter(roster("r1", "kirby"), "custom-1", "Goku", upload),
+      "custom-1",
+      "panel",
+      { x: 10, y: 20, width: 100, height: 100 },
+    );
+
+  it("survive a page reload with their name, image and crops", () => {
+    const storage = browserStorage();
+    createRosterStore(storage).save(withGoku());
+
+    expect(createRosterStore(storage).list()).toEqual([withGoku()]);
+  });
+
+  it("leave a stored roster out when their image or crops could not have been saved", () => {
+    const storage = browserStorage();
+    createRosterStore(storage).save(withGoku());
+    const good = (JSON.parse(storage.items.get("rosters")!) as { rosters: Roster[] }).rosters[0]!;
+    const goku = good.fighters[1] as CustomFighter;
+    const withPortrait = (id: string, portrait: Record<string, unknown>) => ({
+      ...good,
+      id,
+      fighters: [good.fighters[0], { ...goku, portrait: { ...goku.portrait, ...portrait } }],
+    });
+    storage.items.set(
+      "rosters",
+      JSON.stringify({
+        version: 1,
+        rosters: [
+          withPortrait("not-an-image", { image: "javascript:alert(1)" }),
+          withPortrait("no-size", { width: "wide" }),
+          withPortrait("crop-outside", { slot: { x: 300, y: 0, width: 200, height: 150 } }),
+          withPortrait("no-crop", { panel: undefined }),
+          { ...good, id: "no-name", fighters: [{ ...goku, name: "" }] },
+          good,
+        ],
+      }),
+    );
+
+    expect(createRosterStore(storage).list()).toEqual([withGoku()]);
+  });
+
+  it("explain when the browser has no room left to save them", () => {
+    const full: RosterStorage = {
+      getItem: () => null,
+      setItem: () => {
+        throw new DOMException("The quota has been exceeded.", "QuotaExceededError");
+      },
+    };
+
+    expect(() => createRosterStore(full).save(withGoku())).toThrow(
+      "This browser has no room left to save the roster. Remove some fighters added by image, or other rosters, and try again.",
+    );
   });
 });
