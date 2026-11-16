@@ -6,7 +6,7 @@ import type { Game } from "../asset-layer/manifest";
 import { officialRosters } from "../official";
 import { HOME_LINK } from "../routes/route";
 import TemplateSwitcher from "../routes/TemplateSwitcher.vue";
-import { navigate } from "../routes/useRoute";
+import { navigate } from "../routes/navigation";
 import type { AvailableTemplate } from "../templates/catalogue";
 import { meleeLayout } from "../templates/melee/layout";
 import MeleeScreen from "../templates/melee/MeleeScreen.vue";
@@ -19,7 +19,8 @@ import { useViewport } from "../templates/useViewport";
 
 const props = defineProps<{ roster: Game; template: AvailableTemplate }>();
 
-const roster = computed(() => screenRoster(officialRosters[props.roster], props.template));
+/** The roster as the template is given it, with this template's portraits. */
+const shown = computed(() => screenRoster(officialRosters[props.roster], props.template));
 
 /** Turning a phone upright swaps in the stacked layout; the screen, and its picks, carry over. */
 const viewport = useViewport();
@@ -42,11 +43,11 @@ const back = () => navigate(HOME_LINK);
     <MeleeScreen
       v-if="template === 'melee'"
       :key="screenKey"
-      :roster="roster"
+      :roster="shown"
       :layout="melee"
       @back="back"
     />
-    <UltimateScreen v-else :key="screenKey" :roster="roster" :layout="ultimate" @back="back" />
+    <UltimateScreen v-else :key="screenKey" :roster="shown" :layout="ultimate" @back="back" />
   </StageFrame>
-  <TemplateSwitcher :roster="props.roster" :template="template" />
+  <TemplateSwitcher :roster="roster" :template="template" />
 </template>

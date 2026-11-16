@@ -4,12 +4,12 @@ import { officialScreenLink, routeOf } from "./route";
 
 describe("what a link opens", () => {
   it("opens the home page at the site's root", () => {
-    expect(routeOf("/", "")).toEqual({ page: "home" });
+    expect(routeOf("/", "")).toEqual({ name: "home" });
   });
 
   it("opens an official roster in its default template", () => {
     expect(routeOf("/official/melee", "")).toEqual({
-      page: "official-screen",
+      name: "official-screen",
       roster: "melee",
       template: "melee",
     });
@@ -17,7 +17,7 @@ describe("what a link opens", () => {
 
   it("opens the Melee roster in the Ultimate template when the link says so", () => {
     expect(routeOf("/official/melee", "?template=ultimate")).toEqual({
-      page: "official-screen",
+      name: "official-screen",
       roster: "melee",
       template: "ultimate",
     });
@@ -25,7 +25,7 @@ describe("what a link opens", () => {
 
   it("opens the Ultimate roster in the Melee template when the link says so", () => {
     expect(routeOf("/official/ultimate", "?template=melee")).toEqual({
-      page: "official-screen",
+      name: "official-screen",
       roster: "ultimate",
       template: "melee",
     });
@@ -49,9 +49,9 @@ describe("what a link opens", () => {
   });
 
   it("opens the home page for anything it does not recognise", () => {
-    expect(routeOf("/official/smash-7", "")).toEqual({ page: "home" });
-    expect(routeOf("/official", "")).toEqual({ page: "home" });
-    expect(routeOf("/somewhere/else", "")).toEqual({ page: "home" });
+    expect(routeOf("/official/smash-7", "")).toEqual({ name: "home" });
+    expect(routeOf("/official", "")).toEqual({ name: "home" });
+    expect(routeOf("/somewhere/else", "")).toEqual({ name: "home" });
   });
 });
 
@@ -68,7 +68,7 @@ describe("the link to an official roster's screen", () => {
     const [path, search = ""] = officialScreenLink("smash-64", "ultimate").split(/(?=\?)/);
 
     expect(routeOf(path!, search)).toEqual({
-      page: "official-screen",
+      name: "official-screen",
       roster: "smash-64",
       template: "ultimate",
     });

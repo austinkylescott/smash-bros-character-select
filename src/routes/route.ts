@@ -7,9 +7,9 @@ import {
 } from "../templates/catalogue";
 
 export type Route =
-  | { readonly page: "home" }
+  | { readonly name: "home" }
   | {
-      readonly page: "official-screen";
+      readonly name: "official-screen";
       /** The official roster shown, named by its game. */
       readonly roster: Game;
       readonly template: AvailableTemplate;
@@ -26,11 +26,11 @@ const isGame = (value: unknown): value is Game => (GAMES as readonly unknown[]).
  */
 export function routeOf(path: string, search: string): Route {
   const [section, roster, ...rest] = path.split("/").filter(Boolean);
-  if (section !== "official" || !isGame(roster) || rest.length > 0) return { page: "home" };
+  if (section !== "official" || !isGame(roster) || rest.length > 0) return { name: "home" };
 
   const chosen = new URLSearchParams(search).get("template");
   return {
-    page: "official-screen",
+    name: "official-screen",
     roster,
     template: isAvailableTemplate(chosen) ? chosen : defaultTemplate(roster),
   };

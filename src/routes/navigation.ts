@@ -1,3 +1,4 @@
+/** Where the visitor is on the site, and moving between its links without a reload. */
 import { readonly, shallowRef } from "vue";
 
 import { routeOf } from "./route";

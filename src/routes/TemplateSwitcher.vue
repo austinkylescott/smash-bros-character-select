@@ -3,10 +3,12 @@
  * Shows the roster on screen in another template. Always on screen, above any template. Each
  * choice is a link naming the template, so the screen it opens can be shared.
  */
+import "@fontsource/rubik/700.css";
+
 import type { Game } from "../asset-layer/manifest";
 import { type AvailableTemplate, availableTemplates, templateName } from "../templates/catalogue";
 import { officialScreenLink } from "./route";
-import { followLink } from "./useRoute";
+import { followLink } from "./navigation";
 
 defineProps<{ roster: Game; template: AvailableTemplate }>();
 </script>

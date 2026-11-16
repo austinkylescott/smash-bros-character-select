@@ -7,13 +7,13 @@ import "@fontsource/rubik/900.css";
 import { GAMES } from "../asset-layer/manifest";
 import { officialRosters } from "../official";
 import { officialScreenLink } from "../routes/route";
-import { followLink } from "../routes/useRoute";
+import { followLink } from "../routes/navigation";
 import { defaultTemplate, templateName } from "../templates/catalogue";
 
 const rosters = GAMES.map((game) => ({
   game,
   name: templateName(game),
-  fighters: officialRosters[game].fighters.length,
+  fighterCount: officialRosters[game].fighters.length,
   template: templateName(defaultTemplate(game)),
   link: officialScreenLink(game),
 }));
@@ -30,7 +30,7 @@ const rosters = GAMES.map((game) => ({
         <li v-for="roster in rosters" :key="roster.game">
           <a :href="roster.link" @click="followLink">
             <span class="name">{{ roster.name }}</span>
-            <span class="detail">{{ roster.fighters }} fighters</span>
+            <span class="detail">{{ roster.fighterCount }} fighters</span>
             <span class="detail">Opens in the {{ roster.template }} template</span>
           </a>
         </li>
