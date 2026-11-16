@@ -38,7 +38,8 @@ if (result.status === "skipped") {
   console.log("No BLOB_READ_WRITE_TOKEN set: skipping official assets, placeholders will be used.");
 } else {
   const { fetched, missing, failed, removed } = result;
-  console.log(`Fetched ${fetched.length} of ${manifest.assets.length} official assets.`);
+  const files = new Set(manifest.assets.map((asset) => asset.path)).size;
+  console.log(`Fetched ${fetched.length} of ${files} official asset files.`);
   if (removed.length > 0)
     console.log(["Removed, no longer in the manifest or the bucket:", ...removed].join("\n  "));
   if (missing.length > 0)

@@ -44,7 +44,8 @@ export async function fetchAssets({
   const missing: string[] = [];
   const failed: FailedDownload[] = [];
 
-  for (const { path } of manifest.assets) {
+  // Several assets may share one file, such as 3DS and Wii U announcer calls.
+  for (const path of new Set(manifest.assets.map((asset) => asset.path))) {
     let content: Uint8Array | null;
     try {
       content = await download(path, token);

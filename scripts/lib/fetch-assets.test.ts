@@ -54,6 +54,38 @@ describe("fetching official assets", () => {
     });
   });
 
+  it("downloads a file shared by several assets once", async () => {
+    const shared = "smash-4/announcer-lines/mario.ogg";
+    const requested: string[] = [];
+    const result = await fetchAssets({
+      manifest: {
+        assets: [
+          {
+            id: "smash-for-3ds/announcer-line/mario",
+            game: "smash-for-3ds",
+            kind: "announcer-line",
+            path: shared,
+          },
+          {
+            id: "smash-for-wii-u/announcer-line/mario",
+            game: "smash-for-wii-u",
+            kind: "announcer-line",
+            path: shared,
+          },
+        ],
+      },
+      destDir,
+      token: "a-token",
+      download: async (path) => {
+        requested.push(path);
+        return bucket({ [shared]: "mario call" })(path);
+      },
+    });
+
+    expect(requested).toEqual([shared]);
+    expect(result).toMatchObject({ status: "done", fetched: [shared] });
+  });
+
   it("does nothing without a token, so placeholders stay in use", async () => {
     const result = await fetchAssets({
       manifest,

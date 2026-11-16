@@ -523,10 +523,40 @@
       "path": "ultimate/music/menu.ogg"
     },
     {
-      "id": "ultimate/sound-effect/select",
+      "id": "ultimate/sound-effect/hand-move",
       "game": "ultimate",
       "kind": "sound-effect",
-      "path": "ultimate/sound-effects/select.ogg"
+      "path": "ultimate/sound-effects/hand-move.ogg"
+    },
+    {
+      "id": "ultimate/sound-effect/token-pick-up",
+      "game": "ultimate",
+      "kind": "sound-effect",
+      "path": "ultimate/sound-effects/token-pick-up.ogg"
+    },
+    {
+      "id": "ultimate/sound-effect/token-drop",
+      "game": "ultimate",
+      "kind": "sound-effect",
+      "path": "ultimate/sound-effects/token-drop.ogg"
+    },
+    {
+      "id": "ultimate/sound-effect/panel-toggle",
+      "game": "ultimate",
+      "kind": "sound-effect",
+      "path": "ultimate/sound-effects/panel-toggle.ogg"
+    },
+    {
+      "id": "ultimate/sound-effect/back",
+      "game": "ultimate",
+      "kind": "sound-effect",
+      "path": "ultimate/sound-effects/back.ogg"
+    },
+    {
+      "id": "ultimate/sound-effect/ready-to-fight",
+      "game": "ultimate",
+      "kind": "sound-effect",
+      "path": "ultimate/sound-effects/ready-to-fight.ogg"
     },
     {
       "id": "ultimate/announcer-line/mario",
@@ -535,10 +565,1750 @@
       "path": "ultimate/announcer-lines/mario.ogg"
     },
     {
+      "id": "ultimate/announcer-line/donkey-kong",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/donkey-kong.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/link",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/link.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/samus",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/samus.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/dark-samus",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/dark-samus.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/yoshi",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/yoshi.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/kirby",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/kirby.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/fox",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/fox.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/pikachu",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/pikachu.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/luigi",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/luigi.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/ness",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/ness.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/captain-falcon",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/captain-falcon.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/jigglypuff",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/jigglypuff.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/peach",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/peach.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/daisy",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/daisy.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/bowser",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/bowser.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/ice-climbers",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/ice-climbers.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/sheik",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/sheik.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/zelda",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/zelda.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/dr-mario",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/dr-mario.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/pichu",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/pichu.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/falco",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/falco.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/marth",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/marth.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/lucina",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/lucina.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/young-link",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/young-link.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/ganondorf",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/ganondorf.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/mewtwo",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/mewtwo.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/roy",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/roy.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/chrom",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/chrom.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/mr-game-and-watch",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/mr-game-and-watch.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/meta-knight",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/meta-knight.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/pit",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/pit.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/dark-pit",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/dark-pit.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/zero-suit-samus",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/zero-suit-samus.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/wario",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/wario.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/snake",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/snake.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/ike",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/ike.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/pokemon-trainer",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/pokemon-trainer.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/diddy-kong",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/diddy-kong.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/lucas",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/lucas.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/sonic",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/sonic.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/king-dedede",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/king-dedede.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/olimar",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/olimar.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/lucario",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/lucario.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/rob",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/rob.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/toon-link",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/toon-link.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/wolf",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/wolf.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/villager",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/villager.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/mega-man",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/mega-man.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/wii-fit-trainer",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/wii-fit-trainer.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/rosalina-and-luma",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/rosalina-and-luma.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/little-mac",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/little-mac.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/greninja",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/greninja.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/palutena",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/palutena.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/pac-man",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/pac-man.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/robin",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/robin.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/shulk",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/shulk.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/bowser-jr",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/bowser-jr.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/duck-hunt",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/duck-hunt.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/ryu",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/ryu.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/ken",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/ken.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/cloud",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/cloud.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/corrin",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/corrin.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/bayonetta",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/bayonetta.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/inkling",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/inkling.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/ridley",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/ridley.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/simon",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/simon.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/richter",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/richter.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/king-k-rool",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/king-k-rool.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/isabelle",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/isabelle.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/incineroar",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/incineroar.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/piranha-plant",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/piranha-plant.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/joker",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/joker.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/hero",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/hero.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/banjo-and-kazooie",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/banjo-and-kazooie.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/terry",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/terry.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/byleth",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/byleth.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/min-min",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/min-min.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/steve",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/steve.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/sephiroth",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/sephiroth.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/pyra-mythra",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/pyra-mythra.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/kazuya",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/kazuya.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/sora",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/sora.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/mii-brawler",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/mii-brawler.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/mii-swordfighter",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/mii-swordfighter.ogg"
+    },
+    {
+      "id": "ultimate/announcer-line/mii-gunner",
+      "game": "ultimate",
+      "kind": "announcer-line",
+      "path": "ultimate/announcer-lines/mii-gunner.ogg"
+    },
+    {
       "id": "ultimate/ui-art/ready-to-fight",
       "game": "ultimate",
       "kind": "ui-art",
       "path": "ultimate/ui-art/ready-to-fight.png"
+    },
+    {
+      "id": "melee/music/menu",
+      "game": "melee",
+      "kind": "music",
+      "path": "melee/music/menu-1.ogg"
+    },
+    {
+      "id": "melee/sound-effect/hand-move",
+      "game": "melee",
+      "kind": "sound-effect",
+      "path": "melee/sound-effects/hand-move.ogg"
+    },
+    {
+      "id": "melee/sound-effect/token-pick-up",
+      "game": "melee",
+      "kind": "sound-effect",
+      "path": "melee/sound-effects/token-pick-up.ogg"
+    },
+    {
+      "id": "melee/sound-effect/token-drop",
+      "game": "melee",
+      "kind": "sound-effect",
+      "path": "melee/sound-effects/token-drop.ogg"
+    },
+    {
+      "id": "melee/sound-effect/panel-toggle",
+      "game": "melee",
+      "kind": "sound-effect",
+      "path": "melee/sound-effects/panel-toggle.ogg"
+    },
+    {
+      "id": "melee/sound-effect/back",
+      "game": "melee",
+      "kind": "sound-effect",
+      "path": "melee/sound-effects/back.ogg"
+    },
+    {
+      "id": "melee/sound-effect/ready-to-fight",
+      "game": "melee",
+      "kind": "sound-effect",
+      "path": "melee/sound-effects/ready-to-fight.ogg"
+    },
+    {
+      "id": "melee/announcer-line/dr-mario",
+      "game": "melee",
+      "kind": "announcer-line",
+      "path": "melee/announcer-lines/dr-mario.ogg"
+    },
+    {
+      "id": "melee/announcer-line/mario",
+      "game": "melee",
+      "kind": "announcer-line",
+      "path": "melee/announcer-lines/mario.ogg"
+    },
+    {
+      "id": "melee/announcer-line/luigi",
+      "game": "melee",
+      "kind": "announcer-line",
+      "path": "melee/announcer-lines/luigi.ogg"
+    },
+    {
+      "id": "melee/announcer-line/bowser",
+      "game": "melee",
+      "kind": "announcer-line",
+      "path": "melee/announcer-lines/bowser.ogg"
+    },
+    {
+      "id": "melee/announcer-line/peach",
+      "game": "melee",
+      "kind": "announcer-line",
+      "path": "melee/announcer-lines/peach.ogg"
+    },
+    {
+      "id": "melee/announcer-line/yoshi",
+      "game": "melee",
+      "kind": "announcer-line",
+      "path": "melee/announcer-lines/yoshi.ogg"
+    },
+    {
+      "id": "melee/announcer-line/donkey-kong",
+      "game": "melee",
+      "kind": "announcer-line",
+      "path": "melee/announcer-lines/donkey-kong.ogg"
+    },
+    {
+      "id": "melee/announcer-line/captain-falcon",
+      "game": "melee",
+      "kind": "announcer-line",
+      "path": "melee/announcer-lines/captain-falcon.ogg"
+    },
+    {
+      "id": "melee/announcer-line/ganondorf",
+      "game": "melee",
+      "kind": "announcer-line",
+      "path": "melee/announcer-lines/ganondorf.ogg"
+    },
+    {
+      "id": "melee/announcer-line/falco",
+      "game": "melee",
+      "kind": "announcer-line",
+      "path": "melee/announcer-lines/falco.ogg"
+    },
+    {
+      "id": "melee/announcer-line/fox",
+      "game": "melee",
+      "kind": "announcer-line",
+      "path": "melee/announcer-lines/fox.ogg"
+    },
+    {
+      "id": "melee/announcer-line/ness",
+      "game": "melee",
+      "kind": "announcer-line",
+      "path": "melee/announcer-lines/ness.ogg"
+    },
+    {
+      "id": "melee/announcer-line/ice-climbers",
+      "game": "melee",
+      "kind": "announcer-line",
+      "path": "melee/announcer-lines/ice-climbers.ogg"
+    },
+    {
+      "id": "melee/announcer-line/kirby",
+      "game": "melee",
+      "kind": "announcer-line",
+      "path": "melee/announcer-lines/kirby.ogg"
+    },
+    {
+      "id": "melee/announcer-line/samus",
+      "game": "melee",
+      "kind": "announcer-line",
+      "path": "melee/announcer-lines/samus.ogg"
+    },
+    {
+      "id": "melee/announcer-line/zelda",
+      "game": "melee",
+      "kind": "announcer-line",
+      "path": "melee/announcer-lines/zelda.ogg"
+    },
+    {
+      "id": "melee/announcer-line/link",
+      "game": "melee",
+      "kind": "announcer-line",
+      "path": "melee/announcer-lines/link.ogg"
+    },
+    {
+      "id": "melee/announcer-line/young-link",
+      "game": "melee",
+      "kind": "announcer-line",
+      "path": "melee/announcer-lines/young-link.ogg"
+    },
+    {
+      "id": "melee/announcer-line/pichu",
+      "game": "melee",
+      "kind": "announcer-line",
+      "path": "melee/announcer-lines/pichu.ogg"
+    },
+    {
+      "id": "melee/announcer-line/pikachu",
+      "game": "melee",
+      "kind": "announcer-line",
+      "path": "melee/announcer-lines/pikachu.ogg"
+    },
+    {
+      "id": "melee/announcer-line/jigglypuff",
+      "game": "melee",
+      "kind": "announcer-line",
+      "path": "melee/announcer-lines/jigglypuff.ogg"
+    },
+    {
+      "id": "melee/announcer-line/mewtwo",
+      "game": "melee",
+      "kind": "announcer-line",
+      "path": "melee/announcer-lines/mewtwo.ogg"
+    },
+    {
+      "id": "melee/announcer-line/mr-game-and-watch",
+      "game": "melee",
+      "kind": "announcer-line",
+      "path": "melee/announcer-lines/mr-game-and-watch.ogg"
+    },
+    {
+      "id": "melee/announcer-line/marth",
+      "game": "melee",
+      "kind": "announcer-line",
+      "path": "melee/announcer-lines/marth.ogg"
+    },
+    {
+      "id": "melee/announcer-line/roy",
+      "game": "melee",
+      "kind": "announcer-line",
+      "path": "melee/announcer-lines/roy.ogg"
+    },
+    {
+      "id": "brawl/music/menu",
+      "game": "brawl",
+      "kind": "music",
+      "path": "brawl/music/menu-1.ogg"
+    },
+    {
+      "id": "brawl/sound-effect/hand-move",
+      "game": "brawl",
+      "kind": "sound-effect",
+      "path": "brawl/sound-effects/hand-move.ogg"
+    },
+    {
+      "id": "brawl/sound-effect/token-pick-up",
+      "game": "brawl",
+      "kind": "sound-effect",
+      "path": "brawl/sound-effects/token-pick-up.ogg"
+    },
+    {
+      "id": "brawl/sound-effect/token-drop",
+      "game": "brawl",
+      "kind": "sound-effect",
+      "path": "brawl/sound-effects/token-drop.ogg"
+    },
+    {
+      "id": "brawl/sound-effect/panel-toggle",
+      "game": "brawl",
+      "kind": "sound-effect",
+      "path": "brawl/sound-effects/panel-toggle.ogg"
+    },
+    {
+      "id": "brawl/sound-effect/back",
+      "game": "brawl",
+      "kind": "sound-effect",
+      "path": "brawl/sound-effects/back.ogg"
+    },
+    {
+      "id": "brawl/sound-effect/ready-to-fight",
+      "game": "brawl",
+      "kind": "sound-effect",
+      "path": "brawl/sound-effects/ready-to-fight.ogg"
+    },
+    {
+      "id": "brawl/announcer-line/mario",
+      "game": "brawl",
+      "kind": "announcer-line",
+      "path": "brawl/announcer-lines/mario.ogg"
+    },
+    {
+      "id": "brawl/announcer-line/donkey-kong",
+      "game": "brawl",
+      "kind": "announcer-line",
+      "path": "brawl/announcer-lines/donkey-kong.ogg"
+    },
+    {
+      "id": "brawl/announcer-line/link",
+      "game": "brawl",
+      "kind": "announcer-line",
+      "path": "brawl/announcer-lines/link.ogg"
+    },
+    {
+      "id": "brawl/announcer-line/samus",
+      "game": "brawl",
+      "kind": "announcer-line",
+      "path": "brawl/announcer-lines/samus.ogg"
+    },
+    {
+      "id": "brawl/announcer-line/kirby",
+      "game": "brawl",
+      "kind": "announcer-line",
+      "path": "brawl/announcer-lines/kirby.ogg"
+    },
+    {
+      "id": "brawl/announcer-line/fox",
+      "game": "brawl",
+      "kind": "announcer-line",
+      "path": "brawl/announcer-lines/fox.ogg"
+    },
+    {
+      "id": "brawl/announcer-line/pikachu",
+      "game": "brawl",
+      "kind": "announcer-line",
+      "path": "brawl/announcer-lines/pikachu.ogg"
+    },
+    {
+      "id": "brawl/announcer-line/marth",
+      "game": "brawl",
+      "kind": "announcer-line",
+      "path": "brawl/announcer-lines/marth.ogg"
+    },
+    {
+      "id": "brawl/announcer-line/mr-game-and-watch",
+      "game": "brawl",
+      "kind": "announcer-line",
+      "path": "brawl/announcer-lines/mr-game-and-watch.ogg"
+    },
+    {
+      "id": "brawl/announcer-line/luigi",
+      "game": "brawl",
+      "kind": "announcer-line",
+      "path": "brawl/announcer-lines/luigi.ogg"
+    },
+    {
+      "id": "brawl/announcer-line/diddy-kong",
+      "game": "brawl",
+      "kind": "announcer-line",
+      "path": "brawl/announcer-lines/diddy-kong.ogg"
+    },
+    {
+      "id": "brawl/announcer-line/zelda",
+      "game": "brawl",
+      "kind": "announcer-line",
+      "path": "brawl/announcer-lines/zelda.ogg"
+    },
+    {
+      "id": "brawl/announcer-line/pit",
+      "game": "brawl",
+      "kind": "announcer-line",
+      "path": "brawl/announcer-lines/pit.ogg"
+    },
+    {
+      "id": "brawl/announcer-line/meta-knight",
+      "game": "brawl",
+      "kind": "announcer-line",
+      "path": "brawl/announcer-lines/meta-knight.ogg"
+    },
+    {
+      "id": "brawl/announcer-line/falco",
+      "game": "brawl",
+      "kind": "announcer-line",
+      "path": "brawl/announcer-lines/falco.ogg"
+    },
+    {
+      "id": "brawl/announcer-line/pokemon-trainer",
+      "game": "brawl",
+      "kind": "announcer-line",
+      "path": "brawl/announcer-lines/pokemon-trainer.ogg"
+    },
+    {
+      "id": "brawl/announcer-line/ike",
+      "game": "brawl",
+      "kind": "announcer-line",
+      "path": "brawl/announcer-lines/ike.ogg"
+    },
+    {
+      "id": "brawl/announcer-line/snake",
+      "game": "brawl",
+      "kind": "announcer-line",
+      "path": "brawl/announcer-lines/snake.ogg"
+    },
+    {
+      "id": "brawl/announcer-line/peach",
+      "game": "brawl",
+      "kind": "announcer-line",
+      "path": "brawl/announcer-lines/peach.ogg"
+    },
+    {
+      "id": "brawl/announcer-line/yoshi",
+      "game": "brawl",
+      "kind": "announcer-line",
+      "path": "brawl/announcer-lines/yoshi.ogg"
+    },
+    {
+      "id": "brawl/announcer-line/ganondorf",
+      "game": "brawl",
+      "kind": "announcer-line",
+      "path": "brawl/announcer-lines/ganondorf.ogg"
+    },
+    {
+      "id": "brawl/announcer-line/ice-climbers",
+      "game": "brawl",
+      "kind": "announcer-line",
+      "path": "brawl/announcer-lines/ice-climbers.ogg"
+    },
+    {
+      "id": "brawl/announcer-line/king-dedede",
+      "game": "brawl",
+      "kind": "announcer-line",
+      "path": "brawl/announcer-lines/king-dedede.ogg"
+    },
+    {
+      "id": "brawl/announcer-line/wolf",
+      "game": "brawl",
+      "kind": "announcer-line",
+      "path": "brawl/announcer-lines/wolf.ogg"
+    },
+    {
+      "id": "brawl/announcer-line/lucario",
+      "game": "brawl",
+      "kind": "announcer-line",
+      "path": "brawl/announcer-lines/lucario.ogg"
+    },
+    {
+      "id": "brawl/announcer-line/ness",
+      "game": "brawl",
+      "kind": "announcer-line",
+      "path": "brawl/announcer-lines/ness.ogg"
+    },
+    {
+      "id": "brawl/announcer-line/sonic",
+      "game": "brawl",
+      "kind": "announcer-line",
+      "path": "brawl/announcer-lines/sonic.ogg"
+    },
+    {
+      "id": "brawl/announcer-line/bowser",
+      "game": "brawl",
+      "kind": "announcer-line",
+      "path": "brawl/announcer-lines/bowser.ogg"
+    },
+    {
+      "id": "brawl/announcer-line/wario",
+      "game": "brawl",
+      "kind": "announcer-line",
+      "path": "brawl/announcer-lines/wario.ogg"
+    },
+    {
+      "id": "brawl/announcer-line/toon-link",
+      "game": "brawl",
+      "kind": "announcer-line",
+      "path": "brawl/announcer-lines/toon-link.ogg"
+    },
+    {
+      "id": "brawl/announcer-line/rob",
+      "game": "brawl",
+      "kind": "announcer-line",
+      "path": "brawl/announcer-lines/rob.ogg"
+    },
+    {
+      "id": "brawl/announcer-line/olimar",
+      "game": "brawl",
+      "kind": "announcer-line",
+      "path": "brawl/announcer-lines/olimar.ogg"
+    },
+    {
+      "id": "brawl/announcer-line/captain-falcon",
+      "game": "brawl",
+      "kind": "announcer-line",
+      "path": "brawl/announcer-lines/captain-falcon.ogg"
+    },
+    {
+      "id": "brawl/announcer-line/jigglypuff",
+      "game": "brawl",
+      "kind": "announcer-line",
+      "path": "brawl/announcer-lines/jigglypuff.ogg"
+    },
+    {
+      "id": "brawl/announcer-line/lucas",
+      "game": "brawl",
+      "kind": "announcer-line",
+      "path": "brawl/announcer-lines/lucas.ogg"
+    },
+    {
+      "id": "smash-64/music/menu",
+      "game": "smash-64",
+      "kind": "music",
+      "path": "smash-64/music/character-select.ogg"
+    },
+    {
+      "id": "smash-64/sound-effect/hand-move",
+      "game": "smash-64",
+      "kind": "sound-effect",
+      "path": "smash-64/sound-effects/hand-move.ogg"
+    },
+    {
+      "id": "smash-64/sound-effect/token-pick-up",
+      "game": "smash-64",
+      "kind": "sound-effect",
+      "path": "smash-64/sound-effects/token-pick-up.ogg"
+    },
+    {
+      "id": "smash-64/sound-effect/token-drop",
+      "game": "smash-64",
+      "kind": "sound-effect",
+      "path": "smash-64/sound-effects/token-drop.ogg"
+    },
+    {
+      "id": "smash-64/sound-effect/panel-toggle",
+      "game": "smash-64",
+      "kind": "sound-effect",
+      "path": "smash-64/sound-effects/panel-toggle.ogg"
+    },
+    {
+      "id": "smash-64/sound-effect/back",
+      "game": "smash-64",
+      "kind": "sound-effect",
+      "path": "smash-64/sound-effects/back.ogg"
+    },
+    {
+      "id": "smash-64/sound-effect/ready-to-fight",
+      "game": "smash-64",
+      "kind": "sound-effect",
+      "path": "smash-64/sound-effects/ready-to-fight.ogg"
+    },
+    {
+      "id": "smash-64/announcer-line/luigi",
+      "game": "smash-64",
+      "kind": "announcer-line",
+      "path": "smash-64/announcer-lines/luigi.ogg"
+    },
+    {
+      "id": "smash-64/announcer-line/mario",
+      "game": "smash-64",
+      "kind": "announcer-line",
+      "path": "smash-64/announcer-lines/mario.ogg"
+    },
+    {
+      "id": "smash-64/announcer-line/donkey-kong",
+      "game": "smash-64",
+      "kind": "announcer-line",
+      "path": "smash-64/announcer-lines/donkey-kong.ogg"
+    },
+    {
+      "id": "smash-64/announcer-line/link",
+      "game": "smash-64",
+      "kind": "announcer-line",
+      "path": "smash-64/announcer-lines/link.ogg"
+    },
+    {
+      "id": "smash-64/announcer-line/samus",
+      "game": "smash-64",
+      "kind": "announcer-line",
+      "path": "smash-64/announcer-lines/samus.ogg"
+    },
+    {
+      "id": "smash-64/announcer-line/captain-falcon",
+      "game": "smash-64",
+      "kind": "announcer-line",
+      "path": "smash-64/announcer-lines/captain-falcon.ogg"
+    },
+    {
+      "id": "smash-64/announcer-line/ness",
+      "game": "smash-64",
+      "kind": "announcer-line",
+      "path": "smash-64/announcer-lines/ness.ogg"
+    },
+    {
+      "id": "smash-64/announcer-line/yoshi",
+      "game": "smash-64",
+      "kind": "announcer-line",
+      "path": "smash-64/announcer-lines/yoshi.ogg"
+    },
+    {
+      "id": "smash-64/announcer-line/kirby",
+      "game": "smash-64",
+      "kind": "announcer-line",
+      "path": "smash-64/announcer-lines/kirby.ogg"
+    },
+    {
+      "id": "smash-64/announcer-line/fox",
+      "game": "smash-64",
+      "kind": "announcer-line",
+      "path": "smash-64/announcer-lines/fox.ogg"
+    },
+    {
+      "id": "smash-64/announcer-line/pikachu",
+      "game": "smash-64",
+      "kind": "announcer-line",
+      "path": "smash-64/announcer-lines/pikachu.ogg"
+    },
+    {
+      "id": "smash-64/announcer-line/jigglypuff",
+      "game": "smash-64",
+      "kind": "announcer-line",
+      "path": "smash-64/announcer-lines/jigglypuff.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/music/menu",
+      "game": "smash-for-wii-u",
+      "kind": "music",
+      "path": "smash-for-wii-u/music/menu.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/sound-effect/hand-move",
+      "game": "smash-for-wii-u",
+      "kind": "sound-effect",
+      "path": "smash-for-wii-u/sound-effects/hand-move.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/sound-effect/token-pick-up",
+      "game": "smash-for-wii-u",
+      "kind": "sound-effect",
+      "path": "smash-for-wii-u/sound-effects/token-pick-up.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/sound-effect/token-drop",
+      "game": "smash-for-wii-u",
+      "kind": "sound-effect",
+      "path": "smash-for-wii-u/sound-effects/token-drop.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/sound-effect/panel-toggle",
+      "game": "smash-for-wii-u",
+      "kind": "sound-effect",
+      "path": "smash-for-wii-u/sound-effects/panel-toggle.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/sound-effect/back",
+      "game": "smash-for-wii-u",
+      "kind": "sound-effect",
+      "path": "smash-for-wii-u/sound-effects/back.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/sound-effect/ready-to-fight",
+      "game": "smash-for-wii-u",
+      "kind": "sound-effect",
+      "path": "smash-for-wii-u/sound-effects/ready-to-fight.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/announcer-line/mario",
+      "game": "smash-for-wii-u",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/mario.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/announcer-line/luigi",
+      "game": "smash-for-wii-u",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/luigi.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/announcer-line/peach",
+      "game": "smash-for-wii-u",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/peach.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/announcer-line/bowser",
+      "game": "smash-for-wii-u",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/bowser.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/announcer-line/yoshi",
+      "game": "smash-for-wii-u",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/yoshi.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/announcer-line/rosalina-and-luma",
+      "game": "smash-for-wii-u",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/rosalina-and-luma.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/announcer-line/bowser-jr",
+      "game": "smash-for-wii-u",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/bowser-jr.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/announcer-line/wario",
+      "game": "smash-for-wii-u",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/wario.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/announcer-line/donkey-kong",
+      "game": "smash-for-wii-u",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/donkey-kong.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/announcer-line/diddy-kong",
+      "game": "smash-for-wii-u",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/diddy-kong.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/announcer-line/mr-game-and-watch",
+      "game": "smash-for-wii-u",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/mr-game-and-watch.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/announcer-line/little-mac",
+      "game": "smash-for-wii-u",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/little-mac.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/announcer-line/link",
+      "game": "smash-for-wii-u",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/link.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/announcer-line/zelda",
+      "game": "smash-for-wii-u",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/zelda.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/announcer-line/sheik",
+      "game": "smash-for-wii-u",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/sheik.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/announcer-line/ganondorf",
+      "game": "smash-for-wii-u",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/ganondorf.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/announcer-line/toon-link",
+      "game": "smash-for-wii-u",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/toon-link.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/announcer-line/samus",
+      "game": "smash-for-wii-u",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/samus.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/announcer-line/zero-suit-samus",
+      "game": "smash-for-wii-u",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/zero-suit-samus.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/announcer-line/pit",
+      "game": "smash-for-wii-u",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/pit.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/announcer-line/palutena",
+      "game": "smash-for-wii-u",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/palutena.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/announcer-line/marth",
+      "game": "smash-for-wii-u",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/marth.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/announcer-line/ike",
+      "game": "smash-for-wii-u",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/ike.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/announcer-line/robin",
+      "game": "smash-for-wii-u",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/robin.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/announcer-line/duck-hunt",
+      "game": "smash-for-wii-u",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/duck-hunt.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/announcer-line/kirby",
+      "game": "smash-for-wii-u",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/kirby.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/announcer-line/king-dedede",
+      "game": "smash-for-wii-u",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/king-dedede.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/announcer-line/meta-knight",
+      "game": "smash-for-wii-u",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/meta-knight.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/announcer-line/fox",
+      "game": "smash-for-wii-u",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/fox.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/announcer-line/falco",
+      "game": "smash-for-wii-u",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/falco.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/announcer-line/pikachu",
+      "game": "smash-for-wii-u",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/pikachu.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/announcer-line/charizard",
+      "game": "smash-for-wii-u",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/charizard.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/announcer-line/lucario",
+      "game": "smash-for-wii-u",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/lucario.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/announcer-line/jigglypuff",
+      "game": "smash-for-wii-u",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/jigglypuff.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/announcer-line/greninja",
+      "game": "smash-for-wii-u",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/greninja.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/announcer-line/rob",
+      "game": "smash-for-wii-u",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/rob.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/announcer-line/ness",
+      "game": "smash-for-wii-u",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/ness.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/announcer-line/captain-falcon",
+      "game": "smash-for-wii-u",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/captain-falcon.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/announcer-line/villager",
+      "game": "smash-for-wii-u",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/villager.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/announcer-line/olimar",
+      "game": "smash-for-wii-u",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/olimar.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/announcer-line/wii-fit-trainer",
+      "game": "smash-for-wii-u",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/wii-fit-trainer.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/announcer-line/shulk",
+      "game": "smash-for-wii-u",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/shulk.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/announcer-line/dr-mario",
+      "game": "smash-for-wii-u",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/dr-mario.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/announcer-line/dark-pit",
+      "game": "smash-for-wii-u",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/dark-pit.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/announcer-line/lucina",
+      "game": "smash-for-wii-u",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/lucina.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/announcer-line/pac-man",
+      "game": "smash-for-wii-u",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/pac-man.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/announcer-line/mega-man",
+      "game": "smash-for-wii-u",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/mega-man.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/announcer-line/sonic",
+      "game": "smash-for-wii-u",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/sonic.ogg"
+    },
+    {
+      "id": "smash-for-wii-u/announcer-line/mii",
+      "game": "smash-for-wii-u",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/mii.ogg"
+    },
+    {
+      "id": "smash-for-3ds/music/menu",
+      "game": "smash-for-3ds",
+      "kind": "music",
+      "path": "smash-for-3ds/music/menu.ogg"
+    },
+    {
+      "id": "smash-for-3ds/sound-effect/hand-move",
+      "game": "smash-for-3ds",
+      "kind": "sound-effect",
+      "path": "smash-for-3ds/sound-effects/hand-move.ogg"
+    },
+    {
+      "id": "smash-for-3ds/sound-effect/token-pick-up",
+      "game": "smash-for-3ds",
+      "kind": "sound-effect",
+      "path": "smash-for-3ds/sound-effects/token-pick-up.ogg"
+    },
+    {
+      "id": "smash-for-3ds/sound-effect/token-drop",
+      "game": "smash-for-3ds",
+      "kind": "sound-effect",
+      "path": "smash-for-3ds/sound-effects/token-drop.ogg"
+    },
+    {
+      "id": "smash-for-3ds/sound-effect/panel-toggle",
+      "game": "smash-for-3ds",
+      "kind": "sound-effect",
+      "path": "smash-for-3ds/sound-effects/panel-toggle.ogg"
+    },
+    {
+      "id": "smash-for-3ds/sound-effect/back",
+      "game": "smash-for-3ds",
+      "kind": "sound-effect",
+      "path": "smash-for-3ds/sound-effects/back.ogg"
+    },
+    {
+      "id": "smash-for-3ds/sound-effect/ready-to-fight",
+      "game": "smash-for-3ds",
+      "kind": "sound-effect",
+      "path": "smash-for-3ds/sound-effects/ready-to-fight.ogg"
+    },
+    {
+      "id": "smash-for-3ds/announcer-line/mario",
+      "game": "smash-for-3ds",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/mario.ogg"
+    },
+    {
+      "id": "smash-for-3ds/announcer-line/luigi",
+      "game": "smash-for-3ds",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/luigi.ogg"
+    },
+    {
+      "id": "smash-for-3ds/announcer-line/peach",
+      "game": "smash-for-3ds",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/peach.ogg"
+    },
+    {
+      "id": "smash-for-3ds/announcer-line/bowser",
+      "game": "smash-for-3ds",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/bowser.ogg"
+    },
+    {
+      "id": "smash-for-3ds/announcer-line/yoshi",
+      "game": "smash-for-3ds",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/yoshi.ogg"
+    },
+    {
+      "id": "smash-for-3ds/announcer-line/rosalina-and-luma",
+      "game": "smash-for-3ds",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/rosalina-and-luma.ogg"
+    },
+    {
+      "id": "smash-for-3ds/announcer-line/bowser-jr",
+      "game": "smash-for-3ds",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/bowser-jr.ogg"
+    },
+    {
+      "id": "smash-for-3ds/announcer-line/wario",
+      "game": "smash-for-3ds",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/wario.ogg"
+    },
+    {
+      "id": "smash-for-3ds/announcer-line/mr-game-and-watch",
+      "game": "smash-for-3ds",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/mr-game-and-watch.ogg"
+    },
+    {
+      "id": "smash-for-3ds/announcer-line/donkey-kong",
+      "game": "smash-for-3ds",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/donkey-kong.ogg"
+    },
+    {
+      "id": "smash-for-3ds/announcer-line/diddy-kong",
+      "game": "smash-for-3ds",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/diddy-kong.ogg"
+    },
+    {
+      "id": "smash-for-3ds/announcer-line/link",
+      "game": "smash-for-3ds",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/link.ogg"
+    },
+    {
+      "id": "smash-for-3ds/announcer-line/zelda",
+      "game": "smash-for-3ds",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/zelda.ogg"
+    },
+    {
+      "id": "smash-for-3ds/announcer-line/sheik",
+      "game": "smash-for-3ds",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/sheik.ogg"
+    },
+    {
+      "id": "smash-for-3ds/announcer-line/ganondorf",
+      "game": "smash-for-3ds",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/ganondorf.ogg"
+    },
+    {
+      "id": "smash-for-3ds/announcer-line/toon-link",
+      "game": "smash-for-3ds",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/toon-link.ogg"
+    },
+    {
+      "id": "smash-for-3ds/announcer-line/samus",
+      "game": "smash-for-3ds",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/samus.ogg"
+    },
+    {
+      "id": "smash-for-3ds/announcer-line/zero-suit-samus",
+      "game": "smash-for-3ds",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/zero-suit-samus.ogg"
+    },
+    {
+      "id": "smash-for-3ds/announcer-line/pit",
+      "game": "smash-for-3ds",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/pit.ogg"
+    },
+    {
+      "id": "smash-for-3ds/announcer-line/palutena",
+      "game": "smash-for-3ds",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/palutena.ogg"
+    },
+    {
+      "id": "smash-for-3ds/announcer-line/marth",
+      "game": "smash-for-3ds",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/marth.ogg"
+    },
+    {
+      "id": "smash-for-3ds/announcer-line/ike",
+      "game": "smash-for-3ds",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/ike.ogg"
+    },
+    {
+      "id": "smash-for-3ds/announcer-line/robin",
+      "game": "smash-for-3ds",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/robin.ogg"
+    },
+    {
+      "id": "smash-for-3ds/announcer-line/kirby",
+      "game": "smash-for-3ds",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/kirby.ogg"
+    },
+    {
+      "id": "smash-for-3ds/announcer-line/king-dedede",
+      "game": "smash-for-3ds",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/king-dedede.ogg"
+    },
+    {
+      "id": "smash-for-3ds/announcer-line/meta-knight",
+      "game": "smash-for-3ds",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/meta-knight.ogg"
+    },
+    {
+      "id": "smash-for-3ds/announcer-line/little-mac",
+      "game": "smash-for-3ds",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/little-mac.ogg"
+    },
+    {
+      "id": "smash-for-3ds/announcer-line/fox",
+      "game": "smash-for-3ds",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/fox.ogg"
+    },
+    {
+      "id": "smash-for-3ds/announcer-line/falco",
+      "game": "smash-for-3ds",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/falco.ogg"
+    },
+    {
+      "id": "smash-for-3ds/announcer-line/pikachu",
+      "game": "smash-for-3ds",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/pikachu.ogg"
+    },
+    {
+      "id": "smash-for-3ds/announcer-line/charizard",
+      "game": "smash-for-3ds",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/charizard.ogg"
+    },
+    {
+      "id": "smash-for-3ds/announcer-line/lucario",
+      "game": "smash-for-3ds",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/lucario.ogg"
+    },
+    {
+      "id": "smash-for-3ds/announcer-line/jigglypuff",
+      "game": "smash-for-3ds",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/jigglypuff.ogg"
+    },
+    {
+      "id": "smash-for-3ds/announcer-line/greninja",
+      "game": "smash-for-3ds",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/greninja.ogg"
+    },
+    {
+      "id": "smash-for-3ds/announcer-line/duck-hunt",
+      "game": "smash-for-3ds",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/duck-hunt.ogg"
+    },
+    {
+      "id": "smash-for-3ds/announcer-line/rob",
+      "game": "smash-for-3ds",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/rob.ogg"
+    },
+    {
+      "id": "smash-for-3ds/announcer-line/ness",
+      "game": "smash-for-3ds",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/ness.ogg"
+    },
+    {
+      "id": "smash-for-3ds/announcer-line/captain-falcon",
+      "game": "smash-for-3ds",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/captain-falcon.ogg"
+    },
+    {
+      "id": "smash-for-3ds/announcer-line/villager",
+      "game": "smash-for-3ds",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/villager.ogg"
+    },
+    {
+      "id": "smash-for-3ds/announcer-line/olimar",
+      "game": "smash-for-3ds",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/olimar.ogg"
+    },
+    {
+      "id": "smash-for-3ds/announcer-line/wii-fit-trainer",
+      "game": "smash-for-3ds",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/wii-fit-trainer.ogg"
+    },
+    {
+      "id": "smash-for-3ds/announcer-line/dr-mario",
+      "game": "smash-for-3ds",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/dr-mario.ogg"
+    },
+    {
+      "id": "smash-for-3ds/announcer-line/dark-pit",
+      "game": "smash-for-3ds",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/dark-pit.ogg"
+    },
+    {
+      "id": "smash-for-3ds/announcer-line/lucina",
+      "game": "smash-for-3ds",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/lucina.ogg"
+    },
+    {
+      "id": "smash-for-3ds/announcer-line/shulk",
+      "game": "smash-for-3ds",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/shulk.ogg"
+    },
+    {
+      "id": "smash-for-3ds/announcer-line/pac-man",
+      "game": "smash-for-3ds",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/pac-man.ogg"
+    },
+    {
+      "id": "smash-for-3ds/announcer-line/mega-man",
+      "game": "smash-for-3ds",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/mega-man.ogg"
+    },
+    {
+      "id": "smash-for-3ds/announcer-line/sonic",
+      "game": "smash-for-3ds",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/sonic.ogg"
+    },
+    {
+      "id": "smash-for-3ds/announcer-line/mii",
+      "game": "smash-for-3ds",
+      "kind": "announcer-line",
+      "path": "smash-4/announcer-lines/mii.ogg"
     }
   ]
 }

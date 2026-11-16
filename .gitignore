@@ -42,3 +42,6 @@ __screenshots__/
 
 # Official assets fetched from the private bucket (ADR 0005). Never commit these.
 /src/asset-layer/official/
+
+# Downloaded source archives and uncurated official audio.
+/assets/audio-sources/
