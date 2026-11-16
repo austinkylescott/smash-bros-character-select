@@ -1,4 +1,4 @@
-import { GAMES, type Game } from "../asset-layer/manifest";
+import { GAMES, type Game, nearestGames } from "../asset-layer/manifest";
 import { FIGHTER_NAMES, ROSTER_DATA } from "./data";
 
 export interface OfficialFighter {
@@ -63,9 +63,8 @@ export function portraitAssetId(
   const fighter = fighterById.get(fighterId);
   if (!fighter) throw new Error(`Unknown official fighter "${fighterId}".`);
 
-  const distance = (game: Game) => Math.abs(GAMES.indexOf(game) - GAMES.indexOf(template));
-  const nearestFirst = [...fighter.games]
-    .sort((a, b) => distance(a) - distance(b) || GAMES.indexOf(b) - GAMES.indexOf(a))
-    .map((game) => `${game}/portrait/${fighterId}`);
+  const nearestFirst = nearestGames(fighter.games, template).map(
+    (game) => `${game}/portrait/${fighterId}`,
+  );
   return nearestFirst.find(available) ?? nearestFirst[0]!;
 }

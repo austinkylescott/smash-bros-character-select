@@ -9,9 +9,21 @@ export const GAMES = [
   "ultimate",
 ] as const;
 
+export type Game = (typeof GAMES)[number];
+
+/**
+ * Games ordered by how near they are to another, nearest first. When two are equally near, the
+ * later one comes first.
+ */
+export function nearestGames<G extends Game>(games: readonly G[], to: Game): G[] {
+  const distance = (game: Game) => Math.abs(GAMES.indexOf(game) - GAMES.indexOf(to));
+  return [...games].sort(
+    (a, b) => distance(a) - distance(b) || GAMES.indexOf(b) - GAMES.indexOf(a),
+  );
+}
+
 export const KINDS = ["portrait", "music", "sound-effect", "announcer-line", "ui-art"] as const;
 
-export type Game = (typeof GAMES)[number];
 export type AssetKind = (typeof KINDS)[number];
 
 export interface AssetEntry {
