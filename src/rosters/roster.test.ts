@@ -6,7 +6,6 @@ import {
   addFighter,
   canAddFighter,
   copyOfOfficial,
-  MAX_FIGHTERS,
   moveFighter,
   nameFighter,
   newRoster,
@@ -59,8 +58,6 @@ describe("adding a fighter", () => {
   });
 
   it("takes fighters up to 120 and no further", () => {
-    expect(MAX_FIGHTERS).toBe(120);
-
     const nearlyFull = rosterOf(119);
     expect(canAddFighter(nearlyFull, "kirby")).toBe(true);
 

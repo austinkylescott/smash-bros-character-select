@@ -48,6 +48,7 @@ export const officialFighters: readonly OfficialFighter[] = Object.freeze([
   ...fighterById.values(),
 ]);
 
+/** Whether an id names an official fighter. */
 export const isOfficialFighter = (id: string): boolean => fighterById.has(id);
 
 /** An official fighter by id. */

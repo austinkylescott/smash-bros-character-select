@@ -6,6 +6,7 @@ import { isOfficialFighter, officialFighter, type OfficialRoster } from "../offi
 import { templateName } from "../templates/catalogue";
 import type { Template } from "../templates/screen";
 
+/** A fighter in a roster. */
 export interface RosterFighter {
   /** An official fighter's id. */
   readonly id: string;
@@ -13,6 +14,7 @@ export interface RosterFighter {
   readonly name?: string;
 }
 
+/** A roster as a user makes and saves it. While being edited it may break the rules. */
 export interface Roster {
   readonly id: string;
   readonly name: string;

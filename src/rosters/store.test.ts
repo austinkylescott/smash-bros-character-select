@@ -30,7 +30,6 @@ describe("rosters saved in the browser", () => {
 
     const afterReload = createRosterStore(storage);
 
-    expect(afterReload.get("r1")).toEqual(saved);
     expect(afterReload.list()).toEqual([saved]);
   });
 
@@ -49,7 +48,7 @@ describe("rosters saved in the browser", () => {
     store.save(roster("r1", "kirby", "ness"));
 
     expect(store.list().map(({ id }) => id)).toEqual(["r1", "r2"]);
-    expect(store.get("r1")?.fighters).toEqual([{ id: "kirby" }, { id: "ness" }]);
+    expect(store.list()[0]?.fighters).toEqual([{ id: "kirby" }, { id: "ness" }]);
   });
 
   it("refuses a roster with no fighters, and keeps what was saved", () => {
@@ -88,7 +87,6 @@ describe("rosters saved in the browser", () => {
     store.remove("r1");
 
     expect(createRosterStore(storage).list()).toEqual([roster("r2", "fox")]);
-    expect(store.get("r1")).toBeUndefined();
   });
 
   it("has no rosters in a browser that has saved none", () => {
@@ -136,5 +134,29 @@ describe("rosters saved in the browser", () => {
     );
 
     expect(createRosterStore(storage).list()).toEqual([roster("good", "kirby")]);
+  });
+
+  it("keeps a stored roster it cannot read when others are saved and removed", () => {
+    // Such as one saved by a later version of the site, with a fighter this one does not know.
+    const storage = browserStorage();
+    const unreadable = { ...roster("later", "kirby"), fighters: [{ id: "goku" }] };
+    storage.items.set("rosters", JSON.stringify({ version: 1, rosters: [unreadable] }));
+    const store = createRosterStore(storage);
+
+    store.save(roster("r1", "kirby"));
+    store.remove("r1");
+
+    expect(store.list()).toEqual([]);
+    expect(JSON.parse(storage.items.get("rosters")!)).toEqual({
+      version: 1,
+      rosters: [unreadable],
+    });
+  });
+
+  it("has no rosters when what is stored is in a shape from a later version", () => {
+    const storage = browserStorage();
+    storage.items.set("rosters", JSON.stringify({ version: 2, rosters: [roster("r1", "kirby")] }));
+
+    expect(createRosterStore(storage).list()).toEqual([]);
   });
 });

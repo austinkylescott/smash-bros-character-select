@@ -19,12 +19,6 @@ import { route } from "./routes/navigation";
     :id="route.roster"
     :template="route.template"
   />
-  <!-- Rebuilt for each roster, so one roster's edits never show on another. -->
-  <RosterEditor
-    v-else
-    :key="route.roster ?? `new/${route.copyOf}`"
-    :id="route.roster"
-    :copy-of="route.copyOf"
-  />
+  <RosterEditor v-else :id="route.roster" :copy-of="route.copyOf" />
   <MuteButton />
 </template>

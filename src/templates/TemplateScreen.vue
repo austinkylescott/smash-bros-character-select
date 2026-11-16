@@ -1,10 +1,12 @@
 <script setup lang="ts">
 /**
  * Any roster's screen in any available template, on a stage scaled to fit: the window, or when
- * `preview` is set, the box it is put in. A preview is only looked at, so it takes no input.
+ * `preview` is set, the box it is put in. A preview is only looked at, so it takes no input and
+ * makes no sound.
  */
-import { computed, onBeforeUnmount, onMounted, ref } from "vue";
+import { computed, onBeforeUnmount, onMounted, provide, ref } from "vue";
 
+import { SILENT_SCREEN } from "../audio";
 import type { AvailableTemplate } from "./catalogue";
 import { meleeLayout } from "./melee/layout";
 import MeleeScreen from "./melee/MeleeScreen.vue";
@@ -20,6 +22,7 @@ const props = defineProps<{
   preview?: boolean;
 }>();
 defineEmits<{ back: [] }>();
+provide(SILENT_SCREEN, props.preview);
 
 /** The roster as the template is given it, with this template's portraits. */
 const shown = computed(() => screenRoster(props.roster, props.template));

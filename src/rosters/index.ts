@@ -16,6 +16,7 @@ window.addEventListener("storage", refresh);
 /** Every roster saved in this browser, the latest saved first. */
 export const myRosters = readonly(saved);
 
+/** The saved roster with an id, if this browser has one. */
 export const myRoster = (id: string): Roster | undefined =>
   saved.value.find((roster) => roster.id === id);
 
@@ -25,10 +26,14 @@ export function saveRoster(roster: Roster) {
   refresh();
 }
 
+/** Deletes a roster from this browser. */
 export function removeRoster(id: string) {
   store.remove(id);
   refresh();
 }
 
 /** An id for a new roster, short enough for a link. */
-export const newRosterId = (): string => crypto.randomUUID().slice(0, 8);
+export const newRosterId = (): string =>
+  Array.from(crypto.getRandomValues(new Uint8Array(4)), (byte) =>
+    byte.toString(16).padStart(2, "0"),
+  ).join("");

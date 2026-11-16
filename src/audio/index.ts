@@ -2,7 +2,7 @@
  * Audio for the whole app: one director, playing through the browser, with every file taken from
  * the asset layer. A template calls `useScreenAudio` and the director does the rest.
  */
-import { type Ref, watch } from "vue";
+import { inject, type InjectionKey, type Ref, watch } from "vue";
 
 import { resolveAsset } from "../asset-layer";
 import { browserStorage } from "../browser-storage";
@@ -44,8 +44,13 @@ export interface ScreenAudio {
   readonly slots: () => readonly Box[];
 }
 
+/** Provided as true around a screen that is only a preview, which makes no sound. */
+export const SILENT_SCREEN: InjectionKey<boolean> = Symbol("silent screen");
+
 /** Gives a screen its template's menu music and the sounds of selecting. */
 export function useScreenAudio({ template, selection, hand, slots }: ScreenAudio) {
+  if (inject(SILENT_SCREEN, false)) return { playBack: () => {} };
+
   watch(
     template,
     (current) => {

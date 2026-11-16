@@ -7,7 +7,7 @@ import "@fontsource/rubik/400.css";
 import "@fontsource/rubik/700.css";
 import "@fontsource/rubik/900.css";
 
-import { computed, onBeforeUnmount, onMounted, ref, shallowRef } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref, shallowRef, watch } from "vue";
 
 import type { Game } from "../asset-layer/manifest";
 import { officialFighter, officialFighters, officialRosters } from "../official";
@@ -34,6 +34,7 @@ import {
 } from "../templates/catalogue";
 import { screenRoster } from "../templates/screen";
 import TemplateScreen from "../templates/TemplateScreen.vue";
+import RosterMissing from "./RosterMissing.vue";
 
 const props = defineProps<{
   /** The saved roster to edit. Without one, the editor starts a new roster. */
@@ -42,16 +43,18 @@ const props = defineProps<{
   copyOf?: Game;
 }>();
 
-/** The roster as last saved, which the edits are measured against. */
-const saved = shallowRef(props.id === undefined ? undefined : myRoster(props.id));
-const missing = props.id !== undefined && !saved.value;
+const savedNow = () => (props.id === undefined ? undefined : myRoster(props.id));
+const startNew = () =>
+  props.copyOf
+    ? copyOfOfficial(newRosterId(), officialRosters[props.copyOf])
+    : newRoster(newRosterId());
 
-const draft = shallowRef<Roster>(
-  saved.value ??
-    (props.copyOf
-      ? copyOfOfficial(newRosterId(), officialRosters[props.copyOf])
-      : newRoster(newRosterId())),
-);
+/** The roster as last saved, if it has been. */
+const saved = shallowRef(savedNow());
+const missing = computed(() => props.id !== undefined && !saved.value);
+/** The roster as it was opened or last saved, which the edits are measured against. */
+const opened = shallowRef(saved.value ?? startNew());
+const draft = shallowRef(opened.value);
 /** Why the last save did not happen, when the browser would not store the roster. */
 const failure = ref("");
 const edit = (change: (roster: Roster) => Roster) => {
@@ -61,7 +64,9 @@ const edit = (change: (roster: Roster) => Roster) => {
 const set = (fields: Partial<Roster>) => edit((roster) => ({ ...roster, ...fields }));
 
 const problems = computed(() => rosterProblems(draft.value));
-const unsaved = computed(() => JSON.stringify(draft.value) !== JSON.stringify(saved.value));
+const edited = computed(() => JSON.stringify(draft.value) !== JSON.stringify(opened.value));
+/** A new roster is worth saving before it is edited: a copy of an official one is whole already. */
+const savable = computed(() => problems.value.length === 0 && (edited.value || !saved.value));
 const full = computed(() => draft.value.fighters.length >= MAX_FIGHTERS);
 
 function save() {
@@ -71,17 +76,23 @@ function save() {
     failure.value = error instanceof Error ? error.message : "The roster could not be saved.";
     return;
   }
-  saved.value = draft.value;
+  saved.value = opened.value = draft.value;
   // A new roster now has a link of its own, so a reload opens it rather than starting another.
   if (props.id === undefined) replaceWith(rosterEditorLink(draft.value.id));
 }
 
-// The browser asks before a reload or a closed tab throws edits away.
-const warn = (event: BeforeUnloadEvent) => {
-  if (!missing && unsaved.value) event.preventDefault();
+// Leaving throws edits away, so the visitor is asked first: by the browser before a reload or a
+// closed tab, and here before one of the editor's own links is followed.
+const askBeforeUnload = (event: BeforeUnloadEvent) => {
+  if (edited.value) event.preventDefault();
 };
-onMounted(() => window.addEventListener("beforeunload", warn));
-onBeforeUnmount(() => window.removeEventListener("beforeunload", warn));
+onMounted(() => window.addEventListener("beforeunload", askBeforeUnload));
+onBeforeUnmount(() => window.removeEventListener("beforeunload", askBeforeUnload));
+function leave(event: MouseEvent) {
+  if (edited.value && !confirm("Leave without saving? The changes will be lost."))
+    event.preventDefault();
+  else followLink(event);
+}
 
 const defaultTemplate = computed(() => showableTemplate(draft.value.defaultTemplate));
 /** The template the preview shows. It follows the default template until another is picked. */
@@ -108,6 +119,11 @@ function typeName(id: string, text: string) {
 
 /** The fighter being dragged to a new place in the order. */
 const dragged = ref<string>();
+function startDrag(id: string, event: DragEvent) {
+  dragged.value = id;
+  // Some browsers start a drag only when it carries something.
+  event.dataTransfer?.setData("text/plain", id);
+}
 function dragOver(index: number) {
   const id = dragged.value;
   if (id !== undefined) edit((roster) => moveFighter(roster, id, index));
@@ -129,20 +145,28 @@ const picks = computed(() => {
 });
 const togglePick = (id: string, picked: boolean) =>
   edit((roster) => (picked ? removeFighter(roster, id) : addFighter(roster, id)));
+
+// The link may change to another roster while the editor is up, as Back and Forward do. A new
+// roster's first save changes it to that roster's own link, which is no other roster.
+watch(
+  () => [props.id, props.copyOf],
+  () => {
+    if (props.id === draft.value.id) return;
+    saved.value = savedNow();
+    draft.value = opened.value = saved.value ?? startNew();
+    previewed.value = undefined;
+    failure.value = "";
+    search.value = "";
+  },
+);
 </script>
 
 <template>
-  <main v-if="missing" class="editor">
-    <h1>Roster not found</h1>
-    <p>
-      This roster is not saved in this browser. Rosters are kept in the browser they were made in.
-    </p>
-    <a class="plain" :href="HOME_LINK" @click="followLink">Back to the home page</a>
-  </main>
+  <RosterMissing v-if="missing" />
 
   <main v-else class="editor">
     <header>
-      <a class="plain" :href="HOME_LINK" @click="followLink">&larr; Home</a>
+      <a class="plain" :href="HOME_LINK" @click="leave">&larr; Home</a>
       <h1>{{ saved ? "Edit roster" : "New roster" }}</h1>
     </header>
 
@@ -213,7 +237,7 @@ const togglePick = (id: string, picked: boolean) =>
                 draggable="true"
                 aria-hidden="true"
                 title="Drag to reorder"
-                @dragstart="dragged = fighter.id"
+                @dragstart="startDrag(fighter.id, $event)"
                 @dragend="dragged = undefined"
                 >&#x2807;</span
               >
@@ -302,15 +326,8 @@ const togglePick = (id: string, picked: boolean) =>
         <p v-else class="empty">The screen shows here once the roster has a fighter.</p>
 
         <div class="saving">
-          <button
-            type="button"
-            class="save"
-            :disabled="problems.length > 0 || !unsaved"
-            @click="save"
-          >
-            Save
-          </button>
-          <a v-if="saved" class="plain" :href="rosterScreenLink(saved.id)" @click="followLink">
+          <button type="button" class="save" :disabled="!savable" @click="save">Save</button>
+          <a v-if="saved" class="plain" :href="rosterScreenLink(saved.id)" @click="leave">
             Open the saved screen
           </a>
           <ul v-if="problems.length > 0" class="problems">
@@ -318,7 +335,13 @@ const togglePick = (id: string, picked: boolean) =>
           </ul>
           <p v-else-if="failure" class="problems" role="alert">{{ failure }}</p>
           <p v-else class="hint" role="status">
-            {{ unsaved ? "There are changes not yet saved." : "Saved in this browser." }}
+            {{
+              edited
+                ? "There are changes not yet saved."
+                : saved
+                  ? "Saved in this browser."
+                  : "Not saved yet."
+            }}
           </p>
         </div>
       </aside>

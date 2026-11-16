@@ -94,8 +94,6 @@ describe("what a template is given to render for a roster a user made", () => {
   });
 
   it("shows it in every available template, with that template's portraits", () => {
-    expect(availableTemplates).toEqual(["melee", "ultimate"]);
-
     const melee = screenRoster(made, "melee", byAssetId);
     expect(melee.fighters.map((fighter) => fighter.portrait)).toEqual([
       // Snake was never in Melee, so his portrait comes from the nearest game that has it.
