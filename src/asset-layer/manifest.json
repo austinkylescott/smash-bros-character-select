@@ -1081,6 +1081,156 @@
       "path": "ultimate/ui-art/ready-to-fight.png"
     },
     {
+      "id": "melee/portrait/dr-mario",
+      "game": "melee",
+      "kind": "portrait",
+      "path": "melee/portraits/dr-mario.png"
+    },
+    {
+      "id": "melee/portrait/mario",
+      "game": "melee",
+      "kind": "portrait",
+      "path": "melee/portraits/mario.png"
+    },
+    {
+      "id": "melee/portrait/luigi",
+      "game": "melee",
+      "kind": "portrait",
+      "path": "melee/portraits/luigi.png"
+    },
+    {
+      "id": "melee/portrait/bowser",
+      "game": "melee",
+      "kind": "portrait",
+      "path": "melee/portraits/bowser.png"
+    },
+    {
+      "id": "melee/portrait/peach",
+      "game": "melee",
+      "kind": "portrait",
+      "path": "melee/portraits/peach.png"
+    },
+    {
+      "id": "melee/portrait/yoshi",
+      "game": "melee",
+      "kind": "portrait",
+      "path": "melee/portraits/yoshi.png"
+    },
+    {
+      "id": "melee/portrait/donkey-kong",
+      "game": "melee",
+      "kind": "portrait",
+      "path": "melee/portraits/donkey-kong.png"
+    },
+    {
+      "id": "melee/portrait/captain-falcon",
+      "game": "melee",
+      "kind": "portrait",
+      "path": "melee/portraits/captain-falcon.png"
+    },
+    {
+      "id": "melee/portrait/ganondorf",
+      "game": "melee",
+      "kind": "portrait",
+      "path": "melee/portraits/ganondorf.png"
+    },
+    {
+      "id": "melee/portrait/falco",
+      "game": "melee",
+      "kind": "portrait",
+      "path": "melee/portraits/falco.png"
+    },
+    {
+      "id": "melee/portrait/fox",
+      "game": "melee",
+      "kind": "portrait",
+      "path": "melee/portraits/fox.png"
+    },
+    {
+      "id": "melee/portrait/ness",
+      "game": "melee",
+      "kind": "portrait",
+      "path": "melee/portraits/ness.png"
+    },
+    {
+      "id": "melee/portrait/ice-climbers",
+      "game": "melee",
+      "kind": "portrait",
+      "path": "melee/portraits/ice-climbers.png"
+    },
+    {
+      "id": "melee/portrait/kirby",
+      "game": "melee",
+      "kind": "portrait",
+      "path": "melee/portraits/kirby.png"
+    },
+    {
+      "id": "melee/portrait/samus",
+      "game": "melee",
+      "kind": "portrait",
+      "path": "melee/portraits/samus.png"
+    },
+    {
+      "id": "melee/portrait/zelda",
+      "game": "melee",
+      "kind": "portrait",
+      "path": "melee/portraits/zelda.png"
+    },
+    {
+      "id": "melee/portrait/link",
+      "game": "melee",
+      "kind": "portrait",
+      "path": "melee/portraits/link.png"
+    },
+    {
+      "id": "melee/portrait/young-link",
+      "game": "melee",
+      "kind": "portrait",
+      "path": "melee/portraits/young-link.png"
+    },
+    {
+      "id": "melee/portrait/pichu",
+      "game": "melee",
+      "kind": "portrait",
+      "path": "melee/portraits/pichu.png"
+    },
+    {
+      "id": "melee/portrait/pikachu",
+      "game": "melee",
+      "kind": "portrait",
+      "path": "melee/portraits/pikachu.png"
+    },
+    {
+      "id": "melee/portrait/jigglypuff",
+      "game": "melee",
+      "kind": "portrait",
+      "path": "melee/portraits/jigglypuff.png"
+    },
+    {
+      "id": "melee/portrait/mewtwo",
+      "game": "melee",
+      "kind": "portrait",
+      "path": "melee/portraits/mewtwo.png"
+    },
+    {
+      "id": "melee/portrait/mr-game-and-watch",
+      "game": "melee",
+      "kind": "portrait",
+      "path": "melee/portraits/mr-game-and-watch.png"
+    },
+    {
+      "id": "melee/portrait/marth",
+      "game": "melee",
+      "kind": "portrait",
+      "path": "melee/portraits/marth.png"
+    },
+    {
+      "id": "melee/portrait/roy",
+      "game": "melee",
+      "kind": "portrait",
+      "path": "melee/portraits/roy.png"
+    },
+    {
       "id": "melee/music/menu",
       "game": "melee",
       "kind": "music",

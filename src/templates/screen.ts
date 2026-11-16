@@ -2,7 +2,7 @@
  * The template boundary: a template is given a `ScreenRoster` and renders it. It never sees how a
  * roster is stored, and roster code never sees how a template lays it out.
  */
-import { resolveAsset } from "../asset-layer";
+import { hasAsset, resolveAsset } from "../asset-layer";
 import type { Game } from "../asset-layer/manifest";
 import { type OfficialRoster, portraitAssetId } from "../official";
 
@@ -21,7 +21,10 @@ export interface ScreenRoster {
   readonly randomSlot: boolean;
 }
 
-/** Prepares a roster for a template, taking each portrait from the template's game or the nearest. */
+/**
+ * Prepares a roster for a template, taking each portrait from the template's game or the nearest
+ * one whose portraits the asset layer has.
+ */
 export function screenRoster(
   roster: OfficialRoster,
   template: Template,
@@ -32,7 +35,7 @@ export function screenRoster(
     fighters: roster.fighters.map(({ id, name }) => ({
       id,
       name,
-      portrait: resolve(portraitAssetId(id, template)),
+      portrait: resolve(portraitAssetId(id, template, hasAsset)),
     })),
   };
 }

@@ -39,4 +39,26 @@ describe("what a template is given to render", () => {
 
     for (const fighter of roster.fighters) expect(fighter.portrait, fighter.id).toMatch(/./);
   });
+
+  it("gives the Melee template Melee's own portraits for the Melee roster", () => {
+    const roster = screenRoster(officialRosters.melee, "melee", byAssetId);
+
+    expect(roster.randomSlot).toBe(false);
+    expect(roster.fighters).toHaveLength(25);
+    expect(roster.fighters[0]!.portrait).toBe("asset:melee/portrait/dr-mario");
+  });
+
+  it("takes a portrait from the nearest game the asset layer has portraits for", () => {
+    // Snake was in Brawl and Ultimate. Brawl is nearer Melee, but has no portraits gathered yet.
+    const roster = screenRoster(officialRosters.ultimate, "melee", byAssetId);
+    const snake = roster.fighters.find((fighter) => fighter.id === "snake");
+
+    expect(snake?.portrait).toBe("asset:ultimate/portrait/snake");
+  });
+
+  it("finds a portrait in the asset layer for every fighter on a Melee screen", () => {
+    const roster = screenRoster(officialRosters.ultimate, "melee");
+
+    for (const fighter of roster.fighters) expect(fighter.portrait, fighter.id).toMatch(/./);
+  });
 });
