@@ -51,14 +51,21 @@ export const officialFighters: readonly OfficialFighter[] = Object.freeze([
 /**
  * The asset id of a fighter's portrait for a template: that game's own portrait, or else the
  * nearest game that has one. When two games are equally near, the later one wins.
+ *
+ * `available` says whether a portrait has been gathered, as portraits are gathered one game at a
+ * time: games without the fighter's are passed over. If none has it, the nearest is given anyway.
  */
-export function portraitAssetId(fighterId: string, template: Game): string {
+export function portraitAssetId(
+  fighterId: string,
+  template: Game,
+  available: (assetId: string) => boolean = () => true,
+): string {
   const fighter = fighterById.get(fighterId);
   if (!fighter) throw new Error(`Unknown official fighter "${fighterId}".`);
 
   const distance = (game: Game) => Math.abs(GAMES.indexOf(game) - GAMES.indexOf(template));
-  const nearest = [...fighter.games].sort(
-    (a, b) => distance(a) - distance(b) || GAMES.indexOf(b) - GAMES.indexOf(a),
-  )[0]!;
-  return `${nearest}/portrait/${fighterId}`;
+  const nearestFirst = [...fighter.games]
+    .sort((a, b) => distance(a) - distance(b) || GAMES.indexOf(b) - GAMES.indexOf(a))
+    .map((game) => `${game}/portrait/${fighterId}`);
+  return nearestFirst.find(available) ?? nearestFirst[0]!;
 }

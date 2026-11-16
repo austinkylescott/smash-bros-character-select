@@ -90,4 +90,13 @@ describe("the committed manifest", () => {
       );
     }
   });
+
+  it("gives every Melee fighter a Melee portrait", () => {
+    const ids = new Set(manifest.assets.map((asset) => asset.id));
+    const missing = ROSTER_DATA.melee.fighters
+      .map((fighter) => `melee/portrait/${fighter}`)
+      .filter((id) => !ids.has(id));
+
+    expect(missing).toEqual([]);
+  });
 });
