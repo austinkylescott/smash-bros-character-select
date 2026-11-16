@@ -1,30 +1,36 @@
 <script setup lang="ts">
 /**
  * Shows the roster on screen in another template. Always on screen, above any template. Each
- * choice is a link naming the template, so the screen it opens can be shared.
+ * choice is a link naming the template, so the screen it opens can be shared. Links put in the
+ * slot stand beside the choices.
  */
 import "@fontsource/rubik/700.css";
 
-import type { Game } from "../asset-layer/manifest";
 import { type AvailableTemplate, availableTemplates, templateName } from "../templates/catalogue";
-import { officialScreenLink } from "./route";
 import { followLink } from "./navigation";
 
-defineProps<{ roster: Game; template: AvailableTemplate }>();
+defineProps<{
+  template: AvailableTemplate;
+  /** The link to the roster's screen in a template. */
+  linkTo: (template: AvailableTemplate) => string;
+}>();
 </script>
 
 <template>
-  <nav class="switcher" aria-label="Template">
-    <a
-      v-for="choice in availableTemplates"
-      :key="choice"
-      :href="officialScreenLink(roster, choice)"
-      :aria-current="choice === template ? 'page' : undefined"
-      @click="followLink"
-    >
-      {{ templateName(choice) }}
-    </a>
-  </nav>
+  <div class="switcher">
+    <nav aria-label="Template">
+      <a
+        v-for="choice in availableTemplates"
+        :key="choice"
+        :href="linkTo(choice)"
+        :aria-current="choice === template ? 'page' : undefined"
+        @click="followLink"
+      >
+        {{ templateName(choice) }}
+      </a>
+    </nav>
+    <slot />
+  </div>
 </template>
 
 <style scoped>
@@ -37,7 +43,7 @@ defineProps<{ roster: Game; template: AvailableTemplate }>();
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 2px;
+  gap: 2px 10px;
   width: max-content;
   max-width: calc(100vw - 136px);
   transform: translateX(-50%);
@@ -52,7 +58,16 @@ defineProps<{ roster: Game; template: AvailableTemplate }>();
     sans-serif;
 }
 
-a {
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2px;
+}
+
+/* Slotted links are styled here too, so they match the choices. */
+a,
+.switcher :slotted(a) {
   display: grid;
   place-items: center;
   min-height: 32px;
@@ -62,7 +77,8 @@ a {
   text-decoration: none;
 }
 
-a:hover {
+a:hover,
+.switcher :slotted(a:hover) {
   background: rgb(255 255 255 / 20%);
 }
 
@@ -71,8 +87,13 @@ a[aria-current] {
   color: #000;
 }
 
-a:focus-visible {
+a:focus-visible,
+.switcher :slotted(a:focus-visible) {
   outline: 3px solid #ffcf1a;
   outline-offset: 2px;
+}
+
+.switcher :slotted(a) {
+  border: 2px solid rgb(255 255 255 / 70%);
 }
 </style>

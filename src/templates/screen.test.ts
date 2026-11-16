@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vite-plus/test";
 
 import { officialRosters } from "../official";
+import { addFighter, nameFighter, newRoster } from "../rosters/roster";
+import { availableTemplates } from "./catalogue";
 import { screenRoster } from "./screen";
 
 const byAssetId = (id: string) => `asset:${id}`;
@@ -60,5 +62,55 @@ describe("what a template is given to render", () => {
     const roster = screenRoster(officialRosters.ultimate, "melee");
 
     for (const fighter of roster.fighters) expect(fighter.portrait, fighter.id).toMatch(/./);
+  });
+});
+
+describe("a fighter whose portrait has not been gathered for any game", () => {
+  it("is still shown, with a stand-in portrait", () => {
+    // Charizard stood alone only on the 3DS and Wii U, whose portraits are not gathered yet.
+    for (const template of availableTemplates) {
+      const roster = screenRoster(officialRosters["smash-for-wii-u"], template);
+      const charizard = roster.fighters.find((fighter) => fighter.id === "charizard");
+
+      expect(charizard?.portrait, template).toMatch(/./);
+    }
+  });
+});
+
+describe("what a template is given to render for a roster a user made", () => {
+  const made = {
+    ...nameFighter(["snake", "kirby"].reduce(addFighter, newRoster("r1")), "snake", "Solid Snake"),
+    randomSlot: false,
+  };
+
+  it("gives the fighters in the roster's order, with an edited name in place of the fighter's own", () => {
+    expect(screenRoster(made, "ultimate", byAssetId)).toEqual({
+      randomSlot: false,
+      fighters: [
+        { id: "snake", name: "Solid Snake", portrait: "asset:ultimate/portrait/snake" },
+        { id: "kirby", name: "Kirby", portrait: "asset:ultimate/portrait/kirby" },
+      ],
+    });
+  });
+
+  it("shows it in every available template, with that template's portraits", () => {
+    expect(availableTemplates).toEqual(["melee", "ultimate"]);
+
+    const melee = screenRoster(made, "melee", byAssetId);
+    expect(melee.fighters.map((fighter) => fighter.portrait)).toEqual([
+      // Snake was never in Melee, so his portrait comes from the nearest game that has it.
+      "asset:ultimate/portrait/snake",
+      "asset:melee/portrait/kirby",
+    ]);
+
+    for (const template of availableTemplates) {
+      const shown = screenRoster({ ...made, randomSlot: true }, template);
+      expect(shown.randomSlot, template).toBe(true);
+      expect(
+        shown.fighters.map((fighter) => fighter.name),
+        template,
+      ).toEqual(["Solid Snake", "Kirby"]);
+      for (const fighter of shown.fighters) expect(fighter.portrait, template).toMatch(/./);
+    }
   });
 });

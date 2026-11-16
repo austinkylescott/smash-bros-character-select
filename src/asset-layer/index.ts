@@ -23,6 +23,9 @@ const ids = new Set(manifest.assets.map((asset) => asset.id));
 /** Whether the manifest lists an asset. Lines a game never recorded are not listed. */
 export const hasAsset = (id: string): boolean => ids.has(id);
 
+/** What stands in for a portrait the manifest does not list, as none has been gathered. */
+export const portraitStandIn: string = portrait;
+
 /** Resolves a manifest id, using Ultimate for missing Melee/64 effects, then placeholders. */
 export const resolveAsset = createAssetLookup({
   manifest,

@@ -5,20 +5,13 @@
 import { type Ref, watch } from "vue";
 
 import { resolveAsset } from "../asset-layer";
+import { browserStorage } from "../browser-storage";
 import type { Box } from "../selection/navigate";
 import type { Selection } from "../selection/selection";
 import type { Point } from "../selection/useHand";
 import type { Template } from "../templates/screen";
-import { createAudioDirector, type MuteStorage } from "./director";
+import { createAudioDirector } from "./director";
 import { handSounds, menuMusicId, selectionSounds, soundEffectId } from "./sounds";
-
-function browserStorage(): MuteStorage | undefined {
-  try {
-    return window.localStorage;
-  } catch {
-    return undefined;
-  }
-}
 
 export const audio = createAudioDirector({
   createSound: (url) => new Audio(url),

@@ -48,6 +48,15 @@ export const officialFighters: readonly OfficialFighter[] = Object.freeze([
   ...fighterById.values(),
 ]);
 
+export const isOfficialFighter = (id: string): boolean => fighterById.has(id);
+
+/** An official fighter by id. */
+export function officialFighter(id: string): OfficialFighter {
+  const fighter = fighterById.get(id);
+  if (!fighter) throw new Error(`Unknown official fighter "${id}".`);
+  return fighter;
+}
+
 /**
  * The asset id of a fighter's portrait for a template: that game's own portrait, or else the
  * nearest game that has one. When two games are equally near, the later one wins.
@@ -60,9 +69,7 @@ export function portraitAssetId(
   template: Game,
   available: (assetId: string) => boolean = () => true,
 ): string {
-  const fighter = fighterById.get(fighterId);
-  if (!fighter) throw new Error(`Unknown official fighter "${fighterId}".`);
-
+  const fighter = officialFighter(fighterId);
   const nearestFirst = nearestGames(fighter.games, template).map(
     (game) => `${game}/portrait/${fighterId}`,
   );
