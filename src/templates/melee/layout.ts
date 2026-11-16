@@ -24,7 +24,7 @@ export interface MeleeLayout {
 /** One of Melee's slots: nine to a row across the band, three rows deep. Slots touch. */
 export const MELEE_SLOT: Size = { width: 1150 / 9, height: 120 };
 /** A player panel's height, tab included, which its contents are laid out on. */
-export const PANEL_HEIGHT = 386;
+const PANEL_HEIGHT = 386;
 
 /** Melee's own screen. */
 export const MELEE_LANDSCAPE: MeleeLayout = {

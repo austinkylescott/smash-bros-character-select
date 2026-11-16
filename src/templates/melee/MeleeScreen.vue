@@ -99,7 +99,7 @@ const fighterOf = (index: number) => {
 
 interface Token {
   readonly index: number;
-  /** The slot the coin sits on, or -1 while it waits in its panel. */
+  /** The slot the token sits on, or -1 while it waits in its panel. */
   readonly slot: number;
   readonly colour: string;
   readonly tag: string;
@@ -110,7 +110,7 @@ interface Token {
 }
 
 /**
- * Every coin not in the hand: on its slot, or at home in its panel. Coins sharing a slot are
+ * Every token not in the hand: on its slot, or at home in its panel. Tokens sharing a slot are
  * spread across it, overlapping more as more of them pile up.
  */
 const tokens = computed<Token[]>(() => {
@@ -145,7 +145,7 @@ const tokenLabel = (token: Token) => {
     : pick === RANDOM
       ? "on Random"
       : `on ${fightersById.value.get(pick.fighter)?.name}`;
-  return `Player ${token.index + 1}'s coin, ${where}`;
+  return `Player ${token.index + 1}'s token, ${where}`;
 };
 
 const owner = computed(() => {

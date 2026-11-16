@@ -10,13 +10,13 @@ import { computed, nextTick, ref, watch } from "vue";
 import type { Box } from "../../selection/navigate";
 import { type Panel, RANDOM } from "../../selection/selection";
 import type { ScreenFighter } from "../screen";
-import { kindLabel, playerColour } from "./players";
+import { kindLabel, playerColour, playerTag } from "./players";
 
 const props = defineProps<{
   box: Box;
   index: number;
   panel: Panel;
-  /** The picked fighter, when the panel's coin is on one. */
+  /** The picked fighter, when the panel's token is on one. */
   fighter: ScreenFighter | undefined;
 }>();
 defineEmits<{ cycle: [] }>();
@@ -29,7 +29,7 @@ const tabLabel = computed(
     `Player ${props.index + 1}: ${{ human: "human", cpu: "CPU", off: "not playing" }[props.panel.kind]}. Switch.`,
 );
 /** The big faded letters at the panel's foot: the port for a human, "CP" for the computer. */
-const mark = computed(() => (props.panel.kind === "cpu" ? "CP" : `P${props.index + 1}`));
+const mark = computed(() => playerTag(props.index, props.panel.kind));
 
 // A name too wide for its plate is squeezed sideways.
 const nameEl = ref<HTMLElement | null>(null);

@@ -1,16 +1,16 @@
 <script setup lang="ts">
-/** A player's coin, as Melee draws it: a bevelled disc in their colour, stamped with their tag. */
+/** A player's token, as Melee draws it: a bevelled disc in their colour, stamped with their tag. */
 defineProps<{ colour: string; tag: string; size: number }>();
 </script>
 
 <template>
-  <span class="coin" :style="{ '--colour': colour, '--size': `${size}px` }">
+  <span class="token" :style="{ '--colour': colour, '--size': `${size}px` }">
     <span class="tag">{{ tag }}</span>
   </span>
 </template>
 
 <style scoped>
-.coin {
+.token {
   display: grid;
   place-items: center;
   width: var(--size);

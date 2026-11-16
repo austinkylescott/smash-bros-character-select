@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /**
  * Melee's hand: a white glove pointing up and to the left, its owner's tag beneath it, carrying
- * whichever coin it holds. On touch there is no glove: a held coin simply follows the finger.
+ * whichever token it holds. On touch there is no glove: a held token simply follows the finger.
  */
 import type { HandInput, Point } from "../../selection/useHand";
 import MeleeToken from "./MeleeToken.vue";
