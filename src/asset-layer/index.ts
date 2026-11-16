@@ -18,6 +18,11 @@ const fetchedFiles = import.meta.glob<string>("./official/**/*", {
   import: "default",
 });
 
+const ids = new Set(manifest.assets.map((asset) => asset.id));
+
+/** Whether the manifest lists an asset. Lines a game never recorded are not listed. */
+export const hasAsset = (id: string): boolean => ids.has(id);
+
 /** Resolves a manifest id, using Ultimate for missing Melee/64 effects, then placeholders. */
 export const resolveAsset = createAssetLookup({
   manifest,

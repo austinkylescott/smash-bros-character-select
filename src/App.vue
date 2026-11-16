@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
+import MuteButton from "./audio/MuteButton.vue";
 import { officialRosters } from "./official";
 import { screenRoster } from "./templates/screen";
 import { orientationOf } from "./templates/stage";
@@ -23,4 +24,5 @@ const back = () => history.back();
   <StageFrame :width="layout.stage.width" :height="layout.stage.height">
     <UltimateScreen :roster="roster" :layout="layout" @back="back" />
   </StageFrame>
+  <MuteButton />
 </template>

@@ -4,6 +4,7 @@ import "@fontsource/rubik/800.css";
 import "@fontsource/rubik/900.css";
 import { computed, nextTick, onMounted, ref, watch } from "vue";
 
+import { useScreenAudio } from "../../audio";
 import type { Box } from "../../selection/navigate";
 import { type Pick, RANDOM, type SelectionRules } from "../../selection/selection";
 import { useSelectionControls } from "../../selection/useSelectionControls";
@@ -24,7 +25,7 @@ import UltimateTopBar from "./UltimateTopBar.vue";
  * stage the layout gives. Swapping the layout keeps every pick.
  */
 const props = defineProps<{ roster: ScreenRoster; layout: UltimateLayout }>();
-defineEmits<{ back: [] }>();
+const emit = defineEmits<{ back: [] }>();
 
 /** Ultimate starts with Player 1 and a CPU, and seats up to eight. */
 const RULES: SelectionRules = { minPanels: 2, maxPanels: 8, startingPanels: ["human", "cpu"] };
@@ -65,6 +66,17 @@ const controls = useSelectionControls({
   homeOf: (panel, current) => tokenHome(panel, current.panels.length),
 });
 const { selection, ready, hand, focused } = controls;
+
+const { playBack } = useScreenAudio({
+  template: () => "ultimate",
+  selection,
+  hand: hand.position,
+  slots: () => grid.value.slots,
+});
+function back() {
+  playBack();
+  emit("back");
+}
 
 const homeOf = (index: number) => tokenHome(index, selection.value.panels.length);
 
@@ -179,7 +191,7 @@ const boxStyle = ({ x, y, width, height }: Box) => ({
     @keydown="controls.onKey"
   >
     <div class="backdrop" :style="{ height: `${layout.floorTop}px` }" />
-    <UltimateTopBar :width="layout.stage.width" @back="$emit('back')" />
+    <UltimateTopBar :width="layout.stage.width" @back="back" />
 
     <ol class="grid" aria-label="Fighters" @keydown="controls.onGridKey">
       <li
