@@ -8,8 +8,8 @@ import { useScreenAudio } from "../../audio";
 import type { Box } from "../../selection/navigate";
 import { type Pick, RANDOM, type SelectionRules } from "../../selection/selection";
 import { useSelectionControls } from "../../selection/useSelectionControls";
-import CroppedImage from "../../portraits/CroppedImage.vue";
 import type { ScreenRoster } from "../screen";
+import FighterPortrait from "../FighterPortrait.vue";
 import { ultimateGrid } from "./grid";
 import { slotLabel } from "./label";
 import type { UltimateLayout } from "./layout";
@@ -210,14 +210,7 @@ const boxStyle = ({ x, y, width, height }: Box) => ({
           @click="controls.chooseSlot(index)"
           @focus="controls.onSlotFocus(index, $event)"
         >
-          <CroppedImage
-            v-if="fighter.crops"
-            class="portrait"
-            :src="fighter.portrait"
-            :image="fighter.crops"
-            :crop="fighter.crops.slot"
-          />
-          <img v-else class="portrait" :src="fighter.portrait" alt="" draggable="false" />
+          <FighterPortrait class="portrait" :fighter="fighter" place="slot" />
           <span ref="labels" class="label" aria-hidden="true">
             <span v-for="line in lines" :key="line" class="line ult-outlined" :data-text="line">{{
               line

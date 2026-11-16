@@ -8,8 +8,8 @@ import { computed, nextTick, ref, watch } from "vue";
 
 import type { Box } from "../../selection/navigate";
 import { type Panel, RANDOM } from "../../selection/selection";
-import CroppedImage from "../../portraits/CroppedImage.vue";
 import type { ScreenFighter } from "../screen";
+import FighterPortrait from "../FighterPortrait.vue";
 import { playerColour, playerTag } from "./players";
 import UltimateGlove from "./UltimateGlove.vue";
 
@@ -68,19 +68,11 @@ watch(
     }"
   >
     <div class="backing">
-      <CroppedImage
-        v-if="fighter?.crops && panel.kind !== 'off'"
+      <FighterPortrait
+        v-if="fighter && panel.kind !== 'off'"
         class="portrait"
-        :src="fighter.portrait"
-        :image="fighter.crops"
-        :crop="fighter.crops.panel"
-      />
-      <img
-        v-else-if="fighter && panel.kind !== 'off'"
-        class="portrait"
-        :src="fighter.portrait"
-        alt=""
-        draggable="false"
+        :fighter="fighter"
+        place="panel"
       />
       <span v-else-if="random" class="question ult-outlined" data-text="?" aria-hidden="true"
         >?</span

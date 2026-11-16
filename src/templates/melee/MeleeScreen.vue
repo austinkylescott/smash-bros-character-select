@@ -10,8 +10,8 @@ import { useScreenAudio } from "../../audio";
 import type { Box } from "../../selection/navigate";
 import { type Pick, RANDOM, type SelectionRules } from "../../selection/selection";
 import { useSelectionControls } from "../../selection/useSelectionControls";
-import CroppedImage from "../../portraits/CroppedImage.vue";
 import type { ScreenRoster } from "../screen";
+import FighterPortrait from "../FighterPortrait.vue";
 import { meleeGrid } from "./grid";
 import { meleeSlotLabel } from "./label";
 import type { MeleeLayout } from "./layout";
@@ -221,14 +221,7 @@ const boxStyle = ({ x, y, width, height }: Box) => ({
           @focus="controls.onSlotFocus(index, $event)"
         >
           <span class="face">
-            <CroppedImage
-              v-if="fighter.crops"
-              class="cropped"
-              :src="fighter.portrait"
-              :image="fighter.crops"
-              :crop="fighter.crops.slot"
-            />
-            <img v-else class="portrait" :src="fighter.portrait" alt="" draggable="false" />
+            <FighterPortrait class="portrait" :fighter="fighter" place="slot" />
             <span ref="labels" class="label" :class="{ two: lines.length > 1 }" aria-hidden="true">
               <span v-for="line in lines" :key="line" class="line">{{ line }}</span>
             </span>
@@ -424,11 +417,9 @@ const boxStyle = ({ x, y, width, height }: Box) => ({
 }
 
 /* A fighter added by image has no printed name to hide: its crop fills the face above the label. */
-.cropped {
+.portrait.cropped {
   position: absolute;
   inset: 0 0 24%;
-  display: block;
-  width: 100%;
   height: 76%;
 }
 

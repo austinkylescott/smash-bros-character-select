@@ -8,6 +8,7 @@ import {
   canAddFighter,
   copyOfOfficial,
   cropFighter,
+  isCustomFighter,
   moveFighter,
   nameFighter,
   newRoster,
@@ -171,8 +172,8 @@ describe("adding a fighter of one's own, by name and image", () => {
       name: "Goku",
       portrait: {
         ...upload,
-        // A 4:3 slot crop and a square panel crop, each as large as the image allows.
-        slot: { x: expect.closeTo(200 / 3), y: 0, width: expect.closeTo(800 / 3), height: 200 },
+        // A 3:2 slot crop and a square panel crop, each as large as the image allows.
+        slot: { x: 50, y: 0, width: 300, height: 200 },
         panel: { x: 100, y: 0, width: 200, height: 200 },
       },
     });
@@ -223,7 +224,7 @@ describe("re-cropping a fighter of one's own", () => {
   const roster = addCustomFighter(trio(), "custom-1", "Goku", upload);
   const portrait = (each: Roster) => {
     const fighter = each.fighters[3];
-    return fighter && "portrait" in fighter ? fighter.portrait : undefined;
+    return fighter && isCustomFighter(fighter) ? fighter.portrait : undefined;
   };
 
   it("changes the slot crop and leaves the panel crop", () => {

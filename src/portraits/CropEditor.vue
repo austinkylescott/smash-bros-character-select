@@ -6,7 +6,7 @@
 import { computed, ref } from "vue";
 
 import CroppedImage from "./CroppedImage.vue";
-import { type Crop, type ImageSize, moveCrop, zoomCrop } from "./crop";
+import { type Crop, type ImageSize, moveCrop, zoomCrop, zoomRange } from "./crop";
 
 const props = defineProps<{
   /** What the crop is for, as in "Slot". */
@@ -21,10 +21,11 @@ const move = (x: number, y: number) =>
   emit("update:crop", moveCrop(props.crop, { x, y }, props.image));
 const zoom = (width: number) => emit("update:crop", zoomCrop(props.crop, width, props.image));
 
-/** The widest the crop can be, which the slider runs up to; it runs down to a tenth of that. */
-const widest = computed(() =>
-  Math.min(props.image.width, props.image.height * (props.crop.width / props.crop.height)),
-);
+/**
+ * The zoom slider. Sliding right zooms in, so its value runs the other way to the crop's width.
+ */
+const range = computed(() => zoomRange(props.crop, props.image));
+const sliderValue = (width: number) => range.value.min + range.value.max - width;
 
 /** Where a drag of the crop last was, in the image's pixels. */
 const svg = ref<SVGSVGElement | null>(null);
@@ -109,11 +110,11 @@ function onKey(event: KeyboardEvent) {
       Zoom
       <input
         type="range"
-        :min="widest * 0.1"
-        :max="widest"
-        :step="widest / 200"
-        :value="widest + widest * 0.1 - crop.width"
-        @input="zoom(widest + widest * 0.1 - Number(($event.target as HTMLInputElement).value))"
+        :min="range.min"
+        :max="range.max"
+        :step="range.max / 200"
+        :value="sliderValue(crop.width)"
+        @input="zoom(sliderValue(Number(($event.target as HTMLInputElement).value)))"
       />
     </label>
   </fieldset>

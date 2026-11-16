@@ -12,7 +12,6 @@ import { computed, onBeforeUnmount, onMounted, ref, shallowRef, watch } from "vu
 import type { Game } from "../asset-layer/manifest";
 import { officialFighter, officialFighters, officialRosters } from "../official";
 import CropEditor from "../portraits/CropEditor.vue";
-import CroppedImage from "../portraits/CroppedImage.vue";
 import { type UploadedImage, uploadImage } from "../portraits/upload";
 import { myRoster, newRosterId, saveRoster } from "../rosters";
 import {
@@ -42,6 +41,7 @@ import {
   templateName,
 } from "../templates/catalogue";
 import { screenRoster } from "../templates/screen";
+import FighterPortrait from "../templates/FighterPortrait.vue";
 import TemplateScreen from "../templates/TemplateScreen.vue";
 import RosterMissing from "./RosterMissing.vue";
 
@@ -178,7 +178,7 @@ async function chooseImage(event: Event) {
     upload.value = await uploadImage(file);
   } catch (error) {
     uploadProblem.value = error instanceof Error ? error.message : "That image could not be used.";
-    if (fileInput.value) fileInput.value.value = "";
+    clearFile();
   } finally {
     reading.value = false;
   }
@@ -188,17 +188,20 @@ function addOwn() {
   if (!canAddOwn.value) return;
   const id = `custom-${newRosterId()}`;
   edit((roster) => addCustomFighter(roster, id, newName.value, upload.value!));
-  newName.value = "";
-  upload.value = undefined;
-  if (fileInput.value) fileInput.value.value = "";
+  resetAddOwn();
   // Its image starts centre-cropped; the crops open straight away for adjusting.
   cropping.value = id;
 }
+/** Empties the file field, so the same file can be chosen again. */
+function clearFile() {
+  if (fileInput.value) fileInput.value.value = "";
+}
+/** Empties the form for adding a fighter by name and image. */
 function resetAddOwn() {
   newName.value = "";
   upload.value = undefined;
   uploadProblem.value = "";
-  if (fileInput.value) fileInput.value.value = "";
+  clearFile();
 }
 
 /** The fighter added by image whose crops are open for adjusting. */
@@ -308,14 +311,7 @@ watch(
                 >&#x2807;</span
               >
               <span class="place">{{ index + 1 }}</span>
-              <CroppedImage
-                v-if="fighter.crops"
-                class="thumb"
-                :src="fighter.portrait"
-                :image="fighter.crops"
-                :crop="fighter.crops.slot"
-              />
-              <img v-else class="thumb" :src="fighter.portrait" alt="" />
+              <FighterPortrait class="thumb" :fighter="fighter" place="slot" />
               <input
                 type="text"
                 maxlength="40"

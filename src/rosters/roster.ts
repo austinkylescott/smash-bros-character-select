@@ -9,7 +9,7 @@ import { templateName } from "../templates/catalogue";
 import type { Template } from "../templates/screen";
 
 /** An official fighter in a roster. */
-export interface OfficialEntry {
+export interface OfficialRosterFighter {
   /** An official fighter's id. */
   readonly id: string;
   /** The name shown in place of the fighter's own, when the user has edited it. */
@@ -31,7 +31,7 @@ export interface CustomFighter {
 }
 
 /** A fighter in a roster: an official one, or one the user added by name and image. */
-export type RosterFighter = OfficialEntry | CustomFighter;
+export type RosterFighter = OfficialRosterFighter | CustomFighter;
 
 /** Whether a fighter was added by name and image rather than being an official one. */
 export const isCustomFighter = (fighter: RosterFighter): fighter is CustomFighter =>
