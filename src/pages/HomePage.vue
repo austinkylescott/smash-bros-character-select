@@ -1,14 +1,24 @@
 <script setup lang="ts">
-/** The home page: the official rosters, each a link to its screen in its default template. */
+/**
+ * The home page: the rosters saved in this browser, and the official rosters, each a link to its
+ * screen in its default template.
+ */
 import "@fontsource/rubik/400.css";
 import "@fontsource/rubik/700.css";
 import "@fontsource/rubik/900.css";
 
 import { GAMES } from "../asset-layer/manifest";
 import { officialRosters } from "../official";
-import { officialScreenLink } from "../routes/route";
+import { myRosters, removeRoster } from "../rosters";
+import type { Roster } from "../rosters/roster";
+import {
+  newRosterLink,
+  officialScreenLink,
+  rosterEditorLink,
+  rosterScreenLink,
+} from "../routes/route";
 import { followLink } from "../routes/navigation";
-import { defaultTemplate, templateName } from "../templates/catalogue";
+import { defaultTemplate, showableTemplate, templateName } from "../templates/catalogue";
 
 const rosters = GAMES.map((game) => ({
   game,
@@ -16,23 +26,66 @@ const rosters = GAMES.map((game) => ({
   fighterCount: officialRosters[game].fighters.length,
   template: templateName(defaultTemplate(game)),
   link: officialScreenLink(game),
+  copyLink: newRosterLink(game),
 }));
+
+const fighterCount = (count: number) => (count === 1 ? "1 fighter" : `${count} fighters`);
+
+function remove(roster: Roster) {
+  if (confirm(`Delete "${roster.name}"? It cannot be brought back.`)) removeRoster(roster.id);
+}
 </script>
 
 <template>
   <main class="home">
     <h1>Character Select</h1>
-    <p class="intro">Every Smash roster, shown as any game's character select screen.</p>
+    <p class="intro">
+      Every Smash roster, and rosters of your own, shown as any game's character select screen.
+    </p>
+
+    <section aria-labelledby="my-rosters">
+      <h2 id="my-rosters">My rosters</h2>
+      <p v-if="myRosters.length === 0" class="note">
+        No rosters saved in this browser yet. Start one from scratch, or copy an official roster
+        below.
+      </p>
+      <ul v-else class="rosters">
+        <li v-for="roster in myRosters" :key="roster.id">
+          <a class="card" :href="rosterScreenLink(roster.id)" @click="followLink">
+            <span class="name">{{ roster.name }}</span>
+            <span v-if="roster.description" class="detail">{{ roster.description }}</span>
+            <span class="detail">{{ fighterCount(roster.fighters.length) }}</span>
+            <span class="detail">
+              Opens in the {{ templateName(showableTemplate(roster.defaultTemplate)) }} template
+            </span>
+          </a>
+          <div class="actions">
+            <a :href="rosterEditorLink(roster.id)" @click="followLink">
+              Edit<span class="visually-hidden"> {{ roster.name }}</span>
+            </a>
+            <button type="button" @click="remove(roster)">
+              Delete<span class="visually-hidden"> {{ roster.name }}</span>
+            </button>
+          </div>
+        </li>
+      </ul>
+      <a class="new" :href="newRosterLink()" @click="followLink">New roster</a>
+    </section>
 
     <section aria-labelledby="official-rosters">
       <h2 id="official-rosters">Official rosters</h2>
       <ul class="rosters">
         <li v-for="roster in rosters" :key="roster.game">
-          <a :href="roster.link" @click="followLink">
+          <a class="card" :href="roster.link" @click="followLink">
             <span class="name">{{ roster.name }}</span>
-            <span class="detail">{{ roster.fighterCount }} fighters</span>
+            <span class="detail">{{ fighterCount(roster.fighterCount) }}</span>
             <span class="detail">Opens in the {{ roster.template }} template</span>
           </a>
+          <div class="actions">
+            <a :href="roster.copyLink" @click="followLink">
+              Copy to a new roster<span class="visually-hidden">, from {{ roster.name }}</span>
+            </a>
+          </div>
         </li>
       </ul>
     </section>
@@ -97,11 +150,17 @@ h2 {
   list-style: none;
 }
 
-.rosters a {
+.rosters li {
   display: flex;
   flex-direction: column;
+  gap: 4px;
+}
+
+.card {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
   gap: 2px;
-  height: 100%;
   padding: 16px 18px;
   border: 2px solid #3a3a3a;
   border-radius: 12px;
@@ -110,14 +169,64 @@ h2 {
   text-decoration: none;
 }
 
-.rosters a:hover {
+.card:hover {
   border-color: #fff;
   background: #222;
 }
 
-.rosters a:focus-visible {
+:is(a, button):focus-visible {
   outline: 3px solid #ffcf1a;
   outline-offset: 2px;
+}
+
+.actions {
+  display: flex;
+  gap: 4px 16px;
+  padding: 0 6px;
+}
+
+.actions :is(a, button) {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #ffcf1a;
+  font: inherit;
+  font-size: 14px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.new {
+  display: inline-grid;
+  place-items: center;
+  min-height: 44px;
+  margin-top: 12px;
+  padding: 0 20px;
+  border-radius: 8px;
+  background: #ffcf1a;
+  color: #000;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.new:hover {
+  background: #ffe066;
+}
+
+.note {
+  color: #c9c9c9;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 .name {

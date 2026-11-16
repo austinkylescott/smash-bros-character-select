@@ -28,3 +28,7 @@ export const isAvailableTemplate = (value: unknown): value is AvailableTemplate 
  */
 export const defaultTemplate = (game: Game): AvailableTemplate =>
   nearestGames(availableTemplates, game)[0]!;
+
+/** A template that can be shown: the one named, or until it is built, the nearest one that is. */
+export const showableTemplate = (template: Template): AvailableTemplate =>
+  isAvailableTemplate(template) ? template : defaultTemplate(template);

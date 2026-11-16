@@ -19,6 +19,12 @@ export function navigate(link: string) {
   current.value = read();
 }
 
+/** Opens a link in place of the page being left, so that Back does not return to that page. */
+export function replaceWith(link: string) {
+  history.replaceState(null, "", link);
+  current.value = read();
+}
+
 /**
  * For an `<a>`'s click: opens its link in place. A click meant for the browser, such as one that
  * opens a new tab, is left to it.
