@@ -50,10 +50,10 @@ export interface UploadedImage extends ImageSize {
 const MAX_PNG_CHARS = 400_000;
 
 /**
- * Reads, checks and resizes an uploaded image in the browser. Throws with a message for the user
- * if the file is not one that can be used.
+ * Reads, checks and resizes an uploaded image, or one fetched from a franchise source, in the
+ * browser. Throws with a message for the user if the image is not one that can be used.
  */
-export async function uploadImage(file: File): Promise<UploadedImage> {
+export async function uploadImage(file: Blob): Promise<UploadedImage> {
   const problem = imageFileProblem(file);
   if (problem) throw new Error(problem);
 
