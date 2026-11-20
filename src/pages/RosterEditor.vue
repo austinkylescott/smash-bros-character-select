@@ -10,6 +10,8 @@ import "@fontsource/rubik/900.css";
 import { computed, onBeforeUnmount, onMounted, ref, shallowRef, watch } from "vue";
 
 import type { Game } from "../asset-layer/manifest";
+import { type CastMember, pickFromPool } from "../franchises";
+import FranchisePool from "../franchises/FranchisePool.vue";
 import { officialFighter, officialFighters, officialRosters } from "../official";
 import CropEditor from "../portraits/CropEditor.vue";
 import { type UploadedImage, uploadImage } from "../portraits/upload";
@@ -77,6 +79,7 @@ const edited = computed(() => JSON.stringify(draft.value) !== JSON.stringify(ope
 /** A new roster is worth saving before it is edited: a copy of an official one is whole already. */
 const savable = computed(() => problems.value.length === 0 && (edited.value || !saved.value));
 const full = computed(() => draft.value.fighters.length >= MAX_FIGHTERS);
+const pickedIds = computed(() => new Set(draft.value.fighters.map((fighter) => fighter.id)));
 
 function save() {
   try {
@@ -149,12 +152,11 @@ const picker = screenRoster({ fighters: officialFighters, randomSlot: false }, "
 const search = ref("");
 const picks = computed(() => {
   const wanted = search.value.trim().toLowerCase();
-  const inRoster = new Set(draft.value.fighters.map((fighter) => fighter.id));
   return picker
     .filter((fighter) => fighter.name.toLowerCase().includes(wanted))
     .map((fighter) => ({
       ...fighter,
-      picked: inRoster.has(fighter.id),
+      picked: pickedIds.value.has(fighter.id),
       addable: canAddFighter(draft.value, fighter.id),
     }));
 });
@@ -191,6 +193,18 @@ function addOwn() {
   resetAddOwn();
   // Its image starts centre-cropped; the crops open straight away for adjusting.
   cropping.value = id;
+}
+/** Takes a character from the pool into the roster, and opens its crops for adjusting. */
+function pickPooled(member: CastMember, copy: UploadedImage) {
+  edit((roster) => pickFromPool(roster, member, copy));
+  if (pickedIds.value.has(member.id)) cropping.value = member.id;
+}
+/** Takes the user to the form for adding a fighter by name and image, with a name to start. */
+const newNameInput = ref<HTMLInputElement | null>(null);
+function addManually(name: string) {
+  if (name) newName.value = name;
+  newNameInput.value?.scrollIntoView({ behavior: "smooth", block: "center" });
+  newNameInput.value?.focus({ preventScroll: true });
 }
 /** Empties the file field, so the same file can be chosen again. */
 function clearFile() {
@@ -291,7 +305,8 @@ watch(
             <span class="count">{{ draft.fighters.length }} / {{ MAX_FIGHTERS }}</span>
           </h2>
           <p v-if="shown.length === 0" class="hint">
-            No fighters yet. Pick some from the official fighters below, or add your own.
+            No fighters yet. Pull some from a franchise, add your own, or pick from the official
+            fighters below.
           </p>
           <ol v-else class="rows">
             <li
@@ -384,12 +399,20 @@ watch(
           </div>
         </section>
 
+        <FranchisePool
+          :picked="pickedIds"
+          :full="full"
+          @pick="pickPooled"
+          @remove="(id) => edit((roster) => removeFighter(roster, id))"
+          @add-manually="addManually"
+        />
+
         <section aria-labelledby="own-fighter">
           <h2 id="own-fighter">Add your own fighter</h2>
           <form class="own" @submit.prevent="addOwn">
             <label>
               Name
-              <input v-model="newName" type="text" maxlength="40" />
+              <input ref="newNameInput" v-model="newName" type="text" maxlength="40" />
             </label>
             <label>
               <span>

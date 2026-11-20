@@ -8,9 +8,13 @@
  * @module
  */
 
+import type * as franchises from "../franchises.js";
+
 import type { ApiFromModules, FilterApi, FunctionReference } from "convex/server";
 
-declare const fullApi: ApiFromModules<{}>;
+declare const fullApi: ApiFromModules<{
+  franchises: typeof franchises;
+}>;
 
 /**
  * A utility for referencing Convex functions in your app's public API.
