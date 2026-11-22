@@ -19,6 +19,7 @@ export const availableTemplates = [
   "smash-64",
   "melee",
   "brawl",
+  "smash-for-wii-u",
   "ultimate",
 ] as const satisfies readonly Template[];
 
