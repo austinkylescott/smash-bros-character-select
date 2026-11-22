@@ -7,6 +7,8 @@
 import { computed, onBeforeUnmount, onMounted, provide, ref } from "vue";
 
 import { SILENT_SCREEN } from "../audio";
+import { brawlLayout } from "./brawl/layout";
+import BrawlScreen from "./brawl/BrawlScreen.vue";
 import type { AvailableTemplate } from "./catalogue";
 import { meleeLayout } from "./melee/layout";
 import MeleeScreen from "./melee/MeleeScreen.vue";
@@ -31,8 +33,12 @@ const shown = computed(() => screenRoster(props.roster, props.template));
 const viewport = useViewport();
 const orientation = computed(() => (props.preview ? "landscape" : orientationOf(viewport.value)));
 const melee = computed(() => meleeLayout(orientation.value));
+const brawl = computed(() => brawlLayout(orientation.value));
 const ultimate = computed(() => ultimateLayout(orientation.value));
-const stage = computed(() => (props.template === "melee" ? melee.value : ultimate.value).stage);
+const stage = computed(
+  () =>
+    ({ melee: melee.value, brawl: brawl.value, ultimate: ultimate.value })[props.template].stage,
+);
 
 /** A preview's box, measured as it is resized. Its height follows its width and the stage. */
 const frame = ref<HTMLElement | null>(null);
@@ -69,6 +75,12 @@ const fit = computed(() => fitStage(props.preview ? box.value : viewport.value, 
         v-if="template === 'melee'"
         :roster="shown"
         :layout="melee"
+        @back="$emit('back')"
+      />
+      <BrawlScreen
+        v-else-if="template === 'brawl'"
+        :roster="shown"
+        :layout="brawl"
         @back="$emit('back')"
       />
       <UltimateScreen v-else :roster="shown" :layout="ultimate" @back="$emit('back')" />

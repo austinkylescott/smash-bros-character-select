@@ -15,7 +15,11 @@ const NAMES: Readonly<Record<Template, string>> = {
 export const templateName = (template: Template): string => NAMES[template];
 
 /** The templates built so far, oldest game first. The rest of the six join as they are built. */
-export const availableTemplates = ["melee", "ultimate"] as const satisfies readonly Template[];
+export const availableTemplates = [
+  "melee",
+  "brawl",
+  "ultimate",
+] as const satisfies readonly Template[];
 
 export type AvailableTemplate = (typeof availableTemplates)[number];
 
