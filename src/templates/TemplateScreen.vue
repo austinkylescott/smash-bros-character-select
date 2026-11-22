@@ -13,6 +13,8 @@ import type { AvailableTemplate } from "./catalogue";
 import { meleeLayout } from "./melee/layout";
 import MeleeScreen from "./melee/MeleeScreen.vue";
 import { screenRoster, type ShowableRoster } from "./screen";
+import { smash64Layout } from "./smash-64/layout";
+import Smash64Screen from "./smash-64/Smash64Screen.vue";
 import { fitStage, orientationOf, type Size } from "./stage";
 import { ultimateLayout } from "./ultimate/layout";
 import UltimateScreen from "./ultimate/UltimateScreen.vue";
@@ -32,12 +34,20 @@ const shown = computed(() => screenRoster(props.roster, props.template));
 /** Turning a phone upright swaps in the stacked layout; the screen, and its picks, carry over. */
 const viewport = useViewport();
 const orientation = computed(() => (props.preview ? "landscape" : orientationOf(viewport.value)));
+const smash64 = computed(() => smash64Layout(orientation.value));
 const melee = computed(() => meleeLayout(orientation.value));
 const brawl = computed(() => brawlLayout(orientation.value));
 const ultimate = computed(() => ultimateLayout(orientation.value));
 const stage = computed(
   () =>
-    ({ melee: melee.value, brawl: brawl.value, ultimate: ultimate.value })[props.template].stage,
+    (
+      {
+        "smash-64": smash64.value,
+        melee: melee.value,
+        brawl: brawl.value,
+        ultimate: ultimate.value,
+      } as const
+    )[props.template].stage,
 );
 
 /** A preview's box, measured as it is resized. Its height follows its width and the stage. */
@@ -71,8 +81,14 @@ const fit = computed(() => fitStage(props.preview ? box.value : viewport.value, 
         transform: `translate(${fit.x}px, ${fit.y}px) scale(${fit.scale})`,
       }"
     >
+      <Smash64Screen
+        v-if="template === 'smash-64'"
+        :roster="shown"
+        :layout="smash64"
+        @back="$emit('back')"
+      />
       <MeleeScreen
-        v-if="template === 'melee'"
+        v-else-if="template === 'melee'"
         :roster="shown"
         :layout="melee"
         @back="$emit('back')"
