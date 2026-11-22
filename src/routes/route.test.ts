@@ -45,7 +45,7 @@ describe("what a link opens", () => {
   it("opens a roster whose own template is not built yet in the nearest one that is", () => {
     expect(routeOf("/official/smash-for-3ds", "")).toMatchObject({
       roster: "smash-for-3ds",
-      template: "brawl",
+      template: "smash-for-wii-u",
     });
   });
 
@@ -58,6 +58,13 @@ describe("what a link opens", () => {
 
   it("opens the Brawl roster in its own template", () => {
     expect(routeOf("/official/brawl", "")).toMatchObject({ roster: "brawl", template: "brawl" });
+  });
+
+  it("opens the Smash for Wii U roster in its own template", () => {
+    expect(routeOf("/official/smash-for-wii-u", "")).toMatchObject({
+      roster: "smash-for-wii-u",
+      template: "smash-for-wii-u",
+    });
   });
 
   it("falls back to the default template when the link names one that cannot be shown", () => {
