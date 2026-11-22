@@ -10,6 +10,8 @@ If the user passes a ticket reference, fetch it from the issue tracker and state
 
 Claim the ticket before reading any code (same section).
 
+Build on the latest `main`: run `git fetch origin main`, then `git rebase origin/main` before your first commit. A local `main` lags behind merges made on GitHub, and work built on it can repeat a merged PR.
+
 Call the Skill tool with "tdd" where possible, at pre-agreed seams.
 
 Run typechecking regularly, single test files regularly, and the full test suite once at the end.
