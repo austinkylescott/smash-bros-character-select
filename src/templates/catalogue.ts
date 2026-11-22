@@ -14,11 +14,12 @@ const NAMES: Readonly<Record<Template, string>> = {
 /** A template's name, which is also the name of its game's official roster. */
 export const templateName = (template: Template): string => NAMES[template];
 
-/** The templates built so far, oldest game first. The rest of the six join as they are built. */
+/** The templates built so far, oldest game first: now all six. */
 export const availableTemplates = [
   "smash-64",
   "melee",
   "brawl",
+  "smash-for-3ds",
   "smash-for-wii-u",
   "ultimate",
 ] as const satisfies readonly Template[];

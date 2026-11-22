@@ -14,6 +14,8 @@ import { meleeLayout } from "./melee/layout";
 import MeleeScreen from "./melee/MeleeScreen.vue";
 import { screenRoster, type ShowableRoster } from "./screen";
 import { smash64Layout } from "./smash-64/layout";
+import Smash3dsScreen from "./smash-for-3ds/Smash3dsScreen.vue";
+import { smash3dsLayout } from "./smash-for-3ds/layout";
 import Smash64Screen from "./smash-64/Smash64Screen.vue";
 import { wiiULayout } from "./smash-for-wii-u/layout";
 import WiiUScreen from "./smash-for-wii-u/WiiUScreen.vue";
@@ -39,6 +41,7 @@ const orientation = computed(() => (props.preview ? "landscape" : orientationOf(
 const smash64 = computed(() => smash64Layout(orientation.value));
 const melee = computed(() => meleeLayout(orientation.value));
 const brawl = computed(() => brawlLayout(orientation.value));
+const smash3ds = computed(() => smash3dsLayout(orientation.value));
 const wiiU = computed(() => wiiULayout(orientation.value));
 const ultimate = computed(() => ultimateLayout(orientation.value));
 const stage = computed(
@@ -48,6 +51,7 @@ const stage = computed(
         "smash-64": smash64.value,
         melee: melee.value,
         brawl: brawl.value,
+        "smash-for-3ds": smash3ds.value,
         "smash-for-wii-u": wiiU.value,
         ultimate: ultimate.value,
       } as const
@@ -101,6 +105,12 @@ const fit = computed(() => fitStage(props.preview ? box.value : viewport.value, 
         v-else-if="template === 'brawl'"
         :roster="shown"
         :layout="brawl"
+        @back="$emit('back')"
+      />
+      <Smash3dsScreen
+        v-else-if="template === 'smash-for-3ds'"
+        :roster="shown"
+        :layout="smash3ds"
         @back="$emit('back')"
       />
       <WiiUScreen

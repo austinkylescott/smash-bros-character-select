@@ -42,10 +42,10 @@ describe("what a link opens", () => {
     });
   });
 
-  it("opens a roster whose own template is not built yet in the nearest one that is", () => {
+  it("opens the Smash for 3DS roster in its own template", () => {
     expect(routeOf("/official/smash-for-3ds", "")).toMatchObject({
       roster: "smash-for-3ds",
-      template: "smash-for-wii-u",
+      template: "smash-for-3ds",
     });
   });
 
@@ -68,9 +68,6 @@ describe("what a link opens", () => {
   });
 
   it("falls back to the default template when the link names one that cannot be shown", () => {
-    expect(routeOf("/official/ultimate", "?template=smash-for-3ds")).toMatchObject({
-      template: "ultimate",
-    });
     expect(routeOf("/official/ultimate", "?template=nonsense")).toMatchObject({
       template: "ultimate",
     });
@@ -142,7 +139,7 @@ describe("the links to a user's rosters", () => {
   });
 
   it("leaves the template to the roster when the link names one that cannot be shown", () => {
-    expect(routeOf("/rosters/abc123", "?template=smash-for-3ds")).toEqual({
+    expect(routeOf("/rosters/abc123", "?template=nonsense")).toEqual({
       name: "roster-screen",
       roster: "abc123",
     });
