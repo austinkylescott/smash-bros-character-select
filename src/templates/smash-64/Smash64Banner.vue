@@ -1,17 +1,13 @@
 <script setup lang="ts">
 /**
- * Smash 64's "Ready to Fight" banner: a dark band across the grid between two pink rules, the
- * words stretched wide in gold, and "PRESS START" below the panels. Pressing it gives a flourish;
- * there is no battle to start.
+ * Smash 64's "Ready to Fight" banner: a dark see-through band across the screen between two pink
+ * rules, the words in wide gold capitals. Pressing it gives a flourish; there is no battle to
+ * start.
  */
 import { ref } from "vue";
 
-defineProps<{
-  /** The banner's vertical centre on the stage. */
-  y: number;
-  /** Where "PRESS START" sits: just below the panels. */
-  pressY: number;
-}>();
+/** The banner's vertical centre on the stage. */
+defineProps<{ y: number }>();
 
 const flourish = ref(false);
 function press() {
@@ -21,89 +17,59 @@ function press() {
 </script>
 
 <template>
-  <div class="banner-layer">
-    <button
-      type="button"
-      class="banner"
-      :class="{ flourish }"
-      data-banner
-      :style="{ top: `${y - 30}px` }"
-      @click="press"
-      @animationend="flourish = false"
-    >
-      <span class="band" />
-      <span class="words">Ready to Fight</span>
-    </button>
-    <span class="press" aria-hidden="true" :style="{ top: `${pressY}px` }">
-      PRESS <span class="start">START</span>
-    </span>
-  </div>
+  <button
+    type="button"
+    class="banner"
+    :class="{ flourish }"
+    data-banner
+    :style="{ top: `${y - 26}px` }"
+    @click="press"
+    @animationend="flourish = false"
+  >
+    <span class="words">Ready to Fight</span>
+  </button>
 </template>
 
 <style scoped>
 .banner {
   position: absolute;
-  left: 0;
-  z-index: 4;
-  width: 1280px;
-  height: 60px;
+  left: 40px;
+  width: 1200px;
+  height: 52px;
   padding: 0;
   border: 0;
-  background: transparent;
+  border-block: 4px solid #d06080;
+  background: rgb(40 0 10 / 55%);
   font: inherit;
-  animation: grow 0.18s ease-out;
-}
-
-/* A see-through dark band between two pink rules. */
-.band {
-  position: absolute;
-  inset: 0 160px;
-  border-block: 6px solid #d05a78;
-  background: rgb(0 0 0 / 55%);
+  animation: wipe-in 0.25s ease-out;
 }
 
 .words {
-  position: absolute;
-  inset: 4px 0 0;
-  color: #d8c060;
+  display: block;
+  color: #e8c030;
   font-size: 56px;
   font-weight: 900;
-  letter-spacing: 0.06em;
-  line-height: 52px;
+  letter-spacing: 0.34em;
+  line-height: 44px;
   text-align: center;
+  text-transform: none;
   white-space: nowrap;
-  transform: scaleX(1.9);
-  -webkit-text-stroke: 3px #3a2c00;
+  transform: scaleY(0.7);
+  -webkit-text-stroke: 5px #3a2000;
   paint-order: stroke fill;
 }
 
-.banner:focus-visible .band {
+.banner:focus-visible {
   outline: 6px solid #fff;
-}
-
-.press {
-  position: absolute;
-  left: 0;
-  width: 1280px;
-  color: #e4e4d8;
-  font-size: 34px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  line-height: 1;
-  text-align: center;
-}
-
-.start {
-  color: #f06a9a;
 }
 
 .flourish {
   animation: flourish 0.5s ease-out;
 }
 
-@keyframes grow {
+@keyframes wipe-in {
   from {
-    transform: scaleY(0);
+    clip-path: inset(0 50%);
   }
 }
 

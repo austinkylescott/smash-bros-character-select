@@ -8,11 +8,11 @@ const near = (actual: number, expected: number) =>
   expect(Math.abs(actual - expected), `${actual} is not near ${expected}`).toBeLessThanOrEqual(4);
 
 describe("Smash 64 player panels", () => {
-  it("lays out the four panels as the reference screen does", () => {
+  it("puts the four panels where the reference screen has them", () => {
     const panels = smash64Panels();
 
     expect(panels).toHaveLength(4);
-    for (const [index, left] of [88, 368, 644, 920].entries()) {
+    for (const [index, left] of [88, 364, 640, 916].entries()) {
       near(panels[index]!.x, left);
       near(panels[index]!.width, 264);
       near(panels[index]!.y, 500);

@@ -1,7 +1,7 @@
 /**
  * Where the Smash 64 template puts its pieces, in stage pixels. The game's own screen is 320x240;
  * its stage here is drawn at four times that, so measurements from the reference screenshots
- * quadruple.
+ * quadruple. The black border round the picture is the game's own, and is kept.
  *
  * There are two stages: the game's own 4:3 screen, and a taller one for phones held upright
  * (ADR 0006). Both are the same width and share the header and the row of four player panels;
@@ -14,7 +14,7 @@ export interface Smash64Layout {
   readonly stage: Size;
   /** The band the fighter grid fills, below the header. */
   readonly gridArea: Box;
-  /** The largest a slot may grow. The game's own is one of its twelve slots. */
+  /** The largest a slot may grow. The game's own is the size of a slot on its screen. */
   readonly maxSlot: Size;
   /** The band the four player panels fill. */
   readonly panelBand: Box;
@@ -22,17 +22,17 @@ export interface Smash64Layout {
   readonly bannerY: number;
 }
 
-/** One of the game's slots: six to a row across the band, two rows deep. Slots touch. */
-export const SMASH_64_SLOT: Size = { width: 1084 / 6, height: 172 };
+/** A slot on the game's own screen: six to a row, two rows deep, nearly square. */
+export const SMASH_64_SLOT: Size = { width: 180, height: 172 };
 
 /** The game's own screen. */
 export const SMASH_64_LANDSCAPE: Smash64Layout = {
   stage: { width: 1280, height: 960 },
-  gridArea: { x: 96, y: 140, width: 1084, height: 344 },
+  gridArea: { x: 100, y: 140, width: 1080, height: 344 },
   maxSlot: SMASH_64_SLOT,
   panelBand: { x: 88, y: 500, width: 1092, height: 362 },
-  // Across the seam between the grid's two rows, as the game draws it.
-  bannerY: 308,
+  // Across the line between the grid's two rows.
+  bannerY: 312,
 };
 
 const UPRIGHT_HEIGHT = 2048;
@@ -55,7 +55,7 @@ export const SMASH_64_UPRIGHT: Smash64Layout = {
   },
   maxSlot: { width: SMASH_64_SLOT.width * 2, height: SMASH_64_SLOT.height * 2 },
   panelBand: { ...SMASH_64_LANDSCAPE.panelBand, y: UPRIGHT_PANELS_TOP },
-  bannerY: UPRIGHT_PANELS_TOP - (SMASH_64_LANDSCAPE.panelBand.y - SMASH_64_LANDSCAPE.bannerY),
+  bannerY: UPRIGHT_PANELS_TOP - 60,
 };
 
 /** The layout for a viewport: the tall stage when it is held upright, the game's own otherwise. */

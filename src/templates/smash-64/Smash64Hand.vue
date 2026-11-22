@@ -1,8 +1,7 @@
 <script setup lang="ts">
 /**
- * Smash 64's hand: a white glove pointing up and to the left, carrying whichever token it holds.
- * The game puts no tag under its hand; the token it holds says whose it is. On touch there is no
- * glove: a held token simply follows the finger.
+ * Smash 64's hand: a plain white glove pointing up and to the left, carrying whichever token it
+ * holds. On touch there is no glove: a held token simply follows the finger.
  */
 import type { HandInput, Point } from "../../selection/useHand";
 import Smash64Token from "./Smash64Token.vue";
@@ -17,15 +16,17 @@ defineProps<{
 <template>
   <div class="hand" :style="{ transform: `translate(${position.x}px, ${position.y}px)` }">
     <Smash64Token v-if="held" class="held" :colour="held.colour" :tag="held.tag" :size="72" />
-    <svg v-if="input !== 'touch'" class="glove" viewBox="0 0 90 110" aria-hidden="true">
-      <g fill="#f4f4f6" stroke="#303036" stroke-width="4" stroke-linejoin="round">
-        <!-- The pointing finger runs from the knuckles up to the fingertip, the hot spot. -->
-        <path
-          d="M4 4c6-4 12-2 16 4l22 28c4-2 9-2 13 1 4-1 9 0 12 4 5-1 10 2 12 7l6 20c4 14-2 28-16 34l-8 4c-12 4-24 0-30-10L14 68c-3-5-1-10 4-12 4-2 8-1 11 2l4 5L6 18C1 12 0 7 4 4z"
-        />
-        <path d="M42 36l8 16M55 37l6 15M67 41l4 13" fill="none" />
-      </g>
-    </svg>
+    <template v-if="input !== 'touch'">
+      <svg class="glove" viewBox="0 0 80 100" aria-hidden="true">
+        <g fill="#f4f4f6" stroke="#5c5c64" stroke-width="3" stroke-linejoin="round">
+          <!-- The raised forefinger, whose tip is the hot spot, then the curled fingers. -->
+          <path
+            d="M14 4c5-4 12-2 13 5l3 30c3-3 8-3 11 0 3-3 9-3 12 1 4-2 10 0 11 5l4 22c3 14-4 26-18 29H34C22 96 14 88 12 76L4 54c-2-5 1-10 6-10 4 0 7 3 8 6l1 4L8 12C7 8 10 6 14 4z"
+          />
+          <path d="M30 39l2 14M42 40l1 13M54 42l1 12" fill="none" />
+        </g>
+      </svg>
+    </template>
   </div>
 </template>
 
@@ -38,18 +39,20 @@ defineProps<{
   pointer-events: none;
 }
 
-/* The fingertip is the hot spot; the glove hangs below and to the right of it. */
+/* The fingertip is the hot spot; the glove hangs below it, tilted as the game tilts it. */
 .glove {
   position: absolute;
-  left: -4px;
+  left: -16px;
   top: -4px;
-  width: 84px;
-  filter: drop-shadow(0 4px 2px rgb(0 0 0 / 50%));
+  width: 80px;
+  transform: rotate(-18deg);
+  transform-origin: 16px 4px;
+  filter: drop-shadow(0 3px 2px rgb(0 0 0 / 60%));
 }
 
 .held {
   position: absolute;
-  left: 8px;
-  top: 40px;
+  left: -36px;
+  top: -36px;
 }
 </style>

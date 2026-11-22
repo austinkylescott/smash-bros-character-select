@@ -1,7 +1,8 @@
 <script setup lang="ts">
 /**
- * Smash 64's header: "Free-for-all" in yellow, the gold TIME bar with its arrows, and Back. Only
- * Back responds. Every Smash 64 stage is 1280 wide, so the header is drawn on fixed coordinates.
+ * Smash 64's header: "Free-for-all" in gold, the gold TIME pill with its arrows, and the BACK
+ * button outlined in gold. Only BACK responds. Every Smash 64 stage is 1280 wide, so the header
+ * is drawn on fixed coordinates.
  */
 defineEmits<{ back: [] }>();
 </script>
@@ -18,8 +19,8 @@ defineEmits<{ back: [] }>();
     </span>
 
     <button type="button" class="back" aria-label="Back" @click="$emit('back')">
-      <span class="back-arrows" aria-hidden="true" />
-      <span class="back-text">BACK</span>
+      <span class="rewind" aria-hidden="true" />
+      BACK
     </button>
   </div>
 </template>
@@ -31,110 +32,106 @@ defineEmits<{ back: [] }>();
   height: 140px;
 }
 
+/* Gold capitals and lower case, heavy and slanted, outlined dark. */
 .mode {
   position: absolute;
-  left: 104px;
+  left: 106px;
   top: 82px;
   color: #f0c020;
-  font-size: 56px;
-  font-weight: 800;
-  letter-spacing: 0.04em;
-  line-height: 1;
+  font-size: 48px;
+  font-style: italic;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  line-height: 52px;
   -webkit-text-stroke: 3px #3a2400;
   paint-order: stroke fill;
 }
 
-/* The gold TIME bar: a rounded pill, an arrow pressed into each end. */
+/* The TIME pill: gold, banded lighter through the middle, a gold arrow at each end. */
 .time {
   position: absolute;
   left: 564px;
-  top: 78px;
-  width: 352px;
-  height: 60px;
-  border: 4px solid #4a3200;
-  border-radius: 30px;
-  background: linear-gradient(180deg, #fff3a0 0%, #f2c82a 40%, #c48e08 100%);
+  top: 84px;
+  width: 348px;
+  height: 48px;
+  border: 4px solid #5a3a00;
+  border-radius: 24px;
   box-sizing: border-box;
-}
-
-.arrow {
-  position: absolute;
-  top: 8px;
-  width: 34px;
-  height: 36px;
-  background: linear-gradient(180deg, #fff, #b8b8c0);
-}
-
-.arrow.left {
-  left: 12px;
-  clip-path: polygon(0 50%, 100% 0, 100% 100%);
-}
-
-.arrow.right {
-  right: 12px;
-  clip-path: polygon(100% 50%, 0 0, 0 100%);
+  background: linear-gradient(180deg, #f8d040 0%, #fff4b0 45%, #e0a010 100%);
+  color: #3a2400;
+  font-weight: 900;
 }
 
 .time-word {
   position: absolute;
-  left: 76px;
-  top: 6px;
-  color: #f4f0e0;
-  font-size: 40px;
-  font-weight: 900;
-  letter-spacing: 0.04em;
-  line-height: 44px;
-  -webkit-text-stroke: 6px #2a1c00;
+  left: 80px;
+  top: 0;
+  font-size: 34px;
+  letter-spacing: 0.06em;
+  line-height: 40px;
+  -webkit-text-stroke: 2px #fff6c0;
   paint-order: stroke fill;
 }
 
 .time-value {
   position: absolute;
-  left: 224px;
-  top: 2px;
-  color: #2a1c00;
-  font-size: 48px;
+  left: 220px;
+  top: 0;
+  font-size: 38px;
   font-style: italic;
-  font-weight: 900;
-  line-height: 48px;
+  line-height: 40px;
 }
 
-/* Back: gold outlined capitals in a dark rounded box, with two arrows pointing back. */
+.arrow {
+  position: absolute;
+  top: 4px;
+  width: 30px;
+  height: 32px;
+  background: linear-gradient(180deg, #fff8d0, #c08000);
+}
+
+.arrow.left {
+  left: 10px;
+  clip-path: polygon(0 50%, 100% 0, 100% 100%);
+}
+
+.arrow.right {
+  right: 10px;
+  clip-path: polygon(100% 50%, 0 0, 0 100%);
+}
+
+/* BACK: gold letters in a black pill ringed gold, after a gold rewind mark. */
 .back {
   position: absolute;
   left: 976px;
-  top: 82px;
-  width: 204px;
-  height: 52px;
+  top: 86px;
+  width: 188px;
+  height: 44px;
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 22px;
   padding: 0 0 0 16px;
-  border: 4px solid #e0aa10;
+  border: 4px solid #e0a820;
   border-radius: 10px;
-  background: #140e04;
+  background: #0c0a06;
   color: #f0c020;
   font: inherit;
-}
-
-.back-arrows {
-  width: 34px;
-  height: 26px;
-  background: currentcolor;
-  clip-path: polygon(0 50%, 50% 0, 50% 40%, 100% 0, 100% 100%, 50% 60%, 50% 100%);
-}
-
-.back-text {
-  font-size: 36px;
-  font-weight: 800;
+  font-size: 30px;
+  font-weight: 900;
   letter-spacing: 0.1em;
   line-height: 1;
 }
 
+.rewind {
+  width: 26px;
+  height: 22px;
+  background: currentcolor;
+  clip-path: polygon(0 50%, 50% 0, 50% 50%, 100% 0, 100% 100%, 50% 50%, 50% 100%);
+}
+
 .back:hover,
 .back:focus-visible {
-  color: #fff27a;
-  border-color: #fff27a;
+  color: #fff4b0;
 }
 
 .back:focus-visible {

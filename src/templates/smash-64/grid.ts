@@ -1,14 +1,12 @@
 /**
  * Smash 64's fighter grid: how any number of slots, from 1 to 121, reflows into the band below
- * the header, in stage pixels.
- *
- * The game only ever showed twelve slots, six to a row, so there is no screen of its own to copy
- * for a bigger roster. The rule chosen: a slot keeps the game's shape and only shrinks, as evenly
- * as it can, until every slot fits in the band the game's two rows fill. The column count is the
- * one giving the biggest slots. Rows hang from the top of the band, each centred.
+ * the header, in stage pixels. The game only ever showed 12, so the rule is our own: every slot
+ * keeps the game's nearly square shape and all shrink together, as big as the band allows but
+ * never past the game's own. Slots touch, as they do in the game. Rows are centred, and the grid
+ * is centred in the band.
  */
 import type { Box } from "../../selection/navigate";
-import { SMASH_64_LANDSCAPE, type Smash64Layout } from "./layout";
+import { SMASH_64_LANDSCAPE, SMASH_64_SLOT, type Smash64Layout } from "./layout";
 
 export interface Smash64Grid {
   readonly columns: number;
@@ -16,18 +14,21 @@ export interface Smash64Grid {
   readonly slots: readonly Box[];
 }
 
-/** How much a column count shrinks the layout's largest slot to fit the band. */
+const ASPECT = SMASH_64_SLOT.width / SMASH_64_SLOT.height;
+
+/** The slot a column count gives: the game's shape, as big as the band and the cap allow. */
 function fit(slotCount: number, columns: number, { gridArea, maxSlot }: Smash64Layout) {
   const rows = Math.ceil(slotCount / columns);
-  const scale = Math.min(
-    1,
-    gridArea.width / (columns * maxSlot.width),
-    gridArea.height / (rows * maxSlot.height),
+  const width = Math.min(
+    maxSlot.width,
+    maxSlot.height * ASPECT,
+    gridArea.width / columns,
+    (gridArea.height / rows) * ASPECT,
   );
-  return { rows, scale };
+  return { rows, width, height: width / ASPECT };
 }
 
-/** Picks the column count that gives the biggest slots. On a tie it takes the fewest rows. */
+/** Picks the column count that gives the biggest slots; on a tie, the fewest rows. */
 export function smash64Grid(
   slotCount: number,
   layout: Smash64Layout = SMASH_64_LANDSCAPE,
@@ -39,27 +40,22 @@ export function smash64Grid(
   let best = fit(slotCount, 1, layout);
   for (let candidate = 2; candidate <= slotCount; candidate++) {
     const next = fit(slotCount, candidate, layout);
-    const same = Math.abs(next.scale - best.scale) <= 1e-9;
-    if ((!same && next.scale > best.scale) || (same && next.rows < best.rows)) {
+    const same = Math.abs(next.width - best.width) <= 1e-6;
+    if ((!same && next.width > best.width) || (same && next.rows < best.rows)) {
       columns = candidate;
       best = next;
     }
   }
 
-  const { gridArea, maxSlot } = layout;
-  const width = maxSlot.width * best.scale;
-  const height = maxSlot.height * best.scale;
+  const { gridArea } = layout;
+  const { rows, width, height } = best;
+  const top = gridArea.y + (gridArea.height - rows * height) / 2;
   const slots: Box[] = [];
   for (let index = 0; index < slotCount; index++) {
     const row = Math.floor(index / columns);
     const inRow = Math.min(columns, slotCount - row * columns);
     const left = gridArea.x + (gridArea.width - inRow * width) / 2;
-    slots.push({
-      x: left + (index % columns) * width,
-      y: gridArea.y + row * height,
-      width,
-      height,
-    });
+    slots.push({ x: left + (index % columns) * width, y: top + row * height, width, height });
   }
   return { columns, slots };
 }

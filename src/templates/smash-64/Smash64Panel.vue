@@ -1,10 +1,11 @@
 <script setup lang="ts">
 /**
- * One of Smash 64's four player panels. The pill on its top right is the game's panel control:
- * pressing it switches the panel from HMN to CP to N/A and round again. A playing panel is striped
- * in its port's colour with its tag large and faded across the top, the picked fighter standing
- * over a faint emblem and their name along the foot. A port nobody uses is dark grey with the
- * Smash emblem. The CPU level is drawn but does nothing.
+ * One of Smash 64's four player panels: a card with rounded top corners and the game's fine
+ * horizontal stripes. Its tag in the top right is the game's panel control: pressing it switches
+ * the panel from HMN to CP to N/A and round again. A playing panel shows its port ("1P", "CP")
+ * large and faded in the corner, the picked fighter, and their name in white capitals at the
+ * foot. A switched-off panel is dark grey with the Smash emblem. The CPU level is drawn but does
+ * nothing.
  */
 import { computed, nextTick, ref, watch } from "vue";
 
@@ -26,12 +27,12 @@ defineEmits<{ cycle: [] }>();
 const colour = computed(() => playerColour(props.index, props.panel.kind));
 const random = computed(() => props.panel.pick === RANDOM);
 const name = computed(() => (random.value ? "Random" : props.fighter?.name));
-const controlLabel = computed(
+const tabLabel = computed(
   () =>
     `Player ${props.index + 1}: ${{ human: "human", cpu: "CPU", off: "not playing" }[props.panel.kind]}. Switch.`,
 );
 
-// A name too wide for the panel is squeezed sideways, from its left edge.
+// A name too wide for the panel is squeezed sideways.
 const nameEl = ref<HTMLElement | null>(null);
 watch(
   name,
@@ -40,7 +41,7 @@ watch(
     const el = nameEl.value;
     if (!el) return;
     el.style.transform = "";
-    const room = el.parentElement!.clientWidth;
+    const room = el.parentElement!.clientWidth - 24;
     if (el.scrollWidth > room) el.style.transform = `scaleX(${room / el.scrollWidth})`;
   },
   { immediate: true, flush: "post" },
@@ -61,8 +62,8 @@ watch(
     }"
   >
     <template v-if="panel.kind === 'off'">
-      <span class="wave" aria-hidden="true" />
-      <span class="smash-emblem" aria-hidden="true" />
+      <span class="seam" aria-hidden="true" />
+      <span class="emblem" aria-hidden="true" />
     </template>
     <template v-else>
       <span class="mark" aria-hidden="true">{{ playerTag(index, panel.kind) }}</span>
@@ -73,103 +74,97 @@ watch(
       </span>
       <span v-if="panel.kind === 'cpu'" class="level" aria-hidden="true">
         <span class="level-arrow left" />
-        <span class="level-label">CP<br />LEVEL</span>
-        <span class="level-value">:3</span>
+        <span class="level-label">C P<br />LEVEL</span>
+        <span class="level-value">: 3</span>
         <span class="level-arrow right" />
       </span>
-      <span v-else class="name-row" aria-hidden="true">
-        <span v-if="name" ref="nameEl" class="name">{{ name }}</span>
+      <span v-else-if="name" class="name-row" aria-hidden="true">
+        <span ref="nameEl" class="name">{{ name }}</span>
       </span>
       <p class="visually-hidden" aria-live="polite">{{ name ?? "No fighter picked" }}</p>
     </template>
 
-    <button type="button" class="control" :aria-label="controlLabel" @click="$emit('cycle')">
+    <button type="button" class="tab" :aria-label="tabLabel" @click="$emit('cycle')">
       {{ kindLabel(panel.kind) }}
     </button>
   </section>
 </template>
 
 <style scoped>
-/* Striped in the port's colour, darker every few lines, with rounded corners. */
+/* The card: rounded at the top, striped finely across, in the port's colour. */
 .panel {
   position: absolute;
-  box-sizing: border-box;
   overflow: hidden;
+  box-sizing: border-box;
   border: 4px solid color-mix(in srgb, var(--colour) 45%, #000);
-  border-radius: 14px;
+  border-radius: 20px 20px 8px 8px;
   background:
-    repeating-linear-gradient(
+    repeating-linear-gradient(180deg, rgb(255 255 255 / 10%) 0 6px, rgb(0 0 0 / 12%) 6px 12px),
+    linear-gradient(
       180deg,
-      color-mix(in srgb, var(--colour) 82%, #000) 0 4px,
-      color-mix(in srgb, var(--colour) 90%, #000) 4px 12px,
-      var(--colour) 12px 24px
-    ),
-    var(--colour);
-  box-shadow: 0 4px 8px rgb(0 0 0 / 60%);
+      color-mix(in srgb, var(--colour) 85%, #fff),
+      var(--colour) 30%,
+      color-mix(in srgb, var(--colour) 70%, #000)
+    );
+  box-shadow: 0 6px 8px rgb(0 0 0 / 60%);
 }
 
-.off {
-  border-color: #141414;
-  background: repeating-linear-gradient(180deg, #2a2a2a 0 6px, #3a3a3a 6px 24px);
-}
-
-/* The game's N/A panel: a wavy rule down the middle, over the Smash emblem in shadow. */
-.wave {
+/* Big faded letters in the top left: the port for a human, "CP" for the computer. */
+.mark {
   position: absolute;
-  left: 34%;
-  top: 0;
-  width: 26%;
-  height: 100%;
-  background: radial-gradient(
-      circle at 0 50%,
-      transparent 54%,
-      rgb(0 0 0 / 30%) 56% 60%,
-      transparent 62%
-    )
-    0 0 / 100% 90px repeat-y;
+  left: 12px;
+  top: 4px;
+  color: rgb(0 0 0 / 38%);
+  font-size: 110px;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  line-height: 1;
 }
 
-.smash-emblem {
+/* The Smash emblem, faint behind the fighter. */
+.emblem {
   position: absolute;
   left: 50%;
-  top: 56%;
+  top: 38%;
   width: 66%;
   aspect-ratio: 1;
   border-radius: 50%;
   background:
-    linear-gradient(90deg, transparent 0 36%, #3a3a3a 36% 42%, transparent 42%),
-    linear-gradient(180deg, transparent 0 58%, #3a3a3a 58% 64%, transparent 64%), #262626;
+    linear-gradient(90deg, transparent 0 34%, var(--emblem) 34% 41%, transparent 41%) 0 0 / 100%
+      100%,
+    linear-gradient(180deg, transparent 0 56%, var(--emblem) 56% 61%, transparent 61%),
+    radial-gradient(circle, rgb(0 0 0 / 22%) 0 69%, transparent 70%);
   transform: translate(-50%, -50%);
+  --emblem: color-mix(in srgb, var(--colour) 80%, #000);
 }
 
-/* The tag large and faded across the panel's top: "1P", or "CP" for the computer. */
-.mark {
-  position: absolute;
-  left: 14px;
-  top: 8px;
-  color: transparent;
-  font-size: 128px;
-  font-weight: 900;
-  letter-spacing: -0.04em;
-  line-height: 1;
-  -webkit-text-stroke: 4px rgb(0 0 0 / 30%);
-  text-shadow: 0 0 0 rgb(0 0 0 / 22%);
+.off .emblem {
+  top: 52%;
+  width: 72%;
+  background:
+    linear-gradient(90deg, transparent 0 34%, #3a3a3c 34% 41%, transparent 41%) 0 0 / 100% 100%,
+    linear-gradient(180deg, transparent 0 56%, #3a3a3c 56% 61%, transparent 61%),
+    radial-gradient(circle, #262628 0 69%, transparent 70%);
 }
 
-/* The faint emblem behind the fighter. */
-.emblem {
+/* The zigzag seam down a switched-off panel, as if its two halves had slid shut. */
+.seam {
   position: absolute;
-  left: 30%;
-  top: 30%;
-  width: 62%;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: rgb(0 0 0 / 16%);
+  inset: 0 auto 0 50%;
+  width: 60px;
+  translate: -50% 0;
+  background: repeating-linear-gradient(
+    180deg,
+    transparent 0 40px,
+    rgb(0 0 0 / 30%) 40px 44px,
+    transparent 44px 80px
+  );
+  border-inline: 4px solid rgb(0 0 0 / 30%);
 }
 
 .portrait-window {
   position: absolute;
-  inset: 22% 0 18%;
+  inset: 40px 8px 64px;
   overflow: hidden;
 }
 
@@ -178,8 +173,8 @@ watch(
   position: absolute;
   left: 50%;
   top: 0;
-  width: 100%;
-  height: 130%;
+  width: 104%;
+  height: 140%;
   object-fit: cover;
   object-position: 50% 0;
   transform: translateX(-50%);
@@ -188,6 +183,7 @@ watch(
 /* A fighter added by image fills the window with its panel crop. */
 .portrait.cropped {
   inset: 0;
+  width: 100%;
   height: 100%;
   transform: none;
 }
@@ -197,54 +193,69 @@ watch(
   inset: 0;
   display: grid;
   place-items: center;
-  color: #c84040;
-  font-size: 200px;
+  color: rgb(255 255 255 / 75%);
+  font-size: 160px;
   font-weight: 900;
   line-height: 1;
-  -webkit-text-stroke: 6px #2a0808;
-  paint-order: stroke fill;
+  text-shadow: 0 6px 0 rgb(0 0 0 / 40%);
 }
 
-/* The fighter's name along the foot: white capitals, outlined black. */
+/* The fighter's name: white capitals at the foot, outlined black. */
 .name-row {
   position: absolute;
-  inset: auto 14px 12px;
-  height: 60px;
+  inset: auto 0 10px;
+  height: 56px;
+  overflow: hidden;
 }
 
 .name {
   position: absolute;
-  left: 0;
+  left: 12px;
   bottom: 0;
   color: #fff;
-  font-size: 54px;
+  font-size: 50px;
   font-weight: 900;
-  line-height: 1;
+  line-height: 1.1;
   text-transform: uppercase;
   white-space: nowrap;
   transform-origin: 0 50%;
-  -webkit-text-stroke: 8px #141414;
+  -webkit-text-stroke: 7px #141414;
   paint-order: stroke fill;
 }
 
-/* The CPU's level, between gold arrows. */
+/* The CPU's level, between two gold arrows. */
 .level {
   position: absolute;
-  inset: auto 8px 14px;
-  height: 62px;
+  inset: auto 8px 12px;
+  height: 56px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  color: #f0f0f4;
-  -webkit-text-stroke: 4px #4a4a56;
+  gap: 6px;
+  color: #e8e8f0;
+  font-weight: 900;
+}
+
+.level-label {
+  font-size: 22px;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-align: center;
+  -webkit-text-stroke: 3px #3a3a4c;
+  paint-order: stroke fill;
+}
+
+.level-value {
+  font-size: 54px;
+  line-height: 1;
+  -webkit-text-stroke: 4px #3a3a4c;
   paint-order: stroke fill;
 }
 
 .level-arrow {
-  width: 26px;
-  height: 52px;
-  background: linear-gradient(180deg, #ffe27a, #c48e08);
+  width: 22px;
+  height: 40px;
+  background: linear-gradient(180deg, #fff0a0, #c88a00);
 }
 
 .level-arrow.left {
@@ -255,52 +266,35 @@ watch(
   clip-path: polygon(100% 50%, 0 0, 0 100%);
 }
 
-.level-label {
+/* The panel control: a small pill in the top right, gold for HMN, grey for CP, black for N/A. */
+.tab {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  min-width: 84px;
+  height: 36px;
+  padding: 0 10px;
+  border: 3px solid #1a1a1a;
+  border-radius: 12px;
+  background: #1c1c1e;
+  color: #f4f4f4;
+  font: inherit;
   font-size: 24px;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  line-height: 1;
-  text-align: center;
-}
-
-.level-value {
-  font-size: 60px;
   font-weight: 900;
   line-height: 1;
 }
 
-/* The game's panel control: a small dark pill on the top right, gold for a human. */
-.control {
-  position: absolute;
-  right: 14px;
-  top: 14px;
-  min-width: 92px;
-  height: 40px;
-  padding: 0 10px;
-  border: 3px solid #f0f0f0;
-  border-radius: 20px;
-  background: linear-gradient(180deg, #4a4a4a, #141414);
-  color: #f4f4f4;
-  font: inherit;
-  font-size: 26px;
-  font-weight: 800;
-  letter-spacing: 0.04em;
-  line-height: 1;
+.human .tab {
+  background: linear-gradient(180deg, #fff0a0, #e0a810);
+  color: #3a2400;
 }
 
-.human .control {
-  border-color: #6a4800;
-  background: linear-gradient(180deg, #fff090, #e0a810);
-  color: #2a1c00;
+.cpu .tab {
+  background: linear-gradient(180deg, #e4e4ec, #8c8c98);
+  color: #26262e;
 }
 
-.cpu .control {
-  border-color: #3a3a44;
-  background: linear-gradient(180deg, #e4e4ea, #9a9aa4);
-  color: #2a2a32;
-}
-
-.control:focus-visible {
+.tab:focus-visible {
   outline: 4px solid #fff;
   outline-offset: 2px;
 }

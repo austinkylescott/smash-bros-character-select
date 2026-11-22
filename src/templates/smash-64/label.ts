@@ -5,9 +5,10 @@ const GAME_LABELS: Readonly<Record<string, string>> = { "Donkey Kong": "DK" };
 const SHORTEN_FROM = 13;
 
 /**
- * A fighter's name as Smash 64 prints it across the top of a slot: in capitals, on one line. A
- * long name of several words has its first word cut to an initial, as the game prints C.FALCON.
- * A name still too wide for its slot is squeezed by the screen, as the game squeezes JIGGLYPUFF.
+ * A fighter's name as Smash 64 prints it across the top of a slot: in capitals, always on one
+ * line. A long name of several words has its first word cut to an initial, as the game prints
+ * C.FALCON. A name still too wide for its slot is squeezed by the screen, as the game squeezes
+ * JIGGLYPUFF.
  */
 export function smash64SlotLabel(name: string): string {
   const own = GAME_LABELS[name];

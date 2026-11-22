@@ -2,7 +2,7 @@
 import type { Box } from "../../selection/navigate";
 import { SMASH_64_LANDSCAPE, type Smash64Layout } from "./layout";
 
-/** Smash 64 has a panel for each of the console's four controller ports. */
+/** The game has a panel for each of the N64's four controller ports. */
 export const PANEL_COUNT = 4;
 /** The space between neighbouring panels. */
 const GAP = 12;
@@ -19,7 +19,7 @@ export function smash64Panels(layout: Smash64Layout = SMASH_64_LANDSCAPE): Box[]
   }));
 }
 
-/** Where a token waits in its panel when it is neither held nor on a slot: low on the left. */
+/** Where a token waits in its panel when it is neither held nor on a slot: low on the fighter. */
 export function smash64TokenHome(panel: Box) {
-  return { x: panel.x + panel.width * 0.3, y: panel.y + panel.height * 0.66 };
+  return { x: panel.x + panel.width * 0.42, y: panel.y + panel.height * 0.68 };
 }
