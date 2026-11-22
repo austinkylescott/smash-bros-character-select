@@ -43,11 +43,18 @@ describe("what a link opens", () => {
   });
 
   it("opens a roster whose own template is not built yet in the nearest one that is", () => {
-    expect(routeOf("/official/brawl", "")).toMatchObject({ roster: "brawl", template: "melee" });
+    expect(routeOf("/official/smash-64", "")).toMatchObject({
+      roster: "smash-64",
+      template: "melee",
+    });
+  });
+
+  it("opens the Brawl roster in its own template", () => {
+    expect(routeOf("/official/brawl", "")).toMatchObject({ roster: "brawl", template: "brawl" });
   });
 
   it("falls back to the default template when the link names one that cannot be shown", () => {
-    expect(routeOf("/official/ultimate", "?template=brawl")).toMatchObject({
+    expect(routeOf("/official/ultimate", "?template=smash-64")).toMatchObject({
       template: "ultimate",
     });
     expect(routeOf("/official/ultimate", "?template=nonsense")).toMatchObject({
@@ -121,7 +128,7 @@ describe("the links to a user's rosters", () => {
   });
 
   it("leaves the template to the roster when the link names one that cannot be shown", () => {
-    expect(routeOf("/rosters/abc123", "?template=brawl")).toEqual({
+    expect(routeOf("/rosters/abc123", "?template=smash-64")).toEqual({
       name: "roster-screen",
       roster: "abc123",
     });
