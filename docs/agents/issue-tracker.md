@@ -14,6 +14,26 @@ Issues and specs for this repo live as GitHub issues. Use the `gh` CLI for all o
 - **Apply / remove labels**: `gh issue edit <number> --add-label "..."` / `--remove-label "..."`
 - **Close**: post the explanation with `gh issue comment <number> --body "..."`, then `gh issue close <number>`. On an already-closed issue, `gh issue close --comment` drops the comment and still exits 0.
 
+## Picking and claiming a ticket
+
+Agents run in parallel, so an unclaimed ticket gets built twice.
+
+- **Workable**: open, labelled `ready-for-agent`, no assignee, no open blocker (see **Count open blockers**). Lowest number wins unless the user names one.
+- **Claim**: `gh issue edit <n> --add-assignee @me`, the session's first write, made before reading any code. Then re-read the issue: if another assignee landed first, drop it and pick again.
+- **Link the PR**: write `Closes #<n>` in the PR body when the PR finishes the ticket, `Refs #<n>` when it only advances it. A finished ticket left open reads as workable to the next agent.
+
+## In cloud sessions
+
+Cloud sessions have no `gh` for issues (only `gh api -X GET search/...`). Use the GitHub MCP tools, loading them with ToolSearch:
+
+| Operation                   | Tool                                                              |
+| --------------------------- | ----------------------------------------------------------------- |
+| Read / list                 | `mcp__github__issue_read`, `mcp__github__list_issues`             |
+| Create, edit, label, assign | `mcp__github__issue_write` (claim: `assignees: ["<your login>"]`) |
+| Comment                     | `mcp__github__add_issue_comment`                                  |
+| Sub-issues                  | `mcp__github__sub_issue_write`                                    |
+| Your login, for claiming    | `mcp__github__get_me`                                             |
+
 Infer the repo from `git remote -v`; `gh` does this automatically when run inside a clone.
 
 File issues only into the user's own repo. Never file into `mattpocock/skills` (the repo these skills come from) unless the user owns it. In a fork, `gh` can default to the upstream parent, so before the first `gh issue create` of a session, check the target with `gh repo view --json nameWithOwner` and confirm it with the user if it is not their repo.
@@ -46,5 +66,5 @@ Used by `/wayfinder`. The **map** is a single issue with **child** issues as tic
 - **Child ticket**: an issue linked to the map as a GitHub sub-issue (see **Make an issue a sub-issue of a parent**). Where sub-issues aren't enabled, add the child to a task list in the map body and put `Part of #<map>` at the top of the child body. Labels: `wayfinder:<type>` (`research`/`prototype`/`grilling`/`task`). Once claimed, the ticket is assigned to the driving dev.
 - **Blocking**: see **Blocking** under Conventions.
 - **Frontier query**: list the map's open children (`gh issue list --state open`, scoped to the map's sub-issues / task list), drop any with an open blocker (see **Count open blockers**, or an open issue in the `Blocked by` line) or an assignee; first in map order wins.
-- **Claim**: `gh issue edit <n> --add-assignee @me`, the session's first write.
+- **Claim**: as in **Picking and claiming a ticket**.
 - **Resolve**: `gh issue comment <n> --body "<answer>"`, then `gh issue close <n>`, then append a context pointer (gist + link) to the map's Decisions-so-far.

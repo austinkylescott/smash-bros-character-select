@@ -34,7 +34,7 @@ release. Add a tool name to select part of the graph. For example, run
 
 ### Issue tracker
 
-Issues are tracked in GitHub Issues (austinkylescott/smash-bros-character-select) via the `gh` CLI. See `docs/agents/issue-tracker.md`.
+Issues are tracked in GitHub Issues (austinkylescott/smash-bros-character-select) via `gh`, or the GitHub MCP tools in cloud sessions. Claim a ticket before working it. See `docs/agents/issue-tracker.md`.
 
 ### Triage labels
 
