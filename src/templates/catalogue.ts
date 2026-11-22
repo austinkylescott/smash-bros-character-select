@@ -16,6 +16,7 @@ export const templateName = (template: Template): string => NAMES[template];
 
 /** The templates built so far, oldest game first. The rest of the six join as they are built. */
 export const availableTemplates = [
+  "smash-64",
   "melee",
   "brawl",
   "ultimate",
