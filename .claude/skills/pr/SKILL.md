@@ -38,6 +38,8 @@ Skip all preambles and keep prose brief. Use the user's domain language from `GL
 
 ### Summary
 
+Open with one line linking the ticket: `Closes #<n>` when this PR finishes it, `Refs #<n>` when it only advances it.
+
 Pick the smallest view that makes the key point clear.
 
 - Show logic or an algorithm as pseudocode:
