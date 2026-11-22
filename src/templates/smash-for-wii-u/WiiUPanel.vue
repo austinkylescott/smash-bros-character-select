@@ -4,7 +4,7 @@
  * switches the panel from Player to CPU to None and round again. A playing panel is a card in its
  * player's colour, or grey for a CPU, with the picked fighter on it and their name large across
  * its foot; an empty one is only the dark frame round a None plate, under the game's prompt to
- * press a button. The CPU level is drawn but does nothing.
+ * touch an amiibo. The CPU level is drawn but does nothing.
  *
  * Panels are as wide as Smash's four or as narrow as 8-Player Smash's eight, so everything in one
  * is sized by the panel itself.
@@ -63,18 +63,32 @@ watch([name, () => props.box.width], squeezeName, { immediate: true, flush: "pos
   >
     <template v-if="panel.kind === 'off'">
       <span class="prompt" aria-hidden="true">
-        <svg class="pad" viewBox="0 0 64 40">
-          <path
-            d="M14 4h36c7 0 11 5 12 12l1 10c1 8-7 12-12 7l-6-6H19l-6 6c-5 5-13 1-12-7l1-10C3 9 7 4 14 4z"
+        <svg class="pad" viewBox="0 0 80 48">
+          <!-- The GamePad, an amiibo's base touching the touchpoint below its screen. -->
+          <rect
+            x="2"
+            y="10"
+            width="70"
+            height="34"
+            rx="9"
             fill="#f4f4f6"
             stroke="#9a9aa2"
             stroke-width="3"
           />
-          <path d="M16 13v11M10.5 18.5h11" stroke="#9a9aa2" stroke-width="4" />
-          <circle cx="45" cy="15" r="3.5" fill="#9a9aa2" />
-          <circle cx="51" cy="22" r="3.5" fill="#9a9aa2" />
+          <rect
+            x="22"
+            y="16"
+            width="30"
+            height="20"
+            rx="2"
+            fill="none"
+            stroke="#9a9aa2"
+            stroke-width="3"
+          />
+          <path d="M8 6c4-6 14-6 18 0l2 14H6z" fill="#f4f4f6" stroke="#9a9aa2" stroke-width="3" />
+          <path d="M62 30l12-10M66 36l12-6M64 24l8-14" stroke="#9a9aa2" stroke-width="2.5" />
         </svg>
-        <span class="press">Press<br />any button</span>
+        <span class="press">Touch an amiibo to<br />the NFC touchpoint.</span>
       </span>
       <span class="frame" aria-hidden="true" />
     </template>
@@ -114,7 +128,7 @@ watch([name, () => props.box.width], squeezeName, { immediate: true, flush: "pos
   container-type: size;
 }
 
-/* An empty panel's prompt: a controller and the words under it, in pale grey. */
+/* An empty panel's prompt: the GamePad and the words under it, in pale grey. */
 .prompt {
   position: absolute;
   inset: 8cqh 0 auto;
@@ -129,11 +143,10 @@ watch([name, () => props.box.width], squeezeName, { immediate: true, flush: "pos
 
 .press {
   color: #8a8a92;
-  font-size: min(6.6cqw, 6cqh);
-  font-weight: 800;
-  line-height: 1;
+  font-size: min(5.6cqw, 5.2cqh);
+  font-weight: 700;
+  line-height: 1.1;
   text-align: center;
-  text-transform: uppercase;
 }
 
 /* The dark frame an empty panel's plate sits in, its top right corner cut away. */

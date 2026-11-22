@@ -35,11 +35,18 @@ export const WII_U_WIDE_SLOT: Size = { width: 92, height: 60 };
 export const WII_U_SQUARE_SLOT: Size = { width: 1228 / 13, height: 75 };
 export const WII_U_STARTER_SLOT: Size = { width: 99.5, height: 75 };
 
+/** Every stage is the game's width. */
+const STAGE_WIDTH = 1280;
+/** The header ends, and the charcoal band begins, here. */
+const BAND_TOP = 87;
+/** The grid's first row starts a little way into the band. */
+const GRID_TOP = 92;
+
 /** The game's own screen. */
 export const WII_U_LANDSCAPE: WiiULayout = {
-  stage: { width: 1280, height: 720 },
-  band: { y: 87, height: 306 },
-  gridArea: { x: 26, y: 92, width: 1228, height: 300 },
+  stage: { width: STAGE_WIDTH, height: 720 },
+  band: { y: BAND_TOP, height: 306 },
+  gridArea: { x: 26, y: GRID_TOP, width: 1228, height: 300 },
   maxSlot: WII_U_STARTER_SLOT,
   panelBand: { x: 42, y: 430, width: 1196, height: 290 },
   panelColumns: (count) => count,
@@ -53,6 +60,7 @@ export const PANEL_GAP = 12;
 /** Two rows of panels, each as tall as one on the game's own screen. */
 const UPRIGHT_PANELS_TOP = UPRIGHT_HEIGHT - (WII_U_LANDSCAPE.panelBand.height * 2 + PANEL_GAP);
 const MARGIN = 16;
+/** The grid stops short of the panels, leaving the banner room; the band ends just below it. */
 const UPRIGHT_GRID_BOTTOM = UPRIGHT_PANELS_TOP - 40;
 
 /**
@@ -62,19 +70,19 @@ const UPRIGHT_GRID_BOTTOM = UPRIGHT_PANELS_TOP - 40;
  * does not sit lost in the space.
  */
 export const WII_U_UPRIGHT: WiiULayout = {
-  stage: { width: 1280, height: UPRIGHT_HEIGHT },
-  band: { y: 87, height: UPRIGHT_GRID_BOTTOM + 1 - 87 },
+  stage: { width: STAGE_WIDTH, height: UPRIGHT_HEIGHT },
+  band: { y: BAND_TOP, height: UPRIGHT_GRID_BOTTOM + 1 - BAND_TOP },
   gridArea: {
     x: MARGIN,
-    y: 92,
-    width: 1280 - MARGIN * 2,
-    height: UPRIGHT_GRID_BOTTOM - 92,
+    y: GRID_TOP,
+    width: STAGE_WIDTH - MARGIN * 2,
+    height: UPRIGHT_GRID_BOTTOM - GRID_TOP,
   },
   maxSlot: { width: WII_U_STARTER_SLOT.width * 2, height: WII_U_STARTER_SLOT.height * 2 },
   panelBand: {
     x: MARGIN,
     y: UPRIGHT_PANELS_TOP,
-    width: 1280 - MARGIN * 2,
+    width: STAGE_WIDTH - MARGIN * 2,
     height: UPRIGHT_HEIGHT - UPRIGHT_PANELS_TOP,
   },
   panelColumns: (count) => (count <= 4 ? 2 : 4),
