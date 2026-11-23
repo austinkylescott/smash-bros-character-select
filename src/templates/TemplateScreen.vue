@@ -13,6 +13,7 @@ import type { AvailableTemplate } from "./catalogue";
 import { meleeLayout } from "./melee/layout";
 import MeleeScreen from "./melee/MeleeScreen.vue";
 import { screenRoster, type ShowableRoster } from "./screen";
+import { LAYERS_DRAWN, useStageLayers } from "./layers/useStageLayers";
 import { smash64Layout } from "./smash-64/layout";
 import Smash3dsScreen from "./smash-for-3ds/Smash3dsScreen.vue";
 import { smash3dsLayout } from "./smash-for-3ds/layout";
@@ -71,6 +72,24 @@ onMounted(() => {
 onBeforeUnmount(() => observer.disconnect());
 
 const fit = computed(() => fitStage(props.preview ? box.value : viewport.value, stage.value));
+
+/**
+ * The 3D layers under and over the screen (ADR 0007). Their canvases sit in the stage, so they
+ * take its scale. They are made afresh for each template and stage, as a canvas whose WebGL
+ * context has been released cannot be given another.
+ */
+const under = ref<HTMLCanvasElement | null>(null);
+const over = ref<HTMLCanvasElement | null>(null);
+const layerKey = computed(() => `${props.template}-${stage.value.width}x${stage.value.height}`);
+const { drawn } = useStageLayers({
+  template: () => props.template,
+  stage: () => stage.value,
+  scale: () => fit.value.scale,
+  enabled: () => !props.preview,
+  under,
+  over,
+});
+provide(LAYERS_DRAWN, drawn);
 </script>
 
 <template>
@@ -89,6 +108,13 @@ const fit = computed(() => fitStage(props.preview ? box.value : viewport.value, 
         transform: `translate(${fit.x}px, ${fit.y}px) scale(${fit.scale})`,
       }"
     >
+      <canvas
+        :key="`under-${layerKey}`"
+        ref="under"
+        class="layer"
+        :class="{ drawn }"
+        aria-hidden="true"
+      />
       <Smash64Screen
         v-if="template === 'smash-64'"
         :roster="shown"
@@ -120,6 +146,13 @@ const fit = computed(() => fitStage(props.preview ? box.value : viewport.value, 
         @back="$emit('back')"
       />
       <UltimateScreen v-else :roster="shown" :layout="ultimate" @back="$emit('back')" />
+      <canvas
+        :key="`over-${layerKey}`"
+        ref="over"
+        class="layer over"
+        :class="{ drawn }"
+        aria-hidden="true"
+      />
     </div>
   </div>
 </template>
@@ -144,5 +177,24 @@ const fit = computed(() => fitStage(props.preview ? box.value : viewport.value, 
   left: 0;
   overflow: hidden;
   transform-origin: 0 0;
+}
+
+/* Each layer's canvas covers the stage. Until it has drawn, it is not shown at all. */
+.layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.layer.drawn {
+  visibility: visible;
+}
+
+/* Over everything in the screen, and never in the way of the pointer. */
+.layer.over {
+  z-index: 100;
 }
 </style>
