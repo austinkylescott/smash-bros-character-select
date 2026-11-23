@@ -3,6 +3,7 @@
  * stage's size and sits inside the stage, so it takes the same `fitStage` scale; its camera is
  * measured in stage pixels, so anything drawn at a slot's stage coordinates lands on that slot.
  */
+import type { Point } from "../../selection/useHand";
 import type { Size } from "../stage";
 
 /** An orthographic camera's bounds, in stage pixels. */
@@ -11,11 +12,6 @@ export interface StageView {
   readonly right: number;
   readonly top: number;
   readonly bottom: number;
-}
-
-export interface Point {
-  readonly x: number;
-  readonly y: number;
 }
 
 /**
@@ -37,7 +33,7 @@ export const MAX_PIXEL_RATIO = 2;
 
 /**
  * The size of a layer's drawing buffer: the stage as large as it is shown, in device pixels. A
- * layer may cap the pixel ratio lower, as a soft backdrop does to save fill on a dense phone.
+ * layer may cap the pixel ratio lower, as a soft Backdrop does to save fill on a dense phone.
  */
 export function drawingBuffer(
   stage: Size,

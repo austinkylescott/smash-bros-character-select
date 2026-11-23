@@ -139,7 +139,7 @@ export function useStageLayers(options: StageLayersOptions) {
     } catch {
       return; // The chunk would not load: the CSS screen stands.
     }
-    if (id !== generation || !options.under.value) return;
+    if (id !== generation || (!options.under.value && !options.over.value)) return;
 
     try {
       running = runtime.startLayers(

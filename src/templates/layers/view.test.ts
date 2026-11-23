@@ -39,7 +39,7 @@ describe("how many pixels a layer's canvas draws", () => {
     expect(drawingBuffer(MELEE_LANDSCAPE.stage, 0.5, 2)).toEqual({ width: 1280, height: 960 });
   });
 
-  it("caps the pixel ratio a layer draws at, so a soft backdrop costs no more than it shows", () => {
+  it("caps the pixel ratio a layer draws at, so a soft Backdrop costs no more than it shows", () => {
     expect(drawingBuffer(MELEE_LANDSCAPE.stage, 0.5, 3, 1)).toEqual({ width: 640, height: 480 });
   });
 

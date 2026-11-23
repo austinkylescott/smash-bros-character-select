@@ -28,6 +28,12 @@ interface Layer {
   readonly canvas: HTMLCanvasElement;
 }
 
+/** Frees a renderer and gives its WebGL context back to the browser. */
+function release(renderer: WebGLRenderer) {
+  renderer.dispose();
+  renderer.forceContextLoss();
+}
+
 /** Deep enough that geometry turned in depth is never clipped. */
 const DEPTH = 4000;
 
@@ -60,8 +66,7 @@ export function startLayers(
     for (const { renderer, content, canvas } of running) {
       canvas.removeEventListener("webglcontextlost", lost);
       content.dispose();
-      renderer.dispose();
-      renderer.forceContextLoss();
+      release(renderer);
     }
     running.length = 0;
   };
@@ -77,8 +82,7 @@ export function startLayers(
     try {
       content = factory(stage);
     } catch (error) {
-      renderer.dispose();
-      renderer.forceContextLoss();
+      release(renderer);
       throw error;
     }
     renderer.setClearColor(0x000000, over ? 0 : 1);

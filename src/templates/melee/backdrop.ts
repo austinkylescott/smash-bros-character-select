@@ -17,6 +17,7 @@ import {
   ShaderMaterial,
 } from "three";
 
+import type { Point } from "../../selection/useHand";
 import type { LayerScene } from "../layers/scene";
 import { toScene } from "../layers/view";
 import type { Size } from "../stage";
@@ -85,7 +86,7 @@ const PANE = /* glsl */ `
 
 interface Pane {
   readonly mesh: Mesh;
-  readonly home: { readonly x: number; readonly y: number };
+  readonly home: Point;
   readonly sway: number;
   readonly speed: number;
   readonly phase: number;
