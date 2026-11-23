@@ -48,6 +48,10 @@ _Avoid_: Smash 4, Sm4sh
 The template based on the 3DS game's screen: a grid of unnamed portraits and separate player cards, shown as the handheld's two displays stacked.
 _Avoid_: Smash 4, Sm4sh
 
+**Backdrop**:
+The scenery behind a screen's slots and player panels, which may move, as the real game's did.
+_Avoid_: Background, scene, wallpaper
+
 **Portrait**:
 The image of a fighter. Official fighters have one per game they appeared in and fall back to the nearest game that has them; other fighters have one source image cropped for the slot and for the player panel.
 _Avoid_: Face, icon, mugshot, render
