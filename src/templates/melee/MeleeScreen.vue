@@ -4,12 +4,13 @@ import "@fontsource/rubik/700.css";
 import "@fontsource/rubik/800.css";
 import "@fontsource/rubik/900.css";
 import "@fontsource/rubik/900-italic.css";
-import { computed, nextTick, onMounted, ref, watch } from "vue";
+import { computed, inject, nextTick, onMounted, ref, watch } from "vue";
 
 import { useScreenAudio } from "../../audio";
 import type { Box } from "../../selection/navigate";
 import { type Pick, RANDOM, type SelectionRules } from "../../selection/selection";
 import { useSelectionControls } from "../../selection/useSelectionControls";
+import { LAYERS_DRAWN } from "../layers/useStageLayers";
 import type { ScreenRoster } from "../screen";
 import FighterPortrait from "../FighterPortrait.vue";
 import { meleeGrid } from "./grid";
@@ -63,6 +64,9 @@ const slotPicks = computed<Pick[]>(() => [
   ...(props.roster.randomSlot ? [RANDOM] : []),
 ]);
 const fightersById = computed(() => new Map(props.roster.fighters.map((f) => [f.id, f])));
+
+/** While the 3D Backdrop draws, the CSS one gives way to it, keeping only the slate above. */
+const backdropDrawn = inject(LAYERS_DRAWN, ref(false));
 
 const tokenHome = (panel: number) => meleeTokenHome(panelBoxes.value[panel]!);
 
@@ -196,7 +200,7 @@ const boxStyle = ({ x, y, width, height }: Box) => ({
     @pointerleave="hand.leave"
     @keydown="controls.onKey"
   >
-    <div class="backdrop" aria-hidden="true" />
+    <div class="backdrop" :class="{ drawn: backdropDrawn }" aria-hidden="true" />
     <div
       class="floor"
       aria-hidden="true"
@@ -322,6 +326,11 @@ const boxStyle = ({ x, y, width, height }: Box) => ({
       transparent 70%
     ),
     radial-gradient(ellipse at 30% 60%, #122440 0%, #0a1528 55%, #050c1a 100%);
+}
+
+/* While the 3D Backdrop draws under the screen, only the slate above the header's sweep stays. */
+.backdrop.drawn {
+  background: linear-gradient(180deg, #4a5462 0 120px, transparent 120px);
 }
 
 /* The slate floor the panels stand on. */
