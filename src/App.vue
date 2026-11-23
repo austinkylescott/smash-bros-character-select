@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { accountsAvailable } from "./accounts";
+import AccountBridge from "./accounts/AccountBridge.vue";
 import MuteButton from "./audio/MuteButton.vue";
 import HomePage from "./pages/HomePage.vue";
 import MyRosterScreen from "./pages/MyRosterScreen.vue";
@@ -21,4 +23,5 @@ import { route } from "./routes/navigation";
   />
   <RosterEditor v-else :id="route.roster" :copy-of="route.copyOf" />
   <MuteButton />
+  <AccountBridge v-if="accountsAvailable" />
 </template>

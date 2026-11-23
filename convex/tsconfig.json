@@ -12,7 +12,9 @@
     "forceConsistentCasingInFileNames": true,
     "module": "ESNext",
     "isolatedModules": true,
-    "noEmit": true
+    "noEmit": true,
+    // For `process.env` in auth.config.ts, which Convex fills from the deployment's settings.
+    "types": ["node"]
   },
   "include": ["./**/*"],
   "exclude": ["./_generated"]

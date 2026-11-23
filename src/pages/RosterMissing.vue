@@ -1,8 +1,10 @@
 <script setup lang="ts">
-/** What a link to a roster shows when this browser has no such roster saved. */
+/** What a link to a roster shows when the user has no such roster, in the browser or account. */
 import "@fontsource/rubik/400.css";
 import "@fontsource/rubik/900.css";
 
+import { accountsAvailable } from "../accounts";
+import { rostersKeptIn } from "../rosters";
 import { followLink } from "../routes/navigation";
 import { HOME_LINK } from "../routes/route";
 </script>
@@ -10,7 +12,12 @@ import { HOME_LINK } from "../routes/route";
 <template>
   <main class="missing">
     <h1>Roster not found</h1>
-    <p>
+    <p v-if="rostersKeptIn === 'account'">This roster is not saved to your account.</p>
+    <p v-else-if="accountsAvailable">
+      This roster is not saved in this browser. Rosters saved to an account are shown once you sign
+      in from the home page.
+    </p>
+    <p v-else>
       This roster is not saved in this browser. Rosters are kept in the browser they were made in.
     </p>
     <a :href="HOME_LINK" @click="followLink">Back to the home page</a>

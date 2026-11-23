@@ -1,6 +1,11 @@
 import "./assets/main.css";
 
+import { clerkPlugin } from "@clerk/vue";
 import { createApp } from "vue";
+
+import { accountsAvailable, clerkKey } from "./accounts";
 import App from "./App.vue";
 
-createApp(App).mount("#app");
+const app = createApp(App);
+if (accountsAvailable) app.use(clerkPlugin, { publishableKey: clerkKey! });
+app.mount("#app");
