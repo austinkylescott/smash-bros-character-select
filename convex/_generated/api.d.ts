@@ -9,11 +9,13 @@
  */
 
 import type * as franchises from "../franchises.js";
+import type * as rosters from "../rosters.js";
 
 import type { ApiFromModules, FilterApi, FunctionReference } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
   franchises: typeof franchises;
+  rosters: typeof rosters;
 }>;
 
 /**

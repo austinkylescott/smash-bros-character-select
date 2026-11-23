@@ -1,8 +1,8 @@
 <script setup lang="ts">
-/** The screen of a roster saved in this browser, with a link to edit it. */
+/** The screen of one of the user's rosters, with a link to edit it. */
 import { computed } from "vue";
 
-import { myRoster } from "../rosters";
+import { myRoster, rostersKnown } from "../rosters";
 import { followLink } from "../routes/navigation";
 import { rosterEditorLink, rosterScreenLink } from "../routes/route";
 import { type AvailableTemplate, showableTemplate } from "../templates/catalogue";
@@ -24,5 +24,5 @@ const roster = computed(() => myRoster(props.id));
   >
     <a class="edit" :href="rosterEditorLink(id)" @click="followLink">Edit</a>
   </ScreenPage>
-  <RosterMissing v-else />
+  <RosterMissing v-else-if="rostersKnown" />
 </template>

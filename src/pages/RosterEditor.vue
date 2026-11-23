@@ -15,7 +15,7 @@ import FranchisePool from "../franchises/FranchisePool.vue";
 import { officialFighter, officialFighters, officialRosters } from "../official";
 import CropEditor from "../portraits/CropEditor.vue";
 import { type UploadedImage, uploadImage } from "../portraits/upload";
-import { myRoster, newRosterId, saveRoster } from "../rosters";
+import { myRoster, newRosterId, rostersKeptIn, rostersKnown, saveRoster } from "../rosters";
 import {
   addCustomFighter,
   addFighter,
@@ -62,7 +62,9 @@ const startNew = () =>
 
 /** The roster as last saved, if it has been. */
 const saved = shallowRef(savedNow());
-const missing = computed(() => props.id !== undefined && !saved.value);
+/** Whether the roster to edit may yet turn up, as the account's rosters are still loading. */
+const waiting = computed(() => props.id !== undefined && !saved.value && !rostersKnown.value);
+const missing = computed(() => props.id !== undefined && !saved.value && rostersKnown.value);
 /** The roster as it was opened or last saved, which the edits are measured against. */
 const opened = shallowRef(saved.value ?? startNew());
 const draft = shallowRef(opened.value);
@@ -81,16 +83,26 @@ const savable = computed(() => problems.value.length === 0 && (edited.value || !
 const full = computed(() => draft.value.fighters.length >= MAX_FIGHTERS);
 const pickedIds = computed(() => new Set(draft.value.fighters.map((fighter) => fighter.id)));
 
-function save() {
+/** Whether a save is under way, which saving to an account takes a moment for. */
+const saving = ref(false);
+async function save() {
+  const sent = draft.value;
+  saving.value = true;
   try {
-    saveRoster(draft.value);
+    await saveRoster(sent);
   } catch (error) {
     failure.value = error instanceof Error ? error.message : "The roster could not be saved.";
     return;
+  } finally {
+    saving.value = false;
   }
-  saved.value = opened.value = draft.value;
+  // The roster as kept, which in an account shows its images from the server.
+  const kept = myRoster(sent.id) ?? sent;
+  saved.value = opened.value = kept;
+  // Edits made while it was saving stay, still to be saved.
+  if (draft.value === sent) draft.value = kept;
   // A new roster now has a link of its own, so a reload opens it rather than starting another.
-  if (props.id === undefined) replaceWith(rosterEditorLink(draft.value.id));
+  if (props.id === undefined) replaceWith(rosterEditorLink(sent.id));
 }
 
 // Leaving throws edits away, so the visitor is asked first: by the browser before a reload or a
@@ -242,10 +254,20 @@ watch(
     resetAddOwn();
   },
 );
+
+// A roster in the account can be opened once the account's rosters arrive.
+watch(waiting, (still) => {
+  if (still) return;
+  saved.value = savedNow();
+  if (saved.value) draft.value = opened.value = saved.value;
+});
 </script>
 
 <template>
   <RosterMissing v-if="missing" />
+  <main v-else-if="waiting" class="editor" aria-busy="true">
+    <p class="hint" role="status">Opening the roster&hellip;</p>
+  </main>
 
   <main v-else class="editor">
     <header>
@@ -482,7 +504,9 @@ watch(
         <p v-else class="empty">The screen shows here once the roster has a fighter.</p>
 
         <div class="saving">
-          <button type="button" class="save" :disabled="!savable" @click="save">Save</button>
+          <button type="button" class="save" :disabled="!savable || saving" @click="save">
+            {{ saving ? "Saving…" : "Save" }}
+          </button>
           <a v-if="saved" class="plain" :href="rosterScreenLink(saved.id)" @click="leave">
             Open the saved screen
           </a>
@@ -495,7 +519,9 @@ watch(
               edited
                 ? "There are changes not yet saved."
                 : saved
-                  ? "Saved in this browser."
+                  ? rostersKeptIn === "account"
+                    ? "Saved to your account."
+                    : "Saved in this browser."
                   : "Not saved yet."
             }}
           </p>

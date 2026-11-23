@@ -1,15 +1,17 @@
 <script setup lang="ts">
 /**
- * The home page: the rosters saved in this browser, and the official rosters, each a link to its
- * screen in its default template.
+ * The home page: the user's rosters, in this browser or their account, and the official rosters,
+ * each a link to its screen in its default template.
  */
 import "@fontsource/rubik/400.css";
 import "@fontsource/rubik/700.css";
 import "@fontsource/rubik/900.css";
 
+import { accountsAvailable } from "../accounts";
+import AccountControls from "../accounts/AccountControls.vue";
 import { GAMES } from "../asset-layer/manifest";
 import { officialRosters } from "../official";
-import { myRosters, removeRoster } from "../rosters";
+import { myRosters, removeRoster, rostersKeptIn, rostersKnown, rostersProblem } from "../rosters";
 import type { Roster } from "../rosters/roster";
 import {
   newRosterLink,
@@ -31,8 +33,13 @@ const rosters = GAMES.map((game) => ({
 
 const fighterCount = (count: number) => (count === 1 ? "1 fighter" : `${count} fighters`);
 
-function remove(roster: Roster) {
-  if (confirm(`Delete "${roster.name}"? It cannot be brought back.`)) removeRoster(roster.id);
+async function remove(roster: Roster) {
+  if (!confirm(`Delete "${roster.name}"? It cannot be brought back.`)) return;
+  try {
+    await removeRoster(roster.id);
+  } catch (error) {
+    alert(error instanceof Error ? error.message : "The roster could not be deleted.");
+  }
 }
 </script>
 
@@ -45,9 +52,12 @@ function remove(roster: Roster) {
 
     <section aria-labelledby="my-rosters">
       <h2 id="my-rosters">My rosters</h2>
-      <p v-if="myRosters.length === 0" class="note">
-        No rosters saved in this browser yet. Start one from scratch, or copy an official roster
-        below.
+      <AccountControls v-if="accountsAvailable" />
+      <p v-if="rostersProblem" class="problem" role="alert">{{ rostersProblem }}</p>
+      <p v-if="!rostersKnown" class="note" role="status">Loading your rosters&hellip;</p>
+      <p v-else-if="myRosters.length === 0" class="note">
+        No rosters saved {{ rostersKeptIn === "account" ? "to your account" : "in this browser" }}
+        yet. Start one from scratch, or copy an official roster below.
       </p>
       <ul v-else class="rosters">
         <li v-for="roster in myRosters" :key="roster.id">
@@ -218,6 +228,11 @@ h2 {
 
 .note {
   color: #c9c9c9;
+}
+
+.problem {
+  margin-bottom: 12px;
+  color: #ff8a80;
 }
 
 .visually-hidden {
