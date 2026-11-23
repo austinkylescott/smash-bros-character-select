@@ -4,7 +4,7 @@
  * `preview` is set, the box it is put in. A preview is only looked at, so it takes no input and
  * makes no sound.
  */
-import { computed, onBeforeUnmount, onMounted, provide, ref } from "vue";
+import { computed, onBeforeUnmount, onMounted, provide, ref, shallowRef } from "vue";
 
 import { SILENT_SCREEN } from "../audio";
 import { brawlLayout } from "./brawl/layout";
@@ -13,7 +13,8 @@ import type { AvailableTemplate } from "./catalogue";
 import { meleeLayout } from "./melee/layout";
 import MeleeScreen from "./melee/MeleeScreen.vue";
 import { screenRoster, type ShowableRoster } from "./screen";
-import { LAYERS_DRAWN, useStageLayers } from "./layers/useStageLayers";
+import { NO_PIECES, type ScreenPieces } from "./layers/pieces";
+import { LAYERS_DRAWN, SCREEN_PIECES, useStageLayers } from "./layers/useStageLayers";
 import { smash64Layout } from "./smash-64/layout";
 import Smash3dsScreen from "./smash-for-3ds/Smash3dsScreen.vue";
 import { smash3dsLayout } from "./smash-for-3ds/layout";
@@ -81,6 +82,7 @@ const fit = computed(() => fitStage(props.preview ? box.value : viewport.value, 
 const under = ref<HTMLCanvasElement | null>(null);
 const over = ref<HTMLCanvasElement | null>(null);
 const layerKey = computed(() => `${props.template}-${stage.value.width}x${stage.value.height}`);
+const pieces = shallowRef<(() => ScreenPieces) | undefined>();
 const { drawn } = useStageLayers({
   template: () => props.template,
   stage: () => stage.value,
@@ -88,8 +90,10 @@ const { drawn } = useStageLayers({
   enabled: () => !props.preview,
   under,
   over,
+  pieces: () => pieces.value?.() ?? NO_PIECES,
 });
 provide(LAYERS_DRAWN, drawn);
+provide(SCREEN_PIECES, pieces);
 </script>
 
 <template>

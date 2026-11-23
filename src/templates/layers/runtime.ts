@@ -5,7 +5,7 @@
 import { OrthographicCamera, WebGLRenderer } from "three";
 
 import type { Size } from "../stage";
-import type { LayerScene, SceneFactory, TemplateLayers } from "./scene";
+import type { LayerScene, LayerScreen, SceneFactory, TemplateLayers } from "./scene";
 import { drawingBuffer, stageView } from "./view";
 
 export interface LayerCanvases {
@@ -45,6 +45,7 @@ export function startLayers(
   canvases: LayerCanvases,
   layers: TemplateLayers,
   stage: Size,
+  screen: LayerScreen,
   onLost: () => void,
 ): RunningLayers {
   const view = stageView(stage);
@@ -80,7 +81,7 @@ export function startLayers(
     const renderer = new WebGLRenderer({ canvas, alpha: over, antialias: true });
     let content: LayerScene;
     try {
-      content = factory(stage);
+      content = factory(stage, screen);
     } catch (error) {
       release(renderer);
       throw error;
