@@ -32,14 +32,22 @@ export interface HandPiece extends Point {
   readonly held: PieceLook | undefined;
 }
 
+/** One look's identity, for keeping a label painted once per player. */
+export const lookId = ({ colour, tag }: PieceLook) => `${colour}|${tag}`;
+
+/** Everything a layer over the screen draws in place of the DOM's hand and tokens. */
 export interface ScreenPieces {
   /** Nothing while the hand is off screen. */
   readonly hand: HandPiece | undefined;
+  /** The panel whose token the hand holds, known even while the hand is off screen. */
+  readonly heldPanel: number | undefined;
+  /** Every token not in the hand, in the order the DOM paints them. */
   readonly tokens: readonly TokenPiece[];
 }
 
-export const NO_PIECES: ScreenPieces = { hand: undefined, tokens: [] };
+export const NO_PIECES: ScreenPieces = { hand: undefined, heldPanel: undefined, tokens: [] };
 
+/** The hand as the selection controls know it, which `handPiece` turns into what is drawn. */
 export interface HandState {
   readonly position: Point;
   readonly input: HandInput;

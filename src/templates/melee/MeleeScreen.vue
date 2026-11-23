@@ -10,7 +10,7 @@ import { useScreenAudio } from "../../audio";
 import type { Box } from "../../selection/navigate";
 import { type Pick, RANDOM, type SelectionRules } from "../../selection/selection";
 import { useSelectionControls } from "../../selection/useSelectionControls";
-import { handPiece, type ScreenPieces } from "../layers/pieces";
+import { handPiece, type PieceLook, type ScreenPieces, type TokenPiece } from "../layers/pieces";
 import { LAYERS_DRAWN, SCREEN_PIECES } from "../layers/useStageLayers";
 import type { ScreenRoster } from "../screen";
 import FighterPortrait from "../FighterPortrait.vue";
@@ -96,7 +96,7 @@ function back() {
   emit("back");
 }
 
-const look = (index: number) => {
+const look = (index: number): PieceLook => {
   const { kind } = selection.value.panels[index]!;
   return { colour: playerColour(index, kind), tag: playerTag(index, kind) };
 };
@@ -106,16 +106,10 @@ const fighterOf = (index: number) => {
   return pick && pick !== RANDOM ? fightersById.value.get(pick.fighter) : undefined;
 };
 
-interface Token {
-  readonly index: number;
+/** A token as the DOM places it, and as the 3D layer over the screen draws it. */
+interface Token extends TokenPiece {
   /** The slot the token sits on, or -1 while it waits in its panel. */
   readonly slot: number;
-  readonly colour: string;
-  readonly tag: string;
-  /** Its centre, in stage pixels. */
-  readonly x: number;
-  readonly y: number;
-  readonly size: number;
 }
 
 /**
@@ -133,7 +127,7 @@ const tokens = computed<Token[]>(() => {
     if (panel.kind === "off" || held === index) return [];
     const slot = slotOfPanel[index]!;
     const box = grid.value.slots[slot];
-    if (!box) return [{ index, slot: -1, size: 60, ...tokenHome(index), ...look(index) }];
+    if (!box) return [{ panel: index, slot: -1, size: 60, ...tokenHome(index), ...look(index) }];
 
     const size = Math.min(60, box.height * 0.5);
     const count = slotOfPanel.filter((other) => other === slot).length;
@@ -142,7 +136,14 @@ const tokens = computed<Token[]>(() => {
     const step = count > 1 ? Math.min(size * 0.6, (box.width * 0.9 - size) / (count - 1)) : 0;
     const first = count > 1 ? box.x + box.width * 0.05 + size / 2 : box.x + box.width * 0.5;
     return [
-      { index, slot, size, x: first + order * step, y: box.y + box.height * 0.42, ...look(index) },
+      {
+        panel: index,
+        slot,
+        size,
+        x: first + order * step,
+        y: box.y + box.height * 0.42,
+        ...look(index),
+      },
     ];
   });
 });
@@ -154,7 +155,7 @@ const tokenLabel = (token: Token) => {
     : pick === RANDOM
       ? "on Random"
       : `on ${fightersById.value.get(pick.fighter)?.name}`;
-  return `Player ${token.index + 1}'s token, ${where}`;
+  return `Player ${token.panel + 1}'s token, ${where}`;
 };
 
 const owner = computed(() => {
@@ -174,14 +175,8 @@ const pieces = computed<ScreenPieces>(() => ({
     owner: owner.value,
     held: heldLook.value,
   }),
-  tokens: tokens.value.map(({ index, x, y, size, colour, tag }) => ({
-    panel: index,
-    x,
-    y,
-    size,
-    colour,
-    tag,
-  })),
+  heldPanel: selection.value.held ?? undefined,
+  tokens: tokens.value,
 }));
 const screenPieces = inject(SCREEN_PIECES, undefined);
 const readPieces = () => pieces.value;
@@ -298,15 +293,15 @@ const boxStyle = ({ x, y, width, height }: Box) => ({
     <div class="tokens">
       <button
         v-for="token in tokens"
-        :key="token.index"
+        :key="token.panel"
         type="button"
         class="token"
         :data-on-slot="token.slot === -1 ? undefined : token.slot"
         :aria-label="tokenLabel(token)"
         :style="{ left: `${token.x - token.size / 2}px`, top: `${token.y - token.size / 2}px` }"
-        @pointerdown="controls.pressToken(token.index, $event)"
-        @keydown.enter.prevent="controls.keyToken(token.index)"
-        @keydown.space.prevent="controls.keyToken(token.index)"
+        @pointerdown="controls.pressToken(token.panel, $event)"
+        @keydown.enter.prevent="controls.keyToken(token.panel)"
+        @keydown.space.prevent="controls.keyToken(token.panel)"
       >
         <MeleeToken
           :class="{ 'drawn-in-3d': layersDrawn }"
@@ -318,7 +313,7 @@ const boxStyle = ({ x, y, width, height }: Box) => ({
     </div>
 
     <MeleeHand
-      v-show="hand.inside.value || hand.input.value !== 'mouse'"
+      v-show="pieces.hand"
       :class="{ 'drawn-in-3d': layersDrawn }"
       :position="hand.position.value"
       :input="hand.input.value"

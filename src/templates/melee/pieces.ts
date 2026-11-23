@@ -1,6 +1,6 @@
 /**
  * Melee's hand and tokens in 3D, drawn over its CSS screen (ADR 0007): a lit white glove pointing
- * up and to the left, its owner's tag beneath it, and bevelled coins in each player's colour,
+ * up and to the left, its owner's tag beneath it, and bevelled tokens in each player's colour,
  * stamped with their tag. Built from primitive geometry, not taken from the game.
  *
  * Every frame each piece is put exactly where the DOM puts its element, read from the screen's
@@ -30,8 +30,8 @@ import {
   Vector2,
 } from "three";
 
-import type { LayerScene } from "../layers/scene";
-import type { PieceLook, ScreenPieces } from "../layers/pieces";
+import { lookId, type PieceLook } from "../layers/pieces";
+import type { LayerScene, LayerScreen } from "../layers/scene";
 import { toScene } from "../layers/view";
 import type { Size } from "../stage";
 import { PANEL_COUNT } from "./panels";
@@ -101,15 +101,16 @@ const LABEL_PIXELS = 256;
 
 /**
  * Paints labels onto canvases, in Rubik once it has loaded. Labels painted before then are
- * painted again when it arrives.
+ * painted again when it arrives, and `repainted` is called so a still scene shows them.
  */
-function canvasPainter(): LabelPainter {
+function canvasPainter(repainted: () => void): LabelPainter {
   const painted: { texture: CanvasTexture; repaint: () => void }[] = [];
   void document.fonts?.load(LABEL_FONT(64)).then(() => {
     for (const { texture, repaint } of painted) {
       repaint();
       texture.needsUpdate = true;
     }
+    if (painted.length > 0) repainted();
   });
 
   return (kind, look) => {
@@ -148,8 +149,8 @@ const SHADOW_FRAGMENT = /* glsl */ `
   }
 `;
 
-/** The coin's outline, half a unit across: flat faces, a bevelled rim. Revolved about its axis. */
-const COIN_PROFILE = [
+/** A token's outline, half a unit across: flat faces, a bevelled rim. Revolved about its axis. */
+const TOKEN_PROFILE = [
   [0, 0.09],
   [0.4, 0.09],
   [0.47, 0.065],
@@ -178,12 +179,13 @@ const GLOVE_LEAN = 0.62;
 /** How far a press pushes the glove along its finger, in stage pixels. */
 const PRESS_DEPTH = 6;
 
+/** Builds Melee's over layer: its hand and tokens, posed from the screen's pieces on each update. */
 export function meleePieces(
   _stage: Size,
-  pieces: () => ScreenPieces,
+  screen: LayerScreen,
   options: MeleePiecesOptions = {},
 ): LayerScene {
-  const paint = options.paint ?? canvasPainter();
+  const paint = options.paint ?? canvasPainter(screen.redraw);
   const scene = new Scene();
   const disposables: { dispose(): void }[] = [];
   const own = <T extends { dispose(): void }>(thing: T): T => {
@@ -202,7 +204,7 @@ export function meleePieces(
   /** One texture per label, kept for the scene's life: there are only a few players. */
   const labels = new Map<string, Texture | undefined>();
   const label = (kind: LabelKind, look: PieceLook) => {
-    const id = `${kind}|${look.colour}|${look.tag}`;
+    const id = `${kind}|${lookId(look)}`;
     if (!labels.has(id)) {
       const texture = paint(kind, look);
       if (texture) own(texture);
@@ -210,10 +212,21 @@ export function meleePieces(
     }
     return labels.get(id);
   };
+  /** Gives a material a player's label, or their plain colour where no label could be painted. */
+  const wear = (
+    material: MeshBasicMaterial | MeshStandardMaterial,
+    kind: LabelKind,
+    look: PieceLook,
+  ) => {
+    const texture = label(kind, look);
+    material.map = texture ?? null;
+    material.color.set(texture ? "#ffffff" : look.colour);
+    material.needsUpdate = true;
+  };
 
   // Tokens: one unit across, scaled to each token's size.
-  const coinGeometry = own(new LatheGeometry(COIN_PROFILE, 40));
-  coinGeometry.rotateX(Math.PI / 2);
+  const bodyGeometry = own(new LatheGeometry(TOKEN_PROFILE, 40));
+  bodyGeometry.rotateX(Math.PI / 2);
   const faceGeometry = own(new CircleGeometry(0.43, 40));
   const shadowGeometry = own(new PlaneGeometry(1.3, 1.3));
   const shadowMaterial = own(
@@ -228,7 +241,7 @@ export function meleePieces(
 
   interface TokenMesh {
     readonly group: Group;
-    readonly coin: Mesh<LatheGeometry, MeshStandardMaterial>;
+    readonly body: Mesh<LatheGeometry, MeshStandardMaterial>;
     readonly face: Mesh<CircleGeometry, MeshStandardMaterial>;
     look: string;
   }
@@ -242,12 +255,12 @@ export function meleePieces(
     const tilt = new Group();
     tilt.rotation.x = TOKEN_LEAN;
     group.add(tilt);
-    const coin = new Mesh(
-      coinGeometry,
+    const body = new Mesh(
+      bodyGeometry,
       own(new MeshStandardMaterial({ roughness: 0.35, metalness: 0.15 })),
     );
-    coin.name = "coin";
-    tilt.add(coin);
+    body.name = "body";
+    tilt.add(body);
     const face = new Mesh(
       faceGeometry,
       own(new MeshStandardMaterial({ roughness: 0.4, metalness: 0.05, transparent: true })),
@@ -255,17 +268,14 @@ export function meleePieces(
     face.position.z = 0.091;
     tilt.add(face);
     scene.add(group);
-    return { group, coin, face, look: "" };
+    return { group, body, face, look: "" };
   }
   function dress(token: TokenMesh, look: PieceLook) {
-    const id = `${look.colour}|${look.tag}`;
+    const id = lookId(look);
     if (token.look === id) return;
     token.look = id;
-    token.coin.material.color.set(look.colour);
-    const texture = label("token", look);
-    token.face.material.map = texture ?? null;
-    token.face.material.color.set(texture ? "#ffffff" : look.colour);
-    token.face.material.needsUpdate = true;
+    token.body.material.color.set(look.colour);
+    wear(token.face.material, "token", look);
   }
 
   const resting = Array.from({ length: PANEL_COUNT }, (_, panel) => makeToken(`token-${panel}`));
@@ -282,10 +292,9 @@ export function meleePieces(
   held.group.position.z = HELD_Z;
   hand.add(held.group);
 
-  const glove = buildGlove(own);
+  const { glove, lean: gloveLean } = buildGlove(own);
   glove.position.z = GLOVE_Z;
   hand.add(glove);
-  const gloveLean = glove.children[0]!;
 
   const tagMaterial = own(new MeshBasicMaterial({ transparent: true, depthWrite: false }));
   const tag = new Mesh(own(new PlaneGeometry(1, 1 / TAG_ASPECT)), tagMaterial);
@@ -298,48 +307,41 @@ export function meleePieces(
 
   /** When the hand last took or gave up a token, in the scene's seconds. */
   let changedAt = Number.NEGATIVE_INFINITY;
-  let lastHeld: string | undefined;
-  let seenHand = false;
+  /** The panel whose token the hand held when last posed; `null` before the first pose. */
+  let lastHeld: number | undefined | null = null;
 
   function update(seconds: number) {
-    const { hand: piece, tokens } = pieces();
+    const { hand: shown, heldPanel, tokens } = screen.pieces();
 
-    for (const token of resting) token.group.visible = false;
-    for (const [order, piece] of tokens.entries()) {
-      const token = resting[piece.panel];
-      if (!token) continue;
-      const at = toScene(piece);
+    // Tracked even while the hand is off screen, so a change made then never presses later.
+    if (lastHeld !== null && heldPanel !== lastHeld) changedAt = seconds;
+    lastHeld = heldPanel;
+
+    for (const mesh of resting) mesh.group.visible = false;
+    for (const [order, token] of tokens.entries()) {
+      const mesh = resting[token.panel];
+      if (!mesh) continue;
+      const centre = toScene(token);
       // Each later token lies over the one before, as the DOM paints them.
-      token.group.position.set(at.x, at.y, TOKEN_Z + order * TOKEN_STEP);
-      token.group.scale.setScalar(piece.size);
-      dress(token, piece);
-      token.group.visible = true;
+      mesh.group.position.set(centre.x, centre.y, TOKEN_Z + order * TOKEN_STEP);
+      mesh.group.scale.setScalar(token.size);
+      dress(mesh, token);
+      mesh.group.visible = true;
     }
 
-    hand.visible = piece !== undefined;
-    if (!piece) return;
-    const at = toScene(piece);
-    hand.position.set(at.x, at.y, 0);
+    hand.visible = shown !== undefined;
+    if (!shown) return;
+    const hotSpot = toScene(shown);
+    hand.position.set(hotSpot.x, hotSpot.y, 0);
 
-    const heldId = piece.held && `${piece.held.colour}|${piece.held.tag}`;
-    if (seenHand && heldId !== lastHeld) changedAt = seconds;
-    seenHand = true;
-    lastHeld = heldId;
+    held.group.visible = shown.held !== undefined;
+    if (shown.held) dress(held, shown.held);
 
-    held.group.visible = piece.held !== undefined;
-    if (piece.held) dress(held, piece.held);
-
-    glove.visible = piece.glove;
-    tag.visible = piece.glove && piece.owner !== undefined;
-    if (piece.owner) {
-      const id = `${piece.owner.colour}|${piece.owner.tag}`;
-      if (id !== tagLook) {
-        tagLook = id;
-        const texture = label("tag", piece.owner);
-        tagMaterial.map = texture ?? null;
-        tagMaterial.color.set(texture ? "#ffffff" : piece.owner.colour);
-        tagMaterial.needsUpdate = true;
-      }
+    glove.visible = shown.glove;
+    tag.visible = shown.glove && shown.owner !== undefined;
+    if (shown.owner && lookId(shown.owner) !== tagLook) {
+      tagLook = lookId(shown.owner);
+      wear(tagMaterial, "tag", shown.owner);
     }
 
     const { tilt, press } = pressPose(seconds - changedAt);
@@ -366,9 +368,13 @@ export function meleePieces(
 /**
  * The white glove, built from rounded primitives with a grey outline, in stage pixels. Its
  * fingertip is the group's origin; it hangs below and to the right of it, about 80px across. The
- * returned group tilts for a press; its one child leans the glove and slides it along its finger.
+ * returned `glove` tilts for a press; `lean`, inside it, leans the glove and slides it along its
+ * finger.
  */
-function buildGlove(own: <T extends { dispose(): void }>(thing: T) => T): Group {
+function buildGlove(own: <T extends { dispose(): void }>(thing: T) => T): {
+  glove: Group;
+  lean: Group;
+} {
   const white = own(new MeshStandardMaterial({ color: "#f7f7fa", roughness: 0.55 }));
   const cuffWhite = own(new MeshStandardMaterial({ color: "#d4d8e0", roughness: 0.6 }));
   const outline = own(new MeshBasicMaterial({ color: "#6c7280", side: BackSide }));
@@ -413,5 +419,5 @@ function buildGlove(own: <T extends { dispose(): void }>(thing: T) => T): Group 
   // The cuff around the wrist: a band seen nearly edge on, its opening just showing.
   part(new TorusGeometry(15, 6, 10, 28), cuffWhite, [12, -84, 0], [1.05, 1, 1], 0, 1.25);
 
-  return press;
+  return { glove: press, lean };
 }

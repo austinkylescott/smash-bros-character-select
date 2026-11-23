@@ -22,11 +22,19 @@ export interface LayerScene {
   dispose(): void;
 }
 
-/**
- * Builds a scene for a stage. `pieces` reads where the screen's hand and tokens are right now; a
- * scene that draws them reads it on every `update`, so it is never a frame behind the DOM.
- */
-export type SceneFactory = (stage: Size, pieces: () => ScreenPieces) => LayerScene;
+/** What a scene may ask of the screen it is drawn over. */
+export interface LayerScreen {
+  /**
+   * Where the screen's hand and tokens are right now. A scene that draws them reads it on every
+   * `update`, so it is never a frame behind the DOM.
+   */
+  readonly pieces: () => ScreenPieces;
+  /** Asks for another frame after something changed outside `update`, such as a font loading. */
+  readonly redraw: () => void;
+}
+
+/** Builds a scene for a stage. */
+export type SceneFactory = (stage: Size, screen: LayerScreen) => LayerScene;
 
 export interface TemplateLayers {
   readonly under?: SceneFactory;

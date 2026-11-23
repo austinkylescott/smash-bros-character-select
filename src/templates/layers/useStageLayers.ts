@@ -119,6 +119,11 @@ export function useStageLayers(options: StageLayersOptions) {
     drawn.value = true;
   }
 
+  /** Draws a still scene again after a change. A moving one shows it on its next frame. */
+  function redrawStill() {
+    if (mode.value === "still") draw();
+  }
+
   function tick(now: number) {
     seconds += last === undefined ? 0 : Math.min(now - last, 100) / 1000;
     last = now;
@@ -157,7 +162,7 @@ export function useStageLayers(options: StageLayersOptions) {
         { under: options.under.value, over: options.over.value },
         layers,
         options.stage(),
-        options.pieces,
+        { pieces: options.pieces, redraw: redrawStill },
         () => {
           contextLost.value = true;
           stop();
@@ -189,13 +194,11 @@ export function useStageLayers(options: StageLayersOptions) {
     watch(mode, schedule);
     watch(options.scale, () => {
       resize();
-      if (mode.value === "still") draw();
+      redrawStill();
     });
     // A still scene is drawn again whenever the hand or a token moves; a moving one reads them
     // on its next frame anyway.
-    watch(options.pieces, () => {
-      if (mode.value === "still") draw();
-    });
+    watch(options.pieces, redrawStill);
     // A new template, or a turn of the phone to another stage, builds the layers afresh.
     watch(
       () => [options.template(), options.stage(), options.enabled(), options.under.value] as const,
