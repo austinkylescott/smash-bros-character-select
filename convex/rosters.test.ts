@@ -220,6 +220,16 @@ describe("fighters added by image, saved to an account", () => {
     expect(await fileExists(t, file)).toBe(true);
   });
 
+  it("can only have uploads given up by someone signed in", async () => {
+    const { t } = server();
+    const abandoned = await uploaded(t);
+
+    await expect(t.mutation(api.rosters.discardUploads, { files: [abandoned] })).rejects.toThrow(
+      "Sign in",
+    );
+    expect(await fileExists(t, abandoned)).toBe(true);
+  });
+
   it("delete uploads the user gave up on, but no image a roster shows", async () => {
     const { t, ada, bob } = server();
     const kept = await uploaded(t);

@@ -206,3 +206,25 @@ describe("moving the browser's rosters into an account on signing in", () => {
     expect(browser.list()).toEqual([roster("r1", "kirby")]);
   });
 });
+
+describe("moving rosters in while the user signs out", () => {
+  it("stops, leaving the rest in the browser", async () => {
+    const server = accountServer();
+    const browser = createRosterStore(browserStorage());
+    browser.save(roster("old", "kirby"));
+    browser.save(roster("new", "fox"));
+    let signedIn = true;
+    const rosters = createAccountRosters({
+      ...server,
+      add: async (sent) => {
+        signedIn = false;
+        return server.add(sent);
+      },
+    });
+
+    await rosters.moveIn(browser, () => signedIn);
+
+    expect(server.mine().map(({ id }) => id)).toEqual(["old"]);
+    expect(browser.list().map(({ id }) => id)).toEqual(["new"]);
+  });
+});

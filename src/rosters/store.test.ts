@@ -59,6 +59,18 @@ describe("rosters saved in the browser", () => {
     expect(store.list()[0]?.fighters).toEqual([{ id: "kirby" }, { id: "ness" }]);
   });
 
+  it("refuses a roster it could not read back, such as one showing an image from elsewhere", () => {
+    const store = createRosterStore(browserStorage());
+    const elsewhere = addCustomFighter(roster("r1", "kirby"), "custom-1", "Goku", {
+      image: "https://files.test/goku.webp",
+      width: 400,
+      height: 200,
+    });
+
+    expect(() => store.save(elsewhere)).toThrow("image");
+    expect(store.list()).toEqual([]);
+  });
+
   it("refuses a roster with no fighters, and keeps what was saved", () => {
     const store = createRosterStore(browserStorage());
     store.save(roster("r1", "kirby"));

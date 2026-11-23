@@ -7,7 +7,8 @@ import { isOfficialFighter } from "../official";
 import { type Crop, cropFits } from "../portraits/crop";
 import { type CustomPortrait, type Roster, type RosterFighter, rosterProblems } from "./roster";
 
-const isRecord = (value: unknown): value is Record<string, unknown> =>
+/** Whether a value is an object whose fields can be read. */
+export const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null;
 
 const isSize = (value: unknown) => typeof value === "number" && Number.isFinite(value) && value > 0;

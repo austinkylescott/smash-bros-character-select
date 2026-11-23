@@ -90,7 +90,8 @@ export function createAccountRosters(server: AccountServer) {
         fighters: roster.fighters.map((fighter): RosterFighter => {
           if (!("portrait" in fighter)) return fighter;
           const { file, ...portrait } = fighter.portrait;
-          fileOf.set(portrait.image, file);
+          // An image the server has lost has no link, and stands for no file.
+          if (portrait.image) fileOf.set(portrait.image, file);
           return { ...fighter, portrait };
         }),
       }));
@@ -100,17 +101,20 @@ export function createAccountRosters(server: AccountServer) {
     save: async (roster: Roster): Promise<void> =>
       void (await send(roster, (sent) => server.save(sent))),
 
+    /** Removes a roster from the account. Throws, with a message for the user, if it cannot. */
     remove: async (id: string): Promise<void> => void (await server.remove(id)),
 
     /**
      * Moves every roster in the browser into the account, oldest first so the latest saved stays
      * first. Each leaves the browser once the account has it, so trying again moves only the rest,
      * and a roster whose id the account already has is the one it has. Throws with the first
-     * failure, having moved what it could.
+     * failure, having moved what it could. It stops, leaving the rest in the browser, once
+     * `stillSignedIn` says the user who signed in has signed out.
      */
-    async moveIn(browser: BrowserRosters): Promise<void> {
+    async moveIn(browser: BrowserRosters, stillSignedIn = () => true): Promise<void> {
       let failure: unknown;
       for (const roster of [...browser.list()].reverse()) {
+        if (!stillSignedIn()) return;
         try {
           await send(roster, (sent) => server.add(sent));
           browser.remove(roster.id);
@@ -122,5 +126,3 @@ export function createAccountRosters(server: AccountServer) {
     },
   };
 }
-
-export type AccountRosters = ReturnType<typeof createAccountRosters>;

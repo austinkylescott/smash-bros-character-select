@@ -8,7 +8,7 @@ import { computed, shallowRef, watch } from "vue";
 import { api } from "../../convex/_generated/api";
 import { account } from "../accounts";
 import { browserStorage } from "../browser-storage";
-import { callMutation, liveQuery } from "../server";
+import { callMutation, liveQuery, uploadFile } from "../server";
 import { createAccountRosters, type FileId } from "./account";
 import type { Roster } from "./roster";
 import { createRosterStore } from "./store";
@@ -21,27 +21,10 @@ const refresh = () => {
 // Another tab of the site may save or remove a roster.
 window.addEventListener("storage", refresh);
 
-/** Uploads an image, a data URL, to the server's file storage, giving the file it is kept as. */
-async function uploadImage(image: string): Promise<FileId> {
-  const target = await callMutation(api.rosters.uploadUrl, {});
-  const blob = await (await fetch(image)).blob();
-  let response: Response;
-  try {
-    response = await fetch(target, {
-      method: "POST",
-      headers: { "Content-Type": blob.type },
-      body: blob,
-    });
-  } catch (error) {
-    throw new Error("A fighter's image could not be uploaded. Try again later.", { cause: error });
-  }
-  if (!response.ok) throw new Error("A fighter's image could not be uploaded. Try again later.");
-  const { storageId } = (await response.json()) as { storageId: FileId };
-  return storageId;
-}
-
 const inAccount = createAccountRosters({
-  uploadImage,
+  // The image is a data URL, which fetch reads as the file it holds.
+  uploadImage: async (image) =>
+    (await uploadFile(api.rosters.uploadUrl, await (await fetch(image)).blob())) as FileId,
   save: (roster) => callMutation(api.rosters.save, { roster }),
   add: (roster) => callMutation(api.rosters.add, { roster }),
   remove: (id) => callMutation(api.rosters.remove, { id }),
@@ -58,17 +41,23 @@ const accountRosters = computed(() => {
 /** Why the rosters in this browser did not all move into the account, if they did not. */
 const moveFailure = shallowRef("");
 
+/** The signed-in user, if someone is. */
+const userNow = () => (account.value.status === "signed-in" ? account.value.user : undefined);
+
 watch(
   signedIn,
   async (now) => {
     moveFailure.value = "";
+    const user = userNow();
     if (!now || inBrowser.value.length === 0) return;
+    const stillSignedIn = () => userNow() === user;
     try {
-      await inAccount.moveIn(browser);
+      await inAccount.moveIn(browser, stillSignedIn);
     } catch (error) {
-      moveFailure.value = `Some rosters saved in this browser could not move into your account. ${
-        error instanceof Error ? error.message : ""
-      }`.trim();
+      if (stillSignedIn())
+        moveFailure.value = `Some rosters saved in this browser could not move into your account. ${
+          error instanceof Error ? error.message : ""
+        }`.trim();
     } finally {
       refresh();
     }
@@ -107,6 +96,9 @@ export const myRoster = (id: string): Roster | undefined =>
  * with a message for the user, if it breaks a rule or cannot be kept.
  */
 export async function saveRoster(roster: Roster): Promise<void> {
+  // Saving now could put the roster in the browser while the user is signing in.
+  if (account.value.status === "unknown")
+    throw new Error("Still checking whether you are signed in. Try again in a moment.");
   if (signedIn.value) return inAccount.save(roster);
   browser.save(roster);
   refresh();
@@ -114,6 +106,8 @@ export async function saveRoster(roster: Roster): Promise<void> {
 
 /** Deletes one of the user's rosters. Throws, with a message for the user, if it cannot. */
 export async function removeRoster(id: string): Promise<void> {
+  if (account.value.status === "unknown")
+    throw new Error("Still checking whether you are signed in. Try again in a moment.");
   if (signedIn.value) return inAccount.remove(id);
   browser.remove(id);
   refresh();

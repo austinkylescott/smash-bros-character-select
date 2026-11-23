@@ -27,7 +27,8 @@ async function ownerOf(ctx: QueryCtx): Promise<string | undefined> {
   return (await ctx.auth.getUserIdentity())?.tokenIdentifier;
 }
 
-async function signedIn(ctx: QueryCtx): Promise<string> {
+/** The signed-in user's identity. Throws, for the user, when no one is signed in. */
+async function requireOwner(ctx: QueryCtx): Promise<string> {
   const owner = await ownerOf(ctx);
   if (!owner) throw new ConvexError("Sign in to save rosters to your account.");
   return owner;
@@ -56,6 +57,7 @@ function check(roster: SentRoster) {
 const filesOf = (roster: SentRoster): Id<"_storage">[] =>
   roster.fighters.flatMap((fighter) => ("portrait" in fighter ? [fighter.portrait.file] : []));
 
+/** Which account an image file belongs to, if any roster has shown it. */
 const claimOf = (ctx: QueryCtx, file: Id<"_storage">) =>
   ctx.db
     .query("portraits")
@@ -75,6 +77,7 @@ async function claim(ctx: MutationCtx, owner: string, roster: SentRoster) {
   }
 }
 
+/** The owner's rosters as stored, the latest saved first. */
 const rostersOf = (ctx: QueryCtx, owner: string) =>
   ctx.db
     .query("rosters")
@@ -102,6 +105,7 @@ async function deleteUnclaimed(ctx: MutationCtx, files: Iterable<Id<"_storage">>
   }
 }
 
+/** The owner's roster with an id, as stored, if they have one. */
 const savedRoster = (ctx: QueryCtx, owner: string, id: string) =>
   ctx.db
     .query("rosters")
@@ -117,8 +121,11 @@ async function write(
 ) {
   check(roster);
   await claim(ctx, owner, roster);
-  if (before) await ctx.db.patch(before._id, { roster, savedAt: Date.now() });
-  else await ctx.db.insert("rosters", { owner, roster, savedAt: Date.now() });
+  // Later than any save before, even one in the same millisecond, so the latest is listed first.
+  const [latest] = await rostersOf(ctx, owner);
+  const savedAt = Math.max(Date.now(), (latest?.savedAt ?? 0) + 1);
+  if (before) await ctx.db.patch(before._id, { roster, savedAt });
+  else await ctx.db.insert("rosters", { owner, roster, savedAt });
   if (before) await deleteUnshown(ctx, owner, filesOf(before.roster));
 }
 
@@ -157,7 +164,7 @@ export const mine = query({
 export const uploadUrl = mutation({
   args: {},
   handler: async (ctx) => {
-    await signedIn(ctx);
+    await requireOwner(ctx);
     return ctx.storage.generateUploadUrl();
   },
 });
@@ -166,7 +173,7 @@ export const uploadUrl = mutation({
 export const save = mutation({
   args: { roster: sentRoster },
   handler: async (ctx, { roster }) => {
-    const owner = await signedIn(ctx);
+    const owner = await requireOwner(ctx);
     await write(ctx, owner, roster, await savedRoster(ctx, owner, roster.id));
   },
 });
@@ -179,7 +186,7 @@ export const save = mutation({
 export const add = mutation({
   args: { roster: sentRoster },
   handler: async (ctx, { roster }) => {
-    const owner = await signedIn(ctx);
+    const owner = await requireOwner(ctx);
     if (await savedRoster(ctx, owner, roster.id)) {
       await deleteUnclaimed(ctx, filesOf(roster));
       return false;
@@ -193,7 +200,7 @@ export const add = mutation({
 export const remove = mutation({
   args: { id: v.string() },
   handler: async (ctx, { id }) => {
-    const owner = await signedIn(ctx);
+    const owner = await requireOwner(ctx);
     const saved = await savedRoster(ctx, owner, id);
     if (!saved) return;
     await ctx.db.delete(saved._id);
@@ -204,5 +211,8 @@ export const remove = mutation({
 /** Deletes images uploaded for a roster that then was not saved. Images a roster shows are kept. */
 export const discardUploads = mutation({
   args: { files: v.array(v.id("_storage")) },
-  handler: (ctx, { files }) => deleteUnclaimed(ctx, files),
+  handler: async (ctx, { files }) => {
+    await requireOwner(ctx);
+    await deleteUnclaimed(ctx, files);
+  },
 });

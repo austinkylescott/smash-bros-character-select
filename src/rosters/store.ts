@@ -1,5 +1,5 @@
 /** The user's rosters, kept in the browser's storage so they outlive the page. No account needed. */
-import { readRoster } from "./read";
+import { isRecord, readRoster } from "./read";
 import { type Roster, rosterProblems } from "./roster";
 
 /** The part of a browser's storage the rosters are kept in. */
@@ -12,9 +12,6 @@ interface Stored {
   readonly version: 1;
   readonly rosters: readonly unknown[];
 }
-
-const isRecord = (value: unknown): value is Record<string, unknown> =>
-  typeof value === "object" && value !== null;
 
 /** The images the browser keeps: data URLs of the formats the site resizes uploads to. */
 const KEPT_IMAGE = /^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/]+=*$/;
@@ -66,11 +63,15 @@ export function createRosterStore(storage: RosterStorage | undefined) {
     list,
     /**
      * Saves a roster, in place of any saved before with its id. Throws, saving nothing, if the
-     * roster breaks a rule or the browser will not store it.
+     * roster breaks a rule, shows an image the browser does not keep, or the browser will not
+     * store it.
      */
     save(roster: Roster) {
       const [problem] = rosterProblems(roster);
       if (problem) throw new Error(problem);
+      // Such as an image from an account, which only the account keeps.
+      if (!rosterFrom(roster))
+        throw new Error("This browser cannot keep a fighter's image. Choose the image again.");
       write([roster, ...without(roster.id)]);
     },
     /** Forgets the roster with an id. */

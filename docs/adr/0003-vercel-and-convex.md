@@ -6,3 +6,4 @@ The Vue frontend and all bundled official assets are served from Vercel, and Con
 
 - Convex has no official Vue SDK, so the app talks to it through a thin wrapper of our own (or a community library) rather than depending on first-party bindings.
 - Convex file bandwidth is metered and small on the free plan. Only user-added portraits are served from Convex, kept as small cropped images, and they sit behind the asset layer so they can move to cheaper storage if traffic demands it.
+- Sign-in itself is Clerk's (decided in issue #18): it has a Vue library, and Convex documents checking its tokens (`convex/auth.config.ts`). Clerk keeps the user accounts and Convex keeps everything else.

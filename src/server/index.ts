@@ -52,6 +52,31 @@ export async function callMutation<Mutation extends FunctionReference<"mutation"
   }
 }
 
+/**
+ * Uploads a file to the server's file storage, at a link one of its mutations gives, giving the
+ * id the file is kept under. Throws with a message for the user if it fails.
+ */
+export async function uploadFile(
+  uploadUrl: FunctionReference<"mutation", "public", Record<string, never>, string>,
+  file: Blob,
+): Promise<string> {
+  const target = await callMutation(uploadUrl, {});
+  const failed = "An image could not be uploaded. Try again later.";
+  let response: Response;
+  try {
+    response = await fetch(target, {
+      method: "POST",
+      headers: { "Content-Type": file.type },
+      body: file,
+    });
+  } catch (error) {
+    throw new Error(failed, { cause: error });
+  }
+  if (!response.ok) throw new Error(failed);
+  const { storageId } = (await response.json()) as { storageId: string };
+  return storageId;
+}
+
 /** A query's latest result, kept current by the server, or the error it last failed with. */
 export interface LiveQuery<Result> {
   /** Nothing until the first result arrives, and again whenever the query stops. */
@@ -105,5 +130,6 @@ export function signInToServer(fetchToken: TokenFetcher, onChange: (signedIn: bo
 
 /** Signs the server's connection out, so it acts for no one. */
 export function signOutOfServer() {
+  // The plain client has no way to sign out but its underlying one's.
   client?.client.clearAuth();
 }
