@@ -17,6 +17,7 @@ import {
   type Ref,
   readonly,
   ref,
+  type ShallowRef,
   watch,
 } from "vue";
 
@@ -24,6 +25,7 @@ import type { AvailableTemplate } from "../catalogue";
 import type { Size } from "../stage";
 import { templateLayers } from "./catalogue";
 import { layerMode } from "./mode";
+import type { ScreenPieces } from "./pieces";
 import type { RunningLayers } from "./runtime";
 
 /**
@@ -31,6 +33,13 @@ import type { RunningLayers } from "./runtime";
  * as its Backdrop, only while this is true.
  */
 export const LAYERS_DRAWN: InjectionKey<Readonly<Ref<boolean>>> = Symbol("layers drawn");
+
+/**
+ * Where a screen tells its layers where its hand and tokens are. A template whose layers draw
+ * them sets this to a reader of its pieces while it is mounted.
+ */
+export const SCREEN_PIECES: InjectionKey<ShallowRef<(() => ScreenPieces) | undefined>> =
+  Symbol("screen pieces");
 
 let webglSupport: boolean | undefined;
 
@@ -60,6 +69,8 @@ export interface StageLayersOptions {
   readonly enabled: () => boolean;
   readonly under: Ref<HTMLCanvasElement | null>;
   readonly over: Ref<HTMLCanvasElement | null>;
+  /** Where the screen's hand and tokens are now, read as each frame is drawn. */
+  readonly pieces: () => ScreenPieces;
 }
 
 export function useStageLayers(options: StageLayersOptions) {
@@ -146,6 +157,7 @@ export function useStageLayers(options: StageLayersOptions) {
         { under: options.under.value, over: options.over.value },
         layers,
         options.stage(),
+        options.pieces,
         () => {
           contextLost.value = true;
           stop();
@@ -177,6 +189,11 @@ export function useStageLayers(options: StageLayersOptions) {
     watch(mode, schedule);
     watch(options.scale, () => {
       resize();
+      if (mode.value === "still") draw();
+    });
+    // A still scene is drawn again whenever the hand or a token moves; a moving one reads them
+    // on its next frame anyway.
+    watch(options.pieces, () => {
       if (mode.value === "still") draw();
     });
     // A new template, or a turn of the phone to another stage, builds the layers afresh.

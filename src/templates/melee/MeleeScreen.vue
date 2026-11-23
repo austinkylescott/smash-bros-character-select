@@ -4,13 +4,14 @@ import "@fontsource/rubik/700.css";
 import "@fontsource/rubik/800.css";
 import "@fontsource/rubik/900.css";
 import "@fontsource/rubik/900-italic.css";
-import { computed, inject, nextTick, onMounted, ref, watch } from "vue";
+import { computed, inject, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
 
 import { useScreenAudio } from "../../audio";
 import type { Box } from "../../selection/navigate";
 import { type Pick, RANDOM, type SelectionRules } from "../../selection/selection";
 import { useSelectionControls } from "../../selection/useSelectionControls";
-import { LAYERS_DRAWN } from "../layers/useStageLayers";
+import { handPiece, type ScreenPieces } from "../layers/pieces";
+import { LAYERS_DRAWN, SCREEN_PIECES } from "../layers/useStageLayers";
 import type { ScreenRoster } from "../screen";
 import FighterPortrait from "../FighterPortrait.vue";
 import { meleeGrid } from "./grid";
@@ -65,8 +66,11 @@ const slotPicks = computed<Pick[]>(() => [
 ]);
 const fightersById = computed(() => new Map(props.roster.fighters.map((f) => [f.id, f])));
 
-/** While the 3D Backdrop draws, the CSS one gives way to it, keeping only the slate above. */
-const backdropDrawn = inject(LAYERS_DRAWN, ref(false));
+/**
+ * While the 3D layers draw, the CSS Backdrop gives way to theirs, keeping only the slate above, and
+ * the DOM hand and tokens are hidden from sight under their 3D ones, still there to focus and read.
+ */
+const layersDrawn = inject(LAYERS_DRAWN, ref(false));
 
 const tokenHome = (panel: number) => meleeTokenHome(panelBoxes.value[panel]!);
 
@@ -161,6 +165,31 @@ const heldLook = computed(() =>
   selection.value.held === null ? undefined : look(selection.value.held),
 );
 
+/** The hand and tokens as the 3D layer over the screen draws them: where the DOM puts them. */
+const pieces = computed<ScreenPieces>(() => ({
+  hand: handPiece({
+    position: hand.position.value,
+    input: hand.input.value,
+    inside: hand.inside.value,
+    owner: owner.value,
+    held: heldLook.value,
+  }),
+  tokens: tokens.value.map(({ index, x, y, size, colour, tag }) => ({
+    panel: index,
+    x,
+    y,
+    size,
+    colour,
+    tag,
+  })),
+}));
+const screenPieces = inject(SCREEN_PIECES, undefined);
+const readPieces = () => pieces.value;
+if (screenPieces) screenPieces.value = readPieces;
+onBeforeUnmount(() => {
+  if (screenPieces?.value === readPieces) screenPieces.value = undefined;
+});
+
 // A name too wide for its strip is squeezed sideways, as Melee squeezes GANONDORF.
 const labels = ref<HTMLElement[]>([]);
 const randomLabel = ref<HTMLElement | null>(null);
@@ -200,7 +229,7 @@ const boxStyle = ({ x, y, width, height }: Box) => ({
     @pointerleave="hand.leave"
     @keydown="controls.onKey"
   >
-    <div class="backdrop" :class="{ drawn: backdropDrawn }" aria-hidden="true" />
+    <div class="backdrop" :class="{ drawn: layersDrawn }" aria-hidden="true" />
     <div
       class="floor"
       aria-hidden="true"
@@ -279,12 +308,18 @@ const boxStyle = ({ x, y, width, height }: Box) => ({
         @keydown.enter.prevent="controls.keyToken(token.index)"
         @keydown.space.prevent="controls.keyToken(token.index)"
       >
-        <MeleeToken :colour="token.colour" :tag="token.tag" :size="token.size" />
+        <MeleeToken
+          :class="{ 'drawn-in-3d': layersDrawn }"
+          :colour="token.colour"
+          :tag="token.tag"
+          :size="token.size"
+        />
       </button>
     </div>
 
     <MeleeHand
       v-show="hand.inside.value || hand.input.value !== 'mouse'"
+      :class="{ 'drawn-in-3d': layersDrawn }"
       :position="hand.position.value"
       :input="hand.input.value"
       :owner="owner"
@@ -350,6 +385,14 @@ const boxStyle = ({ x, y, width, height }: Box) => ({
   background: none;
   font: inherit;
   touch-action: none;
+}
+
+/*
+ * Drawn in 3D over the screen instead: hidden from sight only. A token's button keeps its place,
+ * label and focus ring.
+ */
+.drawn-in-3d {
+  visibility: hidden;
 }
 
 .tokens > .token:focus-visible {
